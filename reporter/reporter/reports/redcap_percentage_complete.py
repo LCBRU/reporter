@@ -54,11 +54,11 @@ def job(study_name):
                 send_markdown_slack(REPORT_NAME, markdown)
 
 
-schedule.every().minute.do(job, 'AS')
-schedule.every().minute.do(job, 'BRAVE')
-schedule.every().minute.do(job, 'BRICCS')
-schedule.every().minute.do(job, 'DREAM')
-schedule.every().minute.do(job, 'SCAD')
-schedule.every().minute.do(job, 'TMAO')
+schedule.every().hour.do(job, 'AS')
+schedule.every().hour.do(job, 'BRAVE')
+schedule.every().hour.do(job, 'BRICCS')
+schedule.every().hour.do(job, 'DREAM')
+schedule.every().hour.do(job, 'SCAD')
+schedule.every().hour.do(job, 'TMAO')
 
 logging.info(f"{REPORT_NAME} Loaded")
