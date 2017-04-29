@@ -7,12 +7,12 @@ import logging
 from reporter import get_report_db, send_markdown_email, send_markdown_slack
 
 
-REPORT_NAME = 'Bioresource Recruits without full consent';
+REPORT_NAME = 'Bioresource Recruits without full consent'
 RECIPIENT = os.environ["BIORESOURCE_WITHOUT_FULL_CONSENT_RECIPIENT"]
 CIVICRM_SEARCH_URL = os.environ["CIVICRM_SEARCH_URL"]
 
 
-def job():
+def bioresource_without_full_consent():
 
     markdown = ''
 
@@ -27,11 +27,16 @@ def job():
                     ''')
 
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
-            markdown += "_The following participants are recruited in CiviCRM, but a record of full consent cannot be found_:\r\n\r\n"
+            markdown += ("_The following participants are recruited "
+                         "in CiviCRM, but a record of full consent "
+                         "cannot be found_:\r\n\r\n")
 
             for row in cursor:
-                consent_date = f'{row["consent_date"]:%d-%b-%Y}' if row['consent_date'] else ''
-                markdown += f'- [{row["bioresource_id"]}]({CIVICRM_SEARCH_URL}{row["bioresource_id"]}) {consent_date}\r\n'
+                consent_date = (f'{row["consent_date"]:%d-%b-%Y}'
+                                if row['consent_date'] else '')
+                markdown += (f'- [{row["bioresource_id"]}]'
+                             f'({CIVICRM_SEARCH_URL}{row["bioresource_id"]}) '
+                             f'{consent_date}\r\n')
 
             markdown += f"\r\n\r\n{cursor.rowcount} Record(s) Found"
 
@@ -40,6 +45,6 @@ def job():
                 send_markdown_slack(REPORT_NAME, markdown)
 
 
-schedule.every().hour.do(job)
+schedule.every().monday.at("08:00").do(bioresource_without_full_consent)
 
 logging.info(f"{REPORT_NAME} Loaded")

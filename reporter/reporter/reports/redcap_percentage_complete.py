@@ -12,7 +12,7 @@ REPORT_NAME = 'REDCap Percentage Complete'
 RECIPIENT = os.environ["REDCAP_PERCENTAGE_COMPLETE_RECIPIENT"]
 
 
-def job(study_name):
+def redcap_completeness(study_name):
 
     markdown = ""
 
@@ -54,11 +54,12 @@ def job(study_name):
                 send_markdown_slack(REPORT_NAME, markdown)
 
 
-schedule.every().hour.do(job, 'AS')
-schedule.every().hour.do(job, 'BRAVE')
-schedule.every().hour.do(job, 'BRICCS')
-schedule.every().hour.do(job, 'DREAM')
-schedule.every().hour.do(job, 'SCAD')
-schedule.every().hour.do(job, 'TMAO')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'AS')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'Bioresource')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'BRAVE')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'BRICCS')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'DREAM')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'SCAD')
+schedule.every().monday.at("08:00").do(redcap_completeness, 'TMAO')
 
 logging.info(f"{REPORT_NAME} Loaded")

@@ -22,7 +22,10 @@ EMAIL_SMTP_SERVER = os.environ["EMAIL_SMTP_SERVER"]
 SLACK_DATA_CHANNEL_URL = os.environ["SLACK_DATA_CHANNEL_URL"]
 
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 
 
 def get_report_db():
@@ -46,12 +49,12 @@ def send_markdown_email(report_name, recipient, mkdn):
 
 def send_markdown_slack(report_name, mkdn):
     # Convert to Slack markdown
-    mkdn = mkdn.replace('**', '*') # Headings
-    mkdn = re.sub('\[(.*)]\((.*)\)', '<\g<2>|\g<1>>', mkdn) # Links
+    mkdn = mkdn.replace('**', '*')  # Headings
+    mkdn = re.sub('\[(.*)]\((.*)\)', '<\g<2>|\g<1>>', mkdn)  # Links
 
     r = requests.post(
-    	SLACK_DATA_CHANNEL_URL,
-    	json = {
+        SLACK_DATA_CHANNEL_URL,
+        json={
             'text': report_name,
             'mrkdwn': True,
             'attachments': [{

@@ -7,12 +7,12 @@ import logging
 from reporter import get_report_db, send_markdown_email, send_markdown_slack
 
 
-REPORT_NAME = 'Bioresource Recruits not in REDCap';
+REPORT_NAME = 'Bioresource Recruits not in REDCap'
 RECIPIENT = os.environ["BIORESOURCE_RECRUITS_NOT_IN_REDCAP_RECIPIENT"]
 CIVICRM_SEARCH_URL = os.environ["CIVICRM_SEARCH_URL"]
 
 
-def job():
+def bioresource_not_in_redcap():
 
     markdown = ''
 
@@ -22,16 +22,21 @@ def job():
             cursor.execute('''
                 SELECT  bioresource_id,
                         consent_date
-                FROM    CIVICRM_ScheduledReports_Bioresource_RecruitsNotInRedcap
+                FROM CIVICRM_ScheduledReports_Bioresource_RecruitsNotInRedcap
                 ORDER BY consent_date, bioresource_id
                     ''')
 
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
-            markdown += "_The following participants have a record in CiviCRM, but do not have a record in REDCap_:\r\n\r\n"
+            markdown += ("_The following participants have "
+                         "a record in CiviCRM, but do not have "
+                         "a record in REDCap_:\r\n\r\n")
 
             for row in cursor:
-                consent_date = f'{row["consent_date"]:%d-%b-%Y}' if row['consent_date'] else ''
-                markdown += f'- [{row["bioresource_id"]}]({CIVICRM_SEARCH_URL}{row["bioresource_id"]}) {consent_date}\r\n'
+                consent_date = (f'{row["consent_date"]:%d-%b-%Y}'
+                                 if row['consent_date'] else '')
+                markdown += (f'- [{row["bioresource_id"]}]'
+                             f'({CIVICRM_SEARCH_URL}{row["bioresource_id"]}) '
+                             f'{consent_date}\r\n')
 
             markdown += f"\r\n\r\n{cursor.rowcount} Record(s) Found"
 
@@ -40,6 +45,6 @@ def job():
                 send_markdown_slack(REPORT_NAME, markdown)
 
 
-schedule.every().hour.do(job)
+schedule.every().monday.at("08:00").do(bioresource_not_in_redcap)
 
 logging.info(f"{REPORT_NAME} Loaded")

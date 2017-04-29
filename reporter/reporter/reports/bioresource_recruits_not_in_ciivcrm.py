@@ -7,12 +7,12 @@ import logging
 from reporter import get_report_db, send_markdown_email, send_markdown_slack
 
 
-REPORT_NAME = 'Bioresource Recruits not in CiviCRM';
+REPORT_NAME = 'Bioresource Recruits not in CiviCRM'
 RECIPIENT = os.environ["BIORESOURCE_RECRUITS_NOT_IN_CIVICRM_RECIPIENT"]
 CIVICRM_SEARCH_URL = os.environ["CIVICRM_SEARCH_URL"]
 
 
-def job():
+def bioresource_not_in_civicrm():
 
     markdown = ''
 
@@ -21,15 +21,19 @@ def job():
         with conn.cursor(as_dict=True) as cursor:
             cursor.execute('''
                 SELECT  bioresource_id
-                FROM    CIVICRM_ScheduledReports_Bioresource_RecruitsNotInCiviCrm
+                FROM CIVICRM_ScheduledReports_Bioresource_RecruitsNotInCiviCrm
                 ORDER BY bioresource_id
                     ''')
 
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
-            markdown += "_The following participants have a record in REDCap, but do not have a record in CiviCRM_:\r\n\r\n"
+            markdown += ("_The following participants have "
+                         "a record in REDCap, but do not have "
+                         "a record in CiviCRM_:\r\n\r\n")
 
             for row in cursor:
-                markdown += f'- [{row["bioresource_id"]}]({CIVICRM_SEARCH_URL}{row["bioresource_id"]})\r\n'
+                markdown += (f'- [{row["bioresource_id"]}]'
+                             f'({CIVICRM_SEARCH_URL}{row["bioresource_id"]})'
+                             f'\r\n')
 
             markdown += f"\r\n\r\n{cursor.rowcount} Record(s) Found"
 
@@ -38,6 +42,6 @@ def job():
                 send_markdown_slack(REPORT_NAME, markdown)
 
 
-schedule.every().hour.do(job)
+schedule.every().monday.at("08:00").do(bioresource_not_in_civicrm)
 
 logging.info(f"{REPORT_NAME} Loaded")
