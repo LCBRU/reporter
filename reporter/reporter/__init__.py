@@ -20,6 +20,7 @@ EMAIL_FROM_ADDRESS = os.environ["EMAIL_FROM_ADDRESS"]
 EMAIL_SMTP_SERVER = os.environ["EMAIL_SMTP_SERVER"]
 
 SLACK_DATA_CHANNEL_URL = os.environ["SLACK_DATA_CHANNEL_URL"]
+DEFAULT_RECIPIENT = os.environ["DEFAULT_RECIPIENT"]
 
 
 logging.basicConfig(
@@ -66,3 +67,7 @@ def send_markdown_slack(report_name, mkdn):
     )
 
     logging.info(f"{report_name} Slack Sent")
+
+
+def get_recipient(recipient):
+    return os.getenv(recipient, DEFAULT_RECIPIENT)

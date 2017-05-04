@@ -4,11 +4,10 @@ import schedule
 import os
 import datetime
 import logging
-from reporter import get_report_db, send_markdown_email, send_markdown_slack
+from reporter import get_report_db, send_markdown_email, send_markdown_slack, get_recipient
 
 
 REPORT_NAME = 'Bioresource Not Recruited'
-RECIPIENT = os.environ["BIORESOURCE_NOT_RECRUITED_RECIPIENT"]
 CIVICRM_SEARCH_URL = os.environ["CIVICRM_SEARCH_URL"]
 
 
@@ -26,6 +25,9 @@ def bioresource_not_recruited():
                         ORDER BY consent_date, bioresource_id
                     ''')
 
+            if cursor.rowcount == 0:
+                return
+
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
             markdown += ("_The following participants appear "
                          "to have full consent, but do not have a status "
@@ -38,13 +40,16 @@ def bioresource_not_recruited():
                              f'({CIVICRM_SEARCH_URL}{row["bioresource_id"]}) '
                              f'{consent_date}\r\n')
 
-            markdown += f"\r\n\r\n{cursor.rowcount} Record(s) Found"
+            markdown += f"\r\n\r\n{cursor.rowcount + 1} Record(s) Found"
 
-            if cursor.rowcount > 0:
-                send_markdown_email(REPORT_NAME, RECIPIENT, markdown)
-                send_markdown_slack(REPORT_NAME, markdown)
+            send_markdown_email(
+                REPORT_NAME,
+                get_recipient("BIORESOURCE_NOT_RECRUITED_RECIPIENT"),
+                markdown)
+            send_markdown_slack(REPORT_NAME, markdown)
 
 
+# bioresource_not_recruited()
 schedule.every().monday.at("08:00").do(bioresource_not_recruited)
 
 

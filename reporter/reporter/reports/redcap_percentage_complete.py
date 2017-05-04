@@ -6,10 +6,9 @@ import datetime
 import logging
 import math
 from itertools import groupby
-from reporter import get_report_db, send_markdown_email, send_markdown_slack
+from reporter import get_report_db, send_markdown_email, send_markdown_slack, get_recipient
 
 REPORT_NAME = 'REDCap Percentage Complete'
-RECIPIENT = os.environ["REDCAP_PERCENTAGE_COMPLETE_RECIPIENT"]
 
 
 def redcap_completeness(study_name):
@@ -46,13 +45,15 @@ def redcap_completeness(study_name):
             if cursor.rowcount > 0:
                 send_markdown_email(
                     REPORT_NAME,
-                    os.environ[
-                        f"REDCAP_PERCENTAGE_COMPLETE_RECIPIENT_{study_name}"
-                    ],
+                    get_recipient('{}_{}'.format(
+                        "REDCAP_PERCENTAGE_COMPLETE_RECIPIENT",
+                        study_name)),
                     markdown
                 )
                 send_markdown_slack(REPORT_NAME, markdown)
 
+
+# redcap_completeness('AS')
 
 schedule.every().monday.at("08:00").do(redcap_completeness, 'AS')
 schedule.every().monday.at("08:00").do(redcap_completeness, 'Bioresource')
