@@ -2,3 +2,5 @@ schedule
 pymssql
 markdown
 requests
+pandas
+matplotlib

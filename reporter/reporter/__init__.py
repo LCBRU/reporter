@@ -8,7 +8,13 @@ import os
 import datetime
 import logging
 import re
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
+import matplotlib
+matplotlib.use('Agg')
 
 
 SQL_HOST = os.environ["SQL_HOST"]
@@ -33,13 +39,28 @@ def get_report_db():
     return pymssql.connect(SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DATABASE)
 
 
-def send_markdown_email(report_name, recipient, mkdn):
-    html = markdown.markdown(mkdn)
-    msg = MIMEText(html, 'html')
+def send_markdown_email(
+    report_name,
+    recipient,
+    mkdn,
+    attachments=[]
+):
 
+    msg = MIMEMultipart()
     msg['Subject'] = report_name
     msg['To'] = recipient
     msg['From'] = EMAIL_FROM_ADDRESS
+
+    html = markdown.markdown(mkdn)
+    msg.attach(MIMEText(html, 'html'))
+
+    for a in attachments:
+        part = MIMEImage(a['stream'].read())
+
+        part.add_header('Content-Disposition',
+                        'inline; filename="{}"'.format(a['filename']))
+        part.add_header('Content-ID', a['filename'])
+        msg.attach(part)
 
     s = smtplib.SMTP(EMAIL_SMTP_SERVER)
     s.send_message(msg)
