@@ -5,13 +5,13 @@ import os
 import datetime
 import logging
 from reporter import (get_report_db, send_markdown_email,
-                      send_markdown_slack, get_recipient, get_case_link)
+                      send_markdown_slack, get_recipient, get_contact_link)
 
 
-REPORT_NAME = 'Bioresource Blank Study ID'
+REPORT_NAME = 'Bioresource Contact with Multiple Recruitments'
 
 
-def bioresource_blank_study_id():
+def bioresource_contact_multiple_recruited():
 
     markdown = ''
 
@@ -19,22 +19,23 @@ def bioresource_blank_study_id():
 
         with conn.cursor(as_dict=True) as cursor:
             cursor.execute('''
-                SELECT civicrm_case_id, civicrm_contact_id
-                FROM CIVICRM_ScheduledReports_Bioresource_StudyIdBlank
+                    SELECT civicrm_contact_id
+                    FROM i2b2_app03_bioresource_Data.dbo.LOAD_COMBINED_VALID_RECRUITED
+                    GROUP BY civicrm_contact_id
+                    HAVING COUNT(*) > 1
                 ''')
 
             if cursor.rowcount == 0:
                 return
 
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
-            markdown += ("_The following participants have a blank "
-                         "study ID in the CiviCRM Study Enrolment "
+            markdown += ("_The following participants has multiple "
+                         "recruited enrolments"
                          "_:\r\n\r\n")
 
             for row in cursor:
-                markdown += '- {}\r\n\r\n'.format(get_case_link(
+                markdown += '- {}\r\n\r\n'.format(get_contact_link(
                     'Click to View',
-                    row["civicrm_case_id"],
                     row["civicrm_contact_id"]))
 
             markdown += f"\r\n\r\n{cursor.rowcount + 1} Record(s) Found"
@@ -46,8 +47,8 @@ def bioresource_blank_study_id():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-# bioresource_blank_study_id()
-schedule.every().monday.at("08:00").do(bioresource_blank_study_id)
+bioresource_contact_multiple_recruited()
+schedule.every().monday.at("08:00").do(bioresource_contact_multiple_recruited)
 
 
 logging.info(f"{REPORT_NAME} Loaded")

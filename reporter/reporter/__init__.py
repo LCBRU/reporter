@@ -92,3 +92,24 @@ def send_markdown_slack(report_name, mkdn):
 
 def get_recipient(recipient):
     return os.getenv(recipient, DEFAULT_RECIPIENT)
+
+
+def get_case_link(link_text, case_id, contact_id):
+    CIVICRM_CASE_URL = ('[{}]('
+                        'http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view/case'
+                        '?id={}&cid={})')
+
+    return (CIVICRM_CASE_URL.format(
+        link_text,
+        case_id,
+        contact_id))
+
+
+def get_contact_link(link_text, contact_id):
+    CIVICRM_CASE_URL = ('[{}]('
+                        'http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view'
+                        '?cid={})')
+
+    return (CIVICRM_CASE_URL.format(
+        link_text,
+        contact_id))
