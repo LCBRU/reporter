@@ -8,11 +8,10 @@ from reporter import (get_report_db, send_markdown_email,
                       send_markdown_slack, get_recipient)
 
 
-REPORT_NAME = 'Bioresource Blank Study ID'
-CIVICRM_CASE_URL = '- [Click to View](http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view/case?id={}&cid={})\r\n'
+REPORT_NAME = 'Bioresource Patient Summary Duplicates'
 
 
-def bioresource_blank_study_id():
+def bioresource_patient_summary_duplicates():
 
     markdown = ''
 
@@ -20,22 +19,22 @@ def bioresource_blank_study_id():
 
         with conn.cursor(as_dict=True) as cursor:
             cursor.execute('''
-                SELECT civicrm_case_id, civicrm_contact_id
-                FROM CIVICRM_ScheduledReports_Bioresource_StudyIdBlank
+                SELECT patient_num, COUNT(*) AS ct
+                FROM    i2b2_app03_bioresource_Data.dbo.PatientSummary
+                GROUP BY patient_num
+                HAVING COUNT(*) > 1;
                 ''')
 
             if cursor.rowcount == 0:
                 return
 
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
-            markdown += ("_The following participants have a blank "
-                         "study ID in the CiviCRM Study Enrolment "
+            markdown += ("_The following participants are duplicated "
+                         "in the bioresource patient_summary view "
                          "_:\r\n\r\n")
 
             for row in cursor:
-                markdown += (CIVICRM_CASE_URL.format(
-                    row["civicrm_case_id"],
-                    row["civicrm_contact_id"]))
+                markdown += '- {}\r\n'.format(row['patient_num'])
 
             markdown += f"\r\n\r\n{cursor.rowcount + 1} Record(s) Found"
 
@@ -46,8 +45,8 @@ def bioresource_blank_study_id():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-# bioresource_blank_study_id()
-schedule.every().monday.at("08:00").do(bioresource_blank_study_id)
+# bioresource_patient_summary_duplicates()
+schedule.every().monday.at("08:00").do(bioresource_patient_summary_duplicates)
 
 
 logging.info(f"{REPORT_NAME} Loaded")
