@@ -6,10 +6,10 @@ from reporter import (get_report_db, send_markdown_email,
                       send_markdown_slack, get_recipient)
 
 
-REPORT_NAME = 'Bioresource Study ID Duplicates'
+REPORT_NAME = 'Bioresource PatientSummary Missing Participants'
 
 
-def bioresource_study_id_duplicates():
+def bioresource_patientsummary_missing_participants():
 
     markdown = ''
 
@@ -17,23 +17,24 @@ def bioresource_study_id_duplicates():
 
         with conn.cursor(as_dict=True) as cursor:
             cursor.execute('''
-                SELECT PATIENT_IDE, PATIENT_IDE_SOURCE, COUNT(*) AS ct
-                FROM i2b2_app03_bioresource_Data.dbo.Patient_Mapping pm
-                GROUP BY PATIENT_IDE, PATIENT_IDE_SOURCE
-                HAVING COUNT(*) > 1;
+                SELECT pd.Patient_Num
+                FROM i2b2_app03_bioresource_Data.dbo.Patient_Dimension pd
+                WHERE pd.Patient_Num NOT IN (
+                    SELECT ps.Patient_Num
+                    FROM i2b2_app03_bioresource_Data.dbo.PatientSummary ps)
                 ''')
 
             if cursor.rowcount == 0:
                 return
 
             markdown = '**{}**\r\n\r\n'.format(REPORT_NAME)
-            markdown += ("_The following study IDs are duplicated"
+            markdown += ("_The following participants are "
+                         "missing from the patient summary"
                          "_:\r\n\r\n")
 
             for row in cursor:
-                markdown += '- {} (ID type = \'{}\')\r\n'.format(
-                    row['PATIENT_IDE'],
-                    row['PATIENT_IDE_SOURCE']
+                markdown += '- {}\r\n'.format(
+                    row['patient_num']
                 )
 
             markdown += "\r\n\r\n{} Record(s) Found".format(
@@ -47,8 +48,10 @@ def bioresource_study_id_duplicates():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-# bioresource_study_id_duplicates()
-schedule.every().monday.at("08:00").do(bioresource_study_id_duplicates)
+bioresource_patientsummary_missing_participants()
+
+schedule.every().monday.at("08:00").do(
+    bioresource_patientsummary_missing_participants)
 
 
 logging.info("{} Loaded".format(REPORT_NAME))

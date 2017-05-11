@@ -48,7 +48,7 @@ def bioresource_study_id_multiples():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-bioresource_study_id_multiples()
+# bioresource_study_id_multiples()
 schedule.every().monday.at("08:00").do(bioresource_study_id_multiples)
 
 
