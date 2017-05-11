@@ -47,7 +47,7 @@ def bioresource_contact_multiple_recruited():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-bioresource_contact_multiple_recruited()
+# bioresource_contact_multiple_recruited()
 schedule.every().monday.at("08:00").do(bioresource_contact_multiple_recruited)
 
 
