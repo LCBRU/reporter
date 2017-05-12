@@ -48,7 +48,7 @@ def bioresource_patientsummary_missing_participants():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-bioresource_patientsummary_missing_participants()
+# bioresource_patientsummary_missing_participants()
 
 schedule.every().monday.at("08:00").do(
     bioresource_patientsummary_missing_participants)

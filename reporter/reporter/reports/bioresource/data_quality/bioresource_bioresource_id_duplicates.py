@@ -60,5 +60,4 @@ def bioresource_bioresource_id_duplicates():
 # bioresource_bioresource_id_duplicates()
 schedule.every().monday.at("08:00").do(bioresource_bioresource_id_duplicates)
 
-
 logging.info(f"{REPORT_NAME} Loaded")

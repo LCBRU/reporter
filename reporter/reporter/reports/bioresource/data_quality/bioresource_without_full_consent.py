@@ -29,7 +29,8 @@ def bioresource_without_full_consent():
                 return
 
             markdown = f'**{REPORT_NAME}**\r\n\r\n'
-            markdown += ("_The following participants are recruited "
+            markdown += ("_The following participants are recruited, "
+                         "duplicates or withdrawn "
                          "in CiviCRM, but a record of full consent "
                          "cannot be found_:\r\n\r\n")
 
@@ -49,7 +50,8 @@ def bioresource_without_full_consent():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-# bioresource_without_full_consent()
+bioresource_without_full_consent()
+
 schedule.every().monday.at("08:00").do(bioresource_without_full_consent)
 
 logging.info(f"{REPORT_NAME} Loaded")
