@@ -50,7 +50,7 @@ def bioresource_without_full_consent():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-bioresource_without_full_consent()
+# bioresource_without_full_consent()
 
 schedule.every().monday.at("08:00").do(bioresource_without_full_consent)
 
