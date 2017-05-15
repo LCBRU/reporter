@@ -58,7 +58,7 @@ def bioresource_legacy_id_duplicates():
             send_markdown_slack(REPORT_NAME, markdown)
 
 
-# bioresource_legacy_id_duplicates()
+bioresource_legacy_id_duplicates()
 schedule.every().monday.at("08:00").do(bioresource_legacy_id_duplicates)
 
 

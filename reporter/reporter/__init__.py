@@ -106,10 +106,11 @@ def get_case_link(link_text, case_id, contact_id):
 
 
 def get_contact_link(link_text, contact_id):
-    CIVICRM_CASE_URL = ('[{}]('
-                        'http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view'
-                        '?cid={})')
+    CIVICRM_CONTACT_URL = (
+        '[{}]('
+        'http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view'
+        '?cid={})')
 
-    return (CIVICRM_CASE_URL.format(
+    return (CIVICRM_CONTACT_URL.format(
         link_text,
         contact_id))

@@ -3,7 +3,7 @@
 import schedule
 import logging
 from reporter import (get_report_db, send_markdown_email,
-                      send_markdown_slack, get_recipient)
+                      send_markdown_slack, get_recipient, get_contact_link)
 
 
 REPORT_NAME = 'Bioresource Study ID Multiples'
@@ -17,10 +17,29 @@ def bioresource_study_id_multiples():
 
         with conn.cursor(as_dict=True) as cursor:
             cursor.execute('''
-                SELECT patient_num, PATIENT_IDE_SOURCE, COUNT(*) AS ct
-                FROM i2b2_app03_bioresource_Data.dbo.Patient_Mapping pm
-                GROUP BY patient_num, PATIENT_IDE_SOURCE
-                HAVING COUNT(*) > 1;
+                SELECT
+                      pm1.patient_num
+                    , pm1.patient_ide_source
+                    , SUBSTRING(ids.id, 3, 2000) AS id
+                    , pm_civi.patient_ide AS civicrm_contact_id
+                FROM i2b2_app03_bioresource_Data.dbo.patient_mapping pm1
+                CROSS APPLY (
+                    SELECT
+                        [text()] = '; ' + pm2.patient_ide
+                    FROM i2b2_app03_bioresource_Data.dbo.patient_mapping pm2
+                    WHERE pm1.patient_num = pm2.patient_num
+                        AND pm1.patient_ide_source = pm2.patient_ide_source
+                    ORDER BY pm2.patient_ide
+                    FOR XML PATH('')
+                ) ids (id)
+                LEFT JOIN i2b2_app03_bioresource_Data.dbo.patient_mapping pm_civi
+                    ON pm_civi.patient_num = pm1.patient_num
+                    AND pm_civi.patient_ide_source = 'CiviCRM'
+                GROUP BY pm1.patient_num
+                    , pm1.patient_ide_source
+                    , ids.id
+                    , pm_civi.patient_ide
+                HAVING COUNT(*) > 1
                 ''')
 
             if cursor.rowcount == 0:
@@ -32,9 +51,12 @@ def bioresource_study_id_multiples():
                          "_:\r\n\r\n")
 
             for row in cursor:
-                markdown += '- {} (ID type = \'{}\')\r\n'.format(
-                    row['patient_num'],
-                    row['PATIENT_IDE_SOURCE']
+                markdown += '- {} (IDs \'{}\' of type \'{}\')\r\n'.format(
+                    get_contact_link(
+                        'Click to View Contact',
+                        row["civicrm_contact_id"]),
+                    row['id'],
+                    row['patient_ide_source']
                 )
 
             markdown += "\r\n\r\n{} Record(s) Found".format(
