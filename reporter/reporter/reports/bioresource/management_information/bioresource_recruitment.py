@@ -55,13 +55,16 @@ def bioresource_recruitment():
         fig.autofmt_xdate()
 
         ax.annotate(
-            'Total Recruitment: {}'.format(df.ct[-1]),
+            'Total Recruitment*: {}'.format(df.ct[-1]),
             xy=(df.index.max(), df.ct[-1]),
+            bbox=dict(boxstyle="square, pad=0.6", alpha=0.2),
             xytext=(0.1, 0.7),
             textcoords='axes fraction',
         )
 
-        ax.grid(True)
+        fig.text(0.01, 0.01, '* including \'recruited\' status only', fontsize=10)
+
+        ax.grid(True, linestyle='dotted')
 
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
