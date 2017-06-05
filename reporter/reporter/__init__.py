@@ -5,11 +5,8 @@ import smtplib
 import markdown
 import requests
 import os
-import datetime
 import logging
 import re
-from email import encoders
-from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
@@ -17,16 +14,41 @@ import matplotlib
 matplotlib.use('Agg')
 
 
-SQL_HOST = os.environ["SQL_HOST"]
-SQL_USER = os.environ["SQL_USER"]
-SQL_PASSWORD = os.environ["SQL_PASSWORD"]
-SQL_DATABASE = os.environ["SQL_DATABASE"]
+SQL_REPORTING_HOST = os.environ["SQL_REPORTING_HOST"]
+SQL_REPORTING_USER = os.environ["SQL_REPORTING_USER"]
+SQL_REPORTING_PASSWORD = os.environ["SQL_REPORTING_PASSWORD"]
+SQL_REPORTING_DATABASE = os.environ["SQL_REPORTING_DATABASE"]
+
+SQL_DWBRICCS_HOST = os.environ["SQL_DWBRICCS_HOST"]
+SQL_DWBRICCS_USER = os.environ["SQL_DWBRICCS_USER"]
+SQL_DWBRICCS_PASSWORD = os.environ["SQL_DWBRICCS_PASSWORD"]
+SQL_DWBRICCS_DATABASE = os.environ["SQL_DWBRICCS_DATABASE"]
 
 EMAIL_FROM_ADDRESS = os.environ["EMAIL_FROM_ADDRESS"]
 EMAIL_SMTP_SERVER = os.environ["EMAIL_SMTP_SERVER"]
 
 SLACK_DATA_CHANNEL_URL = os.environ["SLACK_DATA_CHANNEL_URL"]
 DEFAULT_RECIPIENT = os.environ["DEFAULT_RECIPIENT"]
+
+RECIPIENT_IT_DWH = 'RECIPIENT_IT_DWH'
+RECIPIENT_IT_DQ = 'RECIPIENT_IT_DQ'
+RECIPIENT_BIORESOURCE_MANAGER = 'RECIPIENT_BIORESOURCE_MANAGER'
+RECIPIENT_BIORESOURCE_ADMIN = 'RECIPIENT_BIORESOURCE_ADMIN'
+RECIPIENT_BRICCS_MANAGER = 'RECIPIENT_BRICCS_MANAGER'
+RECIPIENT_BRICCS_ADMIN = 'RECIPIENT_BRICCS_ADMIN'
+RECIPIENT_GENVASC_MANAGER = 'RECIPIENT_GENVASC_MANAGER'
+RECIPIENT_GENVASC_ADMIN = 'RECIPIENT_GENVASC_ADMIN'
+RECIPIENT_GRAPHIC2_MANAGER = 'RECIPIENT_GRAPHIC2_MANAGER'
+RECIPIENT_AS_MANAGER = 'RECIPIENT_AS_MANAGER'
+RECIPIENT_AS_ADMIN = 'RECIPIENT_AS_ADMIN'
+RECIPIENT_BRAVE_MANAGER = 'RECIPIENT_BRAVE_MANAGER'
+RECIPIENT_BRAVE_ADMIN = 'RECIPIENT_BRAVE_ADMIN'
+RECIPIENT_DREAM_MANAGER = 'RECIPIENT_DREAM_MANAGER'
+RECIPIENT_DREAM_ADMIN = 'RECIPIENT_DREAM_ADMIN'
+RECIPIENT_SCAD_MANAGER = 'RECIPIENT_SCAD_MANAGER'
+RECIPIENT_SCAD_ADMIN = 'RECIPIENT_SCAD_ADMIN'
+RECIPIENT_TMAO_MANAGER = 'RECIPIENT_SCAD_MANAGER'
+RECIPIENT_TMAO_ADMIN = 'RECIPIENT_SCAD_ADMIN'
 
 
 logging.basicConfig(
@@ -36,25 +58,40 @@ logging.basicConfig(
 
 
 def get_report_db():
-    return pymssql.connect(SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DATABASE)
+    return pymssql.connect(
+        SQL_REPORTING_HOST,
+        SQL_REPORTING_USER,
+        SQL_REPORTING_PASSWORD,
+        SQL_REPORTING_DATABASE
+    )
+
+
+def get_dwbriccs_db():
+    return pymssql.connect(
+        SQL_DWBRICCS_HOST,
+        SQL_DWBRICCS_USER,
+        SQL_DWBRICCS_PASSWORD,
+        SQL_DWBRICCS_DATABASE
+    )
 
 
 def send_markdown_email(
     report_name,
-    recipient,
+    recipients,
     mkdn,
-    attachments=[]
+    attachments=None
 ):
 
+    to_recipients = get_recipients(recipients)
     msg = MIMEMultipart()
     msg['Subject'] = report_name
-    msg['To'] = recipient
+    msg['To'] = ','.join(to_recipients)
     msg['From'] = EMAIL_FROM_ADDRESS
 
     html = markdown.markdown(mkdn)
     msg.attach(MIMEText(html, 'html'))
 
-    for a in attachments:
+    for a in attachments or []:
         part = MIMEImage(a['stream'].read())
 
         part.add_header('Content-Disposition',
@@ -66,7 +103,22 @@ def send_markdown_email(
     s.send_message(msg)
     s.quit()
 
-    logging.info(f"{report_name} Email Sent")
+    logging.info("{} Email Sent to {}".format(report_name, to_recipients))
+
+
+def get_recipients(recipients):
+    result = set()
+
+    list_of_recs = [os.getenv(r) for r in recipients]
+
+    for lr in list_of_recs:
+        if lr:
+            result |= set(lr.split(','))
+
+    if len(result) == 0:
+        result = set([DEFAULT_RECIPIENT])
+
+    return result
 
 
 def send_markdown_slack(report_name, mkdn):
@@ -74,7 +126,7 @@ def send_markdown_slack(report_name, mkdn):
     mkdn = mkdn.replace('**', '*')  # Headings
     mkdn = re.sub('\[(.*)]\((.*)\)', '<\g<2>|\g<1>>', mkdn)  # Links
 
-    r = requests.post(
+    requests.post(
         SLACK_DATA_CHANNEL_URL,
         json={
             'text': report_name,
@@ -87,11 +139,7 @@ def send_markdown_slack(report_name, mkdn):
         headers={'Content-Type': 'application/json'}
     )
 
-    logging.info(f"{report_name} Slack Sent")
-
-
-def get_recipient(recipient):
-    return os.getenv(recipient, DEFAULT_RECIPIENT)
+    logging.info("{} Slack Sent".format(report_name))
 
 
 def get_case_link(link_text, case_id, contact_id):
@@ -112,5 +160,15 @@ def get_contact_link(link_text, contact_id):
         '?cid={})')
 
     return (CIVICRM_CONTACT_URL.format(
+        link_text,
+        contact_id))
+
+
+def get_contact_id_search_link(link_text, contact_id):
+    CIVICRM_SEARCH_URL = (
+        '[{}]('
+        'http://lcbru.xuhl-tr.nhs.uk/content/participant_search/{})')
+
+    return (CIVICRM_SEARCH_URL.format(
         link_text,
         contact_id))

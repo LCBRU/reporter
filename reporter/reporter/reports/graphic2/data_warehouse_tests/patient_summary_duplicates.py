@@ -4,15 +4,15 @@ from reporter.reports import Report
 from reporter import RECIPIENT_IT_DWH
 
 
-class BioresourcePatientSummaryDuplicatesReport(Report):
+class Graphic2PatientSummaryDuplicatesReport(Report):
     def __init__(self):
         super().__init__(
             introduction=("The following participants are duplicated "
-                          "in the bioresource patient_summary view"),
+                          "in the patient_summary view"),
             recipients=[RECIPIENT_IT_DWH],
             sql='''
                 SELECT patient_num, COUNT(*) AS ct
-                FROM    i2b2_app03_bioresource_Data.dbo.PatientSummary
+                FROM    i2b2_app03_graphic2_Data.dbo.PatientSummary
                 GROUP BY patient_num
                 HAVING COUNT(*) > 1;
                 '''

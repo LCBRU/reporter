@@ -1,89 +1,79 @@
 #!/usr/bin/env python3
 
-import schedule
-import os
 import io
 import datetime
-import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from reporter import (get_report_db, send_markdown_email,
-                      send_markdown_slack, get_recipient)
+from reporter.reports import Report
+from reporter import RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_IT_DQ
 
 
-REPORT_NAME = 'Bioresource Cumulative Recruitment'
+class BioresourceCumulativeRecruitment(Report):
+    def __init__(self):
+        super().__init__(
+            recipients=[RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_IT_DQ],
+            sql='''
+            SELECT ConsentDate, ct
+            FROM CIVICRM_ScheduledReports_Bioresource_Recruitment
+            ORDER BY ConsentDate
+            ''')
 
+    def get_report(self):
 
-def bioresource_recruitment():
+        with self.conn as conn:
 
-    markdown = ''
+            df = pd.io.sql.read_sql(
+                self.sql,
+                conn,
+                index_col='ConsentDate')
 
-    with get_report_db() as conn:
+            fig, ax = plt.subplots()
 
-        # query db
-        sql = """
+            ax.set_title(self.name)
 
-        SELECT ConsentDate, ct
-        FROM CIVICRM_ScheduledReports_Bioresource_Recruitment
-        ORDER BY ConsentDate
+            ax.plot(df, label='Frequency')
 
-        """
+            df = df.cumsum()
 
-        df = pd.io.sql.read_sql(sql, conn, index_col='ConsentDate')
+            ax.plot(df, label='Cumulative')
 
-        fig, ax = plt.subplots()
+            datemin = datetime.date(df.index.year.min(), 1, 1)
+            datemax = datetime.date(df.index.year.max() + 1, 1, 1)
 
-        ax.set_title(REPORT_NAME)
+            ax.set_xlim(datemin, datemax)
+            ax.xaxis.set_major_locator(mdates.YearLocator())
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            ax.xaxis.set_minor_locator(mdates.MonthLocator())
+            ax.set_ylabel('No. of Recruits')
+            ax.set_xlabel('Consent Date')
+            ax.legend()
+            fig.autofmt_xdate()
 
-        ax.plot(df, label='Frequency')
+            ax.annotate(
+                'Total Recruitment*: {}'.format(df.ct[-1]),
+                xy=(df.index.max(), df.ct[-1]),
+                bbox=dict(boxstyle="square, pad=0.6", alpha=0.2),
+                xytext=(0.1, 0.7),
+                textcoords='axes fraction',
+            )
 
-        df = df.cumsum()
+            fig.text(
+                0.01,
+                0.01,
+                '* including \'recruited\' status only',
+                fontsize=10
+            )
 
-        ax.plot(df, label='Cumulative')
+            ax.grid(True, linestyle='dotted')
 
-        datemin = datetime.date(df.index.year.min(), 1, 1)
-        datemax = datetime.date(df.index.year.max() + 1, 1, 1)
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
 
-        ax.set_xlim(datemin, datemax)
-        ax.xaxis.set_major_locator(mdates.YearLocator())
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-        ax.xaxis.set_minor_locator(mdates.MonthLocator())
-        ax.set_ylabel('No. of Recruits')
-        ax.set_xlabel('Consent Date')
-        ax.legend()
-        fig.autofmt_xdate()
+            mkdn = "![{}](cid:recruitment.png)\r\n\r\n".format(
+                self.name)
 
-        ax.annotate(
-            'Total Recruitment*: {}'.format(df.ct[-1]),
-            xy=(df.index.max(), df.ct[-1]),
-            bbox=dict(boxstyle="square, pad=0.6", alpha=0.2),
-            xytext=(0.1, 0.7),
-            textcoords='axes fraction',
-        )
+            attachments = [{'filename': 'recruitment.png', 'stream': buf}]
 
-        fig.text(0.01, 0.01, '* including \'recruited\' status only', fontsize=10)
-
-        ax.grid(True, linestyle='dotted')
-
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-
-        mkdn = "![{}](cid:recruitment.png)\r\n\r\n".format(REPORT_NAME)
-
-        attachments = [{'filename': 'recruitment.png', 'stream': buf}]
-
-        send_markdown_email(
-            REPORT_NAME,
-            get_recipient("BIORESOURCE_RECRUITMENT_RECIPIENT"),
-            mkdn,
-            attachments
-        )
-
-
-# bioresource_recruitment()
-schedule.every().monday.at("08:00").do(bioresource_recruitment)
-
-
-logging.info(f"{REPORT_NAME} Loaded")
+            return mkdn, 1, attachments
