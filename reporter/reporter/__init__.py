@@ -7,6 +7,7 @@ import requests
 import os
 import logging
 import re
+from enum import Enum
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
@@ -57,22 +58,22 @@ logging.basicConfig(
 )
 
 
-def get_report_db():
-    return pymssql.connect(
-        SQL_REPORTING_HOST,
-        SQL_REPORTING_USER,
-        SQL_REPORTING_PASSWORD,
-        SQL_REPORTING_DATABASE
-    )
+class DatabaseConnection(Enum):
+    def reporting():
+        return pymssql.connect(
+            SQL_REPORTING_HOST,
+            SQL_REPORTING_USER,
+            SQL_REPORTING_PASSWORD,
+            SQL_REPORTING_DATABASE
+        )
 
-
-def get_dwbriccs_db():
-    return pymssql.connect(
-        SQL_DWBRICCS_HOST,
-        SQL_DWBRICCS_USER,
-        SQL_DWBRICCS_PASSWORD,
-        SQL_DWBRICCS_DATABASE
-    )
+    def dwbriccs():
+        return pymssql.connect(
+            SQL_DWBRICCS_HOST,
+            SQL_DWBRICCS_USER,
+            SQL_DWBRICCS_PASSWORD,
+            SQL_DWBRICCS_DATABASE
+        )
 
 
 def send_markdown_email(

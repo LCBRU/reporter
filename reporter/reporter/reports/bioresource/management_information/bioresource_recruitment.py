@@ -17,20 +17,21 @@ class BioresourceCumulativeRecruitment(Report):
             SELECT ConsentDate, ct
             FROM CIVICRM_ScheduledReports_Bioresource_Recruitment
             ORDER BY ConsentDate
-            ''')
+            ''',
+            send_slack=False)
 
     def get_report(self):
 
-        with self.conn as conn:
+        with self._conn() as conn:
 
             df = pd.io.sql.read_sql(
-                self.sql,
+                self._sql,
                 conn,
                 index_col='ConsentDate')
 
             fig, ax = plt.subplots()
 
-            ax.set_title(self.name)
+            ax.set_title(self._name)
 
             ax.plot(df, label='Frequency')
 
@@ -72,7 +73,7 @@ class BioresourceCumulativeRecruitment(Report):
             buf.seek(0)
 
             mkdn = "![{}](cid:recruitment.png)\r\n\r\n".format(
-                self.name)
+                self._name)
 
             attachments = [{'filename': 'recruitment.png', 'stream': buf}]
 

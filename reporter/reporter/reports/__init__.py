@@ -1,57 +1,72 @@
 import schedule
 import logging
+from enum import Enum
 from reporter import (send_markdown_email, send_markdown_slack,
-                      get_report_db, get_dwbriccs_db,
+                      DatabaseConnection,
                       get_contact_id_search_link)
+
+
+class Schedule(Enum):
+    def daily(func):
+        schedule.every().day.at("08:00").do(func)
+
+    def weekly(func):
+        schedule.every().monday.at("08:00").do(func)
 
 
 class Report:
     def __init__(self, sql, introduction=None, recipients=None,
-                 name=None, conn=None, parameters=None):
+                 name=None, conn=None, parameters=None, send_email=True,
+                 send_slack=True, schedule=None):
 
-        self.sql = sql
-        self.name = name or type(self).__name__
-        self.conn = conn or get_report_db()
-        self.recipients = recipients or ('DEFAULT_RECIPIENT')
-        self.introduction = introduction or ''
-        self.parameters = parameters or ()
+        self._sql = sql
+        self._name = name or type(self).__name__
+        self._conn = conn or DatabaseConnection.reporting
+        self._recipients = recipients or ('DEFAULT_RECIPIENT')
+        self._introduction = introduction or ''
+        self._parameters = parameters or ()
+        self._send_email = send_email
+        self._send_slack = send_slack
+        self._schedule = schedule or Schedule.weekly
 
     def schedule(self):
-        schedule.every().monday.at("08:00").do(self.run)
-        logging.info("{} scheduled".format(self.name))
+
+        self._schedule(self.run)
+        logging.info("{} scheduled".format(self._name))
 
     def run(self):
         report, rows, attachments = self.get_report()
 
-        logging.info("{} ran with {} rows".format(self.name, rows))
+        logging.info("{} ran with {} rows".format(self._name, rows))
 
         if (rows == 0):
             return
 
-        send_markdown_email(
-            self.name,
-            self.recipients,
-            report,
-            attachments)
+        if self._send_email:
+            send_markdown_email(
+                self._name,
+                self._recipients,
+                report,
+                attachments)
 
-        if attachments is None:
-            send_markdown_slack(self.name, report)
+        if self._send_slack:
+            send_markdown_slack(self._name, report)
 
     def get_report(self):
         attachments = None
 
-        with self.conn as conn:
+        with self._conn() as conn:
 
             with conn.cursor(as_dict=True) as cursor:
-                cursor.execute(self.sql, self.parameters)
+                cursor.execute(self._sql, self._parameters)
 
                 if cursor.rowcount == 0:
                     return None, 0, attachments
 
                 report, rows = self.get_report_lines(cursor)
 
-        markdown = "**{}**\r\n\r\n".format(self.name)
-        markdown += "_{}_:\r\n\r\n".format(self.introduction)
+        markdown = "**{}**\r\n\r\n".format(self._name)
+        markdown += "_{}_:\r\n\r\n".format(self._introduction)
         markdown += report
         markdown += "\r\n\r\n{} Record(s) Found".format(rows)
 
@@ -74,7 +89,7 @@ class PmiPatientMismatch(Report):
         super().__init__(
             introduction=('The following participant details do not match '
                           'the details in the UHL PMI'),
-            conn=get_dwbriccs_db(),
+            conn=DatabaseConnection.dwbriccs,
             recipients=recipients,
             sql='''
                 SELECT [StudyID]
@@ -91,7 +106,9 @@ class PmiPatientMismatch(Report):
                   FROM [DWBRICCS].[dbo].[LCBRU_Reports_PMI_Mismatch]
                   WHERE [ProjectId] = %s
                 ''',
-                parameters=(project)
+                parameters=(project),
+                send_slack=False,
+                schedule=Schedule.daily
         )
 
     def get_report_line(self, row):
