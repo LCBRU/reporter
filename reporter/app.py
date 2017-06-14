@@ -2,6 +2,7 @@
 
 import schedule
 import time
+import logging
 from reporter.reports import *
 
 
@@ -24,6 +25,9 @@ reports = get_concrete_reports()
 
 for r in reports:
     r.schedule()
+#    r.run()
+
+logging.info("---- All reports scheduled ----")
 
 while True:
     schedule.run_pending()

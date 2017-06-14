@@ -11,8 +11,17 @@ class BioresourceCivcrmBlankStudyId(Report):
                           "study ID in the CiviCRM Study Enrolment"),
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
-                SELECT civicrm_case_id, civicrm_contact_id
-                FROM CIVICRM_ScheduledReports_Bioresource_StudyIdBlank
+
+SELECT civicrm_case_id, civicrm_contact_id
+FROM i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource b
+WHERE blank_study_id = 1
+    AND (
+            b.is_recruited = 1
+            OR b.is_excluded = 1
+            OR b.is_withdrawn = 1
+            OR b.is_duplicate = 1
+        )
+
                 '''
         )
 

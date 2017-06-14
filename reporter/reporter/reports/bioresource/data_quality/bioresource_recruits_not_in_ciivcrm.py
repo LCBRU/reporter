@@ -12,9 +12,22 @@ class BioresourceNotInCivicrm(Report):
                           "a record in CiviCRM"),
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
-                SELECT  bioresource_id
-                FROM CIVICRM_ScheduledReports_Bioresource_RecruitsNotInCiviCrm
-                ORDER BY bioresource_id
+
+SELECT  CONVERT(VARCHAR(100), a.bioresource_or_legacy_id) as bioresource_id
+FROM i2b2_app03_bioresource_Data.dbo.Load_Fully_Consented a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource b
+    WHERE (
+            a.bioresource_or_legacy_id = b.bioresource_id
+            OR a.bioresource_or_legacy_id = b.legacy_bioresource_id
+        ) AND (
+            b.is_recruited = 1 OR
+            b.is_excluded = 1 OR
+            b.is_withdrawn = 1 OR
+            b.is_duplicate = 1)
+)
+
                 '''
         )
 

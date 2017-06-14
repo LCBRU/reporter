@@ -2,7 +2,7 @@
 
 import math
 from itertools import groupby
-from reporter.reports import Report
+from reporter.reports import Report, Schedule
 from reporter import (
     RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_BIORESOURCE_ADMIN,
     RECIPIENT_BRICCS_MANAGER, RECIPIENT_BRICCS_ADMIN,
@@ -14,7 +14,7 @@ from reporter import (
 
 
 class RedcapPercentageCompleteReport(Report):
-    def __init__(self, study_name, recipients):
+    def __init__(self, study_name, recipients, schedule=None):
         super().__init__(
             name="Redcap Percentage Complete Report ({})".format(study_name),
             introduction=("Percentage completeness of REDCap CRFs"
@@ -32,7 +32,8 @@ class RedcapPercentageCompleteReport(Report):
                 WHERE study = %s
                 ORDER BY project_name, form_name
                 ''',
-            parameters=(study_name)
+            parameters=(study_name),
+            schedule=schedule
         )
 
     def get_report_lines(self, cursor):
@@ -87,7 +88,8 @@ class DreamRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
     def __init__(self):
         super().__init__(
             'DREAM',
-            [RECIPIENT_DREAM_MANAGER, RECIPIENT_DREAM_ADMIN])
+            [RECIPIENT_DREAM_MANAGER, RECIPIENT_DREAM_ADMIN],
+            schedule=Schedule.never)
 
 
 class ScadRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):

@@ -1,5 +1,6 @@
 import schedule
 import logging
+from datetime import date
 from enum import Enum
 from reporter import (send_markdown_email, send_markdown_slack,
                       DatabaseConnection,
@@ -13,6 +14,9 @@ class Schedule(Enum):
     def weekly(func):
         schedule.every().monday.at("08:00").do(func)
 
+    def never(func):
+        pass
+
 
 class Report:
     def __init__(self, sql, introduction=None, recipients=None,
@@ -20,7 +24,8 @@ class Report:
                  send_slack=True, schedule=None):
 
         self._sql = sql
-        self._name = name or type(self).__name__
+        self._name = name or '{} ({:%d-%b-%Y})'.format(
+            type(self).__name__, date.today())
         self._conn = conn or DatabaseConnection.reporting
         self._recipients = recipients or ('DEFAULT_RECIPIENT')
         self._introduction = introduction or ''

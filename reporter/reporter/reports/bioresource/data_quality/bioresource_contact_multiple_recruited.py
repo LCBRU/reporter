@@ -11,13 +11,13 @@ class BioresourceContactMultipleRecruitments(Report):
                           "recruited enrolments"),
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
-            SELECT civicrm_contact_id
-            FROM i2b2_app03_bioresource_Data.dbo.LOAD_COMBINED_VALID_RECRUITED
-            GROUP BY civicrm_contact_id
+            SELECT CiviCrmId
+            FROM i2b2_app03_bioresource_Data.dbo.LOAD_ValidEnrollments
+            GROUP BY CiviCrmId
             HAVING COUNT(*) > 1
                 '''
         )
 
     def get_report_line(self, row):
         return '- {}\r\n\r\n'.format(
-            get_contact_link('Click to View', row["civicrm_contact_id"]))
+            get_contact_link('Click to View', row["CiviCrmId"]))

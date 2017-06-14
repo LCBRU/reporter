@@ -12,24 +12,24 @@ class BioresourceIdDuplicates(Report):
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
         SELECT
-            bioresource_id,
+            StudyNumber,
             legacy_bioresource_id,
-            civicrm_case_id,
-            civicrm_contact_id
-        FROM i2b2_app03_bioresource_Data.dbo.LOAD_COMBINED_VALID_RECRUITED
-        WHERE bioresource_id IN (
-            SELECT bioresource_id
-            FROM i2b2_app03_bioresource_Data.dbo.LOAD_COMBINED_VALID_RECRUITED
-            GROUP BY bioresource_id
+            CaseId,
+            CiviCrmId
+        FROM i2b2_app03_bioresource_Data.dbo.LOAD_ValidEnrollments
+        WHERE StudyNumber IN (
+            SELECT StudyNumber
+            FROM i2b2_app03_bioresource_Data.dbo.LOAD_ValidEnrollments
+            GROUP BY StudyNumber
             HAVING COUNT(*) > 1
         )
-        ORDER BY bioresource_id
+        ORDER BY StudyNumber
                 '''
         )
 
     def get_report_line(self, row):
         return '- {}\r\n\r\n'.format(
             get_case_link(
-                row['bioresource_id'],
-                row["civicrm_case_id"],
-                row["civicrm_contact_id"]))
+                row['StudyNumber'],
+                row["CaseId"],
+                row["CiviCrmId"]))

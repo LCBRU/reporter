@@ -12,10 +12,31 @@ class BioresourceNotInRedcap(Report):
                           "a record in REDCap"),
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
-                SELECT  bioresource_id,
-                        consent_date
-                FROM CIVICRM_ScheduledReports_Bioresource_RecruitsNotInRedcap
-                ORDER BY consent_date, bioresource_id
+
+SELECT  CONVERT(VARCHAR(100), bioresource_id) as bioresource_id, consent_date
+FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource a
+WHERE NOT EXISTS (
+        SELECT  1
+        FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_Bioresource
+        WHERE   bioresource_id = a.bioresource_id
+            OR bioresource_id = a.legacy_bioresource_id
+    ) AND NOT EXISTS (
+        SELECT 1
+        FROM i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_JointBriccs
+        WHERE bioresource_id = a.bioresource_id
+            OR bioresource_id = a.legacy_bioresource_id
+    ) AND NOT EXISTS (
+        SELECT  1
+        FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
+        WHERE   bioresource_id = a.bioresource_id
+    )
+    AND is_excluded = 0
+    AND is_failed_to_respond = 0
+    AND is_declined = 0
+    AND is_recruitment_pending = 0
+    AND is_duplicate = 0
+    AND blank_study_id = 0
+
                 '''
         )
 
