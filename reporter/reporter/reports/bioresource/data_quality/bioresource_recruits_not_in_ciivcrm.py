@@ -32,7 +32,8 @@ WHERE NOT EXISTS (
         )
 
     def get_report_line(self, row):
-        return '- {}\r\n'.format(
-            get_contact_id_search_link(
-                row['bioresource_id'], row['bioresource_id'])
-        )
+        return '- {}\r\n'.format(row['bioresource_id'])
+
+
+r = BioresourceNotInCivicrm()
+r.run()
