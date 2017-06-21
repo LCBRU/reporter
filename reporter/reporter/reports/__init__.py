@@ -143,5 +143,6 @@ class PmiPatientMismatch(Report):
 from reporter.reports.bioresource import *
 from reporter.reports.genvasc import *
 from reporter.reports.graphic2 import *
+from reporter.reports.omics import *
 from reporter.reports.redcap import *
 from reporter.reports.civicrm import *
