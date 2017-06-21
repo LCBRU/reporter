@@ -21,7 +21,3 @@ class OmicsPatientSummaryMissingParticiapnts(Report):
 
     def get_report_line(self, row):
         return '- {}\r\n'.format(row['patient_num'])
-
-
-r = OmicsPatientSummaryMissingParticiapnts()
-r. run()
