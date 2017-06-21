@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report
-from reporter import get_contact_id_search_link, RECIPIENT_BIORESOURCE_ADMIN
+from reporter import RECIPIENT_BIORESOURCE_ADMIN
 
 
 class BioresourceNotInCivicrm(Report):
@@ -33,7 +33,3 @@ WHERE NOT EXISTS (
 
     def get_report_line(self, row):
         return '- {}\r\n'.format(row['bioresource_id'])
-
-
-r = BioresourceNotInCivicrm()
-r.run()
