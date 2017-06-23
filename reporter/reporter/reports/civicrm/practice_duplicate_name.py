@@ -7,8 +7,8 @@ from reporter import get_contact_link, RECIPIENT_IT_DQ
 class CivicrmPracticeDuplicateName(Report):
     def __init__(self):
         super().__init__(
-            introduction=("The following GP Practices do not have "
-                          "a duplicate code in CiviCRM"),
+            introduction=("The following GP Practices have "
+                          "a duplicate name in CiviCRM"),
             recipients=[RECIPIENT_IT_DQ],
             sql='''
                 SELECT
@@ -26,6 +26,7 @@ class CivicrmPracticeDuplicateName(Report):
                 ) x
                 JOIN STG_CiviCRM.dbo.civicrm_contact con
                     ON con.organization_name = x.organization_name
+                    AND con.contact_sub_type LIKE '%GP_Surgery%'
                     AND con.is_deleted = 0
                 ;
                 ''',
