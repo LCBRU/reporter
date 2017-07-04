@@ -10,7 +10,7 @@ class BriccsCivcrmBlankStudyId(Report):
             introduction=("The following participants have a blank "
                           "study ID in the CiviCRM Study Enrolment"),
             recipients=[RECIPIENT_BRICCS_ADMIN],
-            schedule=Schedule.never,
+            schedule=Schedule.daily,
             sql='''
 
 SELECT civicrm_case_id, civicrm_contact_id
