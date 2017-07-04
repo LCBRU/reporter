@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import get_case_link, RECIPIENT_BRICCS_ADMIN
+from reporter import get_case_link, RECIPIENT_BRICCS_DQ
 
 
 class BriccsCivcrmBlankStudyId(Report):
@@ -9,7 +9,7 @@ class BriccsCivcrmBlankStudyId(Report):
         super().__init__(
             introduction=("The following participants have a blank "
                           "study ID in the CiviCRM Study Enrolment"),
-            recipients=[RECIPIENT_BRICCS_ADMIN],
+            recipients=[RECIPIENT_BRICCS_DQ],
             schedule=Schedule.daily,
             sql='''
 
