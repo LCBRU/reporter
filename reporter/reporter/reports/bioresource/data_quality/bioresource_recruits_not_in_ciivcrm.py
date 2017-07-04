@@ -13,7 +13,12 @@ class BioresourceNotInCivicrm(Report):
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
 
-SELECT  CONVERT(VARCHAR(100), a.bioresource_or_legacy_id) as bioresource_id
+SELECT  CONVERT(VARCHAR(100), a.bioresource_or_legacy_id) as bioresource_id,
+    CASE WHEN interval_consent = 1 THEN 'INTERVAL; ' ELSE '' END
+      + CASE WHEN redcap_consent = 1 THEN 'REDCap; ' ELSE '' END
+      + CASE WHEN joint_briccs_consent = 1 THEN 'Joint BRICCS; ' ELSE '' END
+    AS [context]
+
 FROM i2b2_app03_bioresource_Data.dbo.Load_Fully_Consented a
 WHERE NOT EXISTS (
     SELECT 1
@@ -32,4 +37,4 @@ WHERE NOT EXISTS (
         )
 
     def get_report_line(self, row):
-        return '- {}\r\n'.format(row['bioresource_id'])
+        return '- {} {}\r\n'.format(row['bioresource_id'], row['context'])

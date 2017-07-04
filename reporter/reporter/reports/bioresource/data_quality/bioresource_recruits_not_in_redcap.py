@@ -35,6 +35,7 @@ WHERE NOT EXISTS (
     AND is_declined = 0
     AND is_recruitment_pending = 0
     AND is_duplicate = 0
+    AND is_withdrawn = 0
     AND blank_study_id = 0
 
                 '''

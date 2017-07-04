@@ -5,19 +5,36 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from reporter.reports import Report
-from reporter import RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_IT_DQ
+from reporter.reports import Report, Schedule
+from reporter import (
+    RECIPIENT_BIORESOURCE_MANAGER,
+    RECIPIENT_BRICCS_MANAGER,
+    RECIPIENT_IT_DQ
+)
 
 
-class BioresourceCumulativeRecruitment(Report):
-    def __init__(self):
+class CumulativeRecruitment(Report):
+    def __init__(self, database, recipients, schedule=None):
         super().__init__(
-            recipients=[RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_IT_DQ],
+            recipients=recipients,
+            schedule=schedule,
             sql='''
-            SELECT ConsentDate, ct
-            FROM CIVICRM_ScheduledReports_Bioresource_Recruitment
-            ORDER BY ConsentDate
-            ''',
+
+SELECT
+    ConsentDate,
+    COUNT(*) AS ct
+FROM (
+    SELECT
+          DATEADD(
+            month,
+            DATEDIFF(month, 0, [ConsentDate]),
+            0) AS ConsentDate
+    FROM {}.[dbo].[PatientSummary]
+) x
+GROUP BY ConsentDate
+ORDER BY ConsentDate
+
+            '''.format(database),
             send_slack=False)
 
     def get_report(self):
@@ -78,3 +95,20 @@ class BioresourceCumulativeRecruitment(Report):
             attachments = [{'filename': 'recruitment.png', 'stream': buf}]
 
             return mkdn, 1, attachments
+
+
+class BioresourceCumulativeRecruitment(
+        CumulativeRecruitment):
+    def __init__(self):
+        super().__init__(
+            'i2b2_app03_bioresource_Data',
+            [RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_IT_DQ])
+
+
+class BriccsCumulativeRecruitment(
+        CumulativeRecruitment):
+    def __init__(self):
+        super().__init__(
+            'i2b2_app03_b1_Data',
+            [RECIPIENT_BRICCS_MANAGER, RECIPIENT_IT_DQ],
+            schedule=Schedule.never)

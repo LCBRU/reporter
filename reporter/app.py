@@ -25,7 +25,7 @@ reports = get_concrete_reports()
 
 for r in reports:
     r.schedule()
-#    r.run()
+    # r.run()
 
 logging.info("---- All reports scheduled ----")
 

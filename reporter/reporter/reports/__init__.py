@@ -1,5 +1,6 @@
 import schedule
 import logging
+import re
 from datetime import date
 from enum import Enum
 from reporter import (send_markdown_email, send_markdown_slack,
@@ -26,6 +27,10 @@ class Report:
         self._sql = sql
         self._name = name or '{} ({:%d-%b-%Y})'.format(
             type(self).__name__, date.today())
+
+        # Unpick CamelCase
+        self._name = re.sub('([a-z])([A-Z])', r'\1 \2', self._name)
+
         self._conn = conn or DatabaseConnection.reporting
         self._recipients = recipients or ('DEFAULT_RECIPIENT')
         self._introduction = introduction or ''
@@ -90,12 +95,13 @@ class Report:
 
 
 class PmiPatientMismatch(Report):
-    def __init__(self, project, recipients):
+    def __init__(self, project, recipients, schedule=None):
         super().__init__(
             introduction=('The following participant details do not match '
                           'the details in the UHL PMI'),
             conn=DatabaseConnection.dwbriccs,
             recipients=recipients,
+            schedule=schedule or Schedule.daily,
             sql='''
                 SELECT [StudyID]
                       ,[pmi_system_number]
@@ -112,8 +118,7 @@ class PmiPatientMismatch(Report):
                   WHERE [ProjectId] = %s
                 ''',
                 parameters=(project),
-                send_slack=False,
-                schedule=Schedule.daily
+                send_slack=False
         )
 
     def get_report_line(self, row):
@@ -124,23 +129,24 @@ class PmiPatientMismatch(Report):
 
         if row["nhs_number_mismatch"] == 1:
             errors.append(
-                'NHS Number mismatch (Study=\'{}\'; PMI=\'{}\''.format(
+                'NHS Number mismatch (Study=\'{}\'; PMI=\'{}\')'.format(
                     row['study_nhs_number'],
                     row['pmi_nhs_number']))
 
         if row["date_of_birth_mismatch"] == 1:
             errors.append(
-                'DOB mismatch (Study=\'{}\'; PMI=\'{}\''.format(
+                'DOB mismatch (Study=\'{}\'; PMI=\'{}\')'.format(
                     row['study_date_of_birth'],
                     row['pmi_date_of_birth']))
 
-        return '- {}): {}\n'.format(
+        return '- {}: {}\n'.format(
             get_contact_id_search_link(row["StudyID"], row["StudyID"]),
             '; '.join(errors)
         )
 
 
 from reporter.reports.bioresource import *
+from reporter.reports.briccs import *
 from reporter.reports.genvasc import *
 from reporter.reports.graphic2 import *
 from reporter.reports.omics import *

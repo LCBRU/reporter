@@ -7,8 +7,8 @@ from reporter import get_contact_id_search_link, RECIPIENT_BIORESOURCE_ADMIN
 class BioresourceWithoutFullConsent(Report):
     def __init__(self):
         super().__init__(
-            introduction=("The following participants are recruited, "
-                          "duplicates or withdrawn in CiviCRM, but a "
+            introduction=("The following participants are recruited or "
+                          "duplicates in CiviCRM, but a "
                           "record of full consent cannot be found"),
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
@@ -17,13 +17,15 @@ SELECT
     CONVERT(VARCHAR(100), b.bioresource_id) as bioresource_id,
     b.consent_date
 FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource b
-LEFT JOIN i2b2_app03_bioresource_Data.dbo.Load_Fully_Consented a
-    ON a.bioresource_or_legacy_id = b.bioresource_id
-    OR a.bioresource_or_legacy_id = b.legacy_bioresource_id
 WHERE
         b.blank_study_id = 0
     AND b.is_recruited = 1
-    AND a.bioresource_or_legacy_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM    i2b2_app03_bioresource_Data.dbo.Load_Fully_Consented
+        WHERE   bioresource_or_legacy_id = b.bioresource_id
+            OR bioresource_or_legacy_id = b.legacy_bioresource_id
+    )
 
                 '''
         )
