@@ -31,10 +31,6 @@ LEFT JOIN   STG_CiviCRM.dbo.civicrm_relationship recruiting_gp_rel
     AND COALESCE(recruiting_gp_rel.end_date, GETDATE()) > = GETDATE()
 WHERE cas.case_type_id = 3 -- GENVASC
     AND cas.is_deleted = 0
-    AND cas.status_id IN (
-        5, -- Recruited
-        6, -- Available for cohort
-        8) -- Withdrawn
 GROUP BY
     cas.id,
     cas_con.contact_id,
