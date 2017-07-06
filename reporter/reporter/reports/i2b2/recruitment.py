@@ -9,7 +9,8 @@ from reporter.reports import Report, Schedule
 from reporter import (
     RECIPIENT_BIORESOURCE_MANAGER,
     RECIPIENT_BRICCS_MANAGER,
-    RECIPIENT_IT_DQ
+    RECIPIENT_IT_DQ,
+    RECIPIENT_LAB_MANAGER
 )
 
 
@@ -102,7 +103,10 @@ class BioresourceCumulativeRecruitment(
     def __init__(self):
         super().__init__(
             'i2b2_app03_bioresource_Data',
-            [RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_IT_DQ])
+            [
+                RECIPIENT_BIORESOURCE_MANAGER,
+                RECIPIENT_IT_DQ,
+                RECIPIENT_LAB_MANAGER])
 
 
 class BriccsCumulativeRecruitment(
@@ -110,5 +114,8 @@ class BriccsCumulativeRecruitment(
     def __init__(self):
         super().__init__(
             'i2b2_app03_b1_Data',
-            [RECIPIENT_BRICCS_MANAGER, RECIPIENT_IT_DQ],
+            [
+                RECIPIENT_BRICCS_MANAGER,
+                RECIPIENT_IT_DQ,
+                RECIPIENT_LAB_MANAGER],
             schedule=Schedule.never)
