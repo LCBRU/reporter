@@ -69,7 +69,3 @@ WHERE
 
         return '- {} Consent Date: {}\r\n'.format(
             link, row['consent_date'] or '')
-
-
-r = BioresourceWithoutCheckStudyConsent()
-r. run()

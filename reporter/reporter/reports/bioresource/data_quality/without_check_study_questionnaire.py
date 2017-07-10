@@ -64,7 +64,3 @@ JOIN    STG_redcap.dbo.redcap_data rcq
 
         return '- {} Consent Date: {}\r\n'.format(
             link, row['consent_date'] or '')
-
-
-r = BioresourceWithoutCheckStudyQuestionnaire()
-r. run()
