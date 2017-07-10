@@ -4,3 +4,5 @@ markdown
 requests
 pandas
 matplotlib
+weasyprint
+Jinja2
