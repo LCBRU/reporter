@@ -5,7 +5,8 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && \
     apt-get -y upgrade && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install freetds-dev && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install \
+        freetds-dev && \
     apt-get clean
 
 COPY requirements.txt /usr/src/app/

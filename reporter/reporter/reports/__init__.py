@@ -1,10 +1,14 @@
 import schedule
 import logging
 import re
+import datetime
+import io
+import os
 from datetime import date
 from enum import Enum
-from reporter import (send_markdown_email, send_markdown_slack,
-                      DatabaseConnection,
+from weasyprint import HTML
+from jinja2 import Environment, FileSystemLoader
+from reporter import (send_markdown_email, DatabaseConnection,
                       get_contact_id_search_link)
 
 
@@ -22,7 +26,7 @@ class Schedule(Enum):
 class Report:
     def __init__(self, sql, introduction=None, recipients=None,
                  name=None, conn=None, parameters=None, send_email=True,
-                 send_slack=True, schedule=None):
+                 schedule=None):
 
         self._sql = sql
         self._name = name or '{} ({:%d-%b-%Y})'.format(
@@ -36,7 +40,6 @@ class Report:
         self._introduction = introduction or ''
         self._parameters = parameters or ()
         self._send_email = send_email
-        self._send_slack = send_slack
         self._schedule = schedule or Schedule.weekly
 
     def schedule(self):
@@ -58,9 +61,6 @@ class Report:
                 self._recipients,
                 report,
                 attachments)
-
-        if self._send_slack:
-            send_markdown_slack(self._name, report)
 
     def get_report(self):
         attachments = None
@@ -94,6 +94,45 @@ class Report:
         return '- {}\r\n'.format(row)
 
 
+class PdfReport(Report):
+    def __init__(self, template, **kwargs):
+
+        super().__init__(**kwargs)
+        self._template = template
+
+    def get_report(self):
+
+        env = Environment(loader=FileSystemLoader('./templates'))
+
+        template = env.get_template(self._template)
+
+        with self._conn() as conn:
+            with conn.cursor(as_dict=True) as cursor:
+                cursor.execute(self._sql, self._parameters)
+
+                template_vars = {
+                    "rows": cursor.fetchall(),
+                    "now": datetime.datetime.utcnow()
+                }
+
+                html = template.render(template_vars)
+
+                buf = io.BytesIO()
+                HTML(string=html, base_url='.').write_pdf(buf)
+                buf.seek(0)
+
+        mkdn = "{0}\r\n\r\n".format(
+            self._introduction)
+
+        attachments = [{
+            'filename': '{}.pdf'.format(self._name),
+            'inline': False,
+            'stream': buf
+        }]
+
+        return mkdn, 1, attachments
+
+
 class PmiPatientMismatch(Report):
     def __init__(self, project, recipients, schedule=None):
         super().__init__(
@@ -117,8 +156,7 @@ class PmiPatientMismatch(Report):
                   FROM [DWBRICCS].[dbo].[LCBRU_Reports_PMI_Mismatch]
                   WHERE [ProjectId] = %s
                 ''',
-                parameters=(project),
-                send_slack=False
+                parameters=(project)
         )
 
     def get_report_line(self, row):

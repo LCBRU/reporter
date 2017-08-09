@@ -3,13 +3,13 @@
 import pymssql
 import smtplib
 import markdown
-import requests
 import os
 import logging
-import re
 from enum import Enum
 from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
+from email.mime.base import MIMEBase
+from mimetypes import guess_type
+from email.encoders import encode_base64
 from email.mime.text import MIMEText
 import matplotlib
 matplotlib.use('Agg')
@@ -28,7 +28,6 @@ SQL_DWBRICCS_DATABASE = os.environ["SQL_DWBRICCS_DATABASE"]
 EMAIL_FROM_ADDRESS = os.environ["EMAIL_FROM_ADDRESS"]
 EMAIL_SMTP_SERVER = os.environ["EMAIL_SMTP_SERVER"]
 
-SLACK_DATA_CHANNEL_URL = os.environ["SLACK_DATA_CHANNEL_URL"]
 DEFAULT_RECIPIENT = os.environ["DEFAULT_RECIPIENT"]
 
 RECIPIENT_IT_DWH = 'RECIPIENT_IT_DWH'
@@ -95,11 +94,20 @@ def send_markdown_email(
     msg.attach(MIMEText(html, 'html'))
 
     for a in attachments or []:
-        part = MIMEImage(a['stream'].read())
+        mimetype, encoding = guess_type(a['filename'])
+        mimetype = mimetype.split('/', 1)
+        part = MIMEBase(mimetype[0], mimetype[1])
+        part.set_payload(a['stream'].read())
+        encode_base64(part)
 
-        part.add_header('Content-Disposition',
-                        'inline; filename="{}"'.format(a['filename']))
-        part.add_header('Content-ID', a['filename'])
+        if a['inline'] or False:
+            part.add_header('Content-Disposition',
+                            'inline; filename="{}"'.format(a['filename']))
+            part.add_header('Content-ID', a['filename'])
+        else:
+            part.add_header('Content-Disposition',
+                            'attachment; filename="{}"'.format(a['filename']))
+
         msg.attach(part)
 
     s = smtplib.SMTP(EMAIL_SMTP_SERVER)
@@ -122,27 +130,6 @@ def get_recipients(recipients):
         result = set([DEFAULT_RECIPIENT])
 
     return result
-
-
-def send_markdown_slack(report_name, mkdn):
-    # Convert to Slack markdown
-    mkdn = mkdn.replace('**', '*')  # Headings
-    mkdn = re.sub('\[(.*)]\((.*)\)', '<\g<2>|\g<1>>', mkdn)  # Links
-
-    requests.post(
-        SLACK_DATA_CHANNEL_URL,
-        json={
-            'text': report_name,
-            'mrkdwn': True,
-            'attachments': [{
-                'text': mkdn,
-                'mrkdwn_in': ['text']
-            }]
-        },
-        headers={'Content-Type': 'application/json'}
-    )
-
-    logging.info("{} Slack Sent".format(report_name))
 
 
 def get_case_link(link_text, case_id, contact_id):

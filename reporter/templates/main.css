@@ -1,0 +1,31 @@
+html {
+    font-family: sans-serif;
+}
+
+table
+{
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+}
+
+table, th, td
+{
+    border-collapse: collapse;
+    border: none;
+    padding: 5px;
+}
+
+th {
+    font-weight: bold;
+    border-bottom: 2px solid black;
+}
+
+tr {
+    border-bottom: 1px solid gray;
+}
+
+caption {
+    font-size: 2em;
+    font-weight: bold;
+}

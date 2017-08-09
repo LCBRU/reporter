@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Bioresource Consent Index</title>
+    <link href="templates/main.css" rel="stylesheet">
+    <style type="text/css">
+        @page {
+            size: A4 portrait;
+
+            @bottom-left {
+                content: "Created: {{now.strftime('%d %B %Y')}}";
+                font-size: 10px;
+            }
+        }
+
+        table {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+
+    {% for year, year_group in rows|groupby('check_questionnaire_date.year') %}
+        {% for month, month_group in year_group|groupby('check_questionnaire_date.month') %}
+            {% for month_name, list in month_group|groupby('month_name') %}
+                <table>
+                    <caption>Bioresource Questionnaire Index for {{ month_name }} {{ year }}</caption>
+                    <thead>
+                        <tr>
+                            <th>Study Number</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for c in list %}
+                            <tr>
+                                <td>{{c.StudyNumber}}</td>
+                                <td>{{c.display_name}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+
+</body>
+</html>

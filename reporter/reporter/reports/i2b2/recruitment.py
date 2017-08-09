@@ -35,8 +35,8 @@ FROM (
 GROUP BY ConsentDate
 ORDER BY ConsentDate
 
-            '''.format(database),
-            send_slack=False)
+            '''.format(database)
+        )
 
     def get_report(self):
 
@@ -93,7 +93,7 @@ ORDER BY ConsentDate
             mkdn = "![{}](cid:recruitment.png)\r\n\r\n".format(
                 self._name)
 
-            attachments = [{'filename': 'recruitment.png', 'stream': buf}]
+            attachments = [{'filename': 'recruitment.png', 'inline': True, 'stream': buf}]
 
             return mkdn, 1, attachments
 
