@@ -64,7 +64,3 @@ ORDER BY
 
                 '''
         )
-
-
-r = BioresourceConsentFormIndex()
-r.run()

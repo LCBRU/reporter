@@ -51,7 +51,3 @@ ORDER BY
 
                 '''
         )
-
-
-r2 = BioresourceQuestionnaireFormIndex()
-r2.run()
