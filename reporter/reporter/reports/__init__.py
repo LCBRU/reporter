@@ -191,3 +191,7 @@ from reporter.reports.omics import *
 from reporter.reports.redcap import *
 from reporter.reports.civicrm import *
 from reporter.reports.i2b2 import *
+from reporter.reports.lenten import *
+from reporter.reports.fast import *
+from reporter.reports.indapamide import *
+from reporter.reports.mari import *
