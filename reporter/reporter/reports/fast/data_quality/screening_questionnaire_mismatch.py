@@ -98,7 +98,3 @@ ORDER BY fast_id
         markdown += "\r\n\r\n".format()
 
         return markdown, cursor.rowcount + 1
-
-
-r = FastScreeningQuestionnaireMismatchReport()
-r.run()

@@ -45,7 +45,3 @@ WHERE NOT EXISTS (
         markdown += "\r\n\r\n".format()
 
         return markdown, cursor.rowcount + 1
-
-
-r = FastRecruitedNotConsentedReport()
-r.run()
