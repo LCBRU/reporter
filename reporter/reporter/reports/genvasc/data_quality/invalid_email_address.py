@@ -13,7 +13,7 @@ class GenvascInvalidEmailAddress(Report):
             schedule=Schedule.never,
             sql='''
 
-SELECT
+SELECT DISTINCT
     p.app_title AS project_name,
     pc.value AS practice_code,
     md.element_label AS field_name,
