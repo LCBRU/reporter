@@ -36,7 +36,3 @@ WHERE rd.project_id IN (29, 53)
             row['project_name'],
             row['practice_code']
         )
-
-
-r = GenvascInvalidPracticeCode()
-r.run()

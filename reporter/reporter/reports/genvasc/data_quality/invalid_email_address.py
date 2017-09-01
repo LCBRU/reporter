@@ -55,7 +55,3 @@ WHERE rd.project_id IN (29, 53)
             row['field_name'],
             row['email_address'],
         )
-
-
-r = GenvascInvalidEmailAddress()
-r.run()
