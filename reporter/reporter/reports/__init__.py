@@ -195,3 +195,4 @@ from reporter.reports.lenten import *
 from reporter.reports.fast import *
 from reporter.reports.indapamide import *
 from reporter.reports.mari import *
+from reporter.reports.tmao import *
