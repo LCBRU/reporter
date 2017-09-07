@@ -10,7 +10,7 @@ class GenvascInvalidPracticeCode(Report):
             introduction=("The following practice codes are invalid "
                           "in the GENVASC practice details REDCap:"),
             recipients=[RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never,
+            schedule=Schedule.daily,
             sql='''
 
 SELECT

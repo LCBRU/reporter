@@ -11,7 +11,7 @@ class GenvascDuplicatePracticeCode(Report):
                           "are duplicated in the GENVASC rollout "
                           "REDCap data"),
             recipients=[RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never,
+            schedule=Schedule.daily,
             sql='''
 
 SELECT practice_code

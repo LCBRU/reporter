@@ -9,7 +9,7 @@ class GenvascMissingGptNumber(Report):
         super().__init__(
             introduction=("The following recruitments "
                           "do not have a GPT number"),
-            schedule=Schedule.never,
+            schedule=Schedule.daily,
             recipients=[RECIPIENT_GENVASC_ADMIN],
             sql='''
 

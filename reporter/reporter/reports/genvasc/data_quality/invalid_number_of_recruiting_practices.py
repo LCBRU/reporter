@@ -11,7 +11,7 @@ class GenvascInvalidRecruitingPracticeCount(Report):
                           "do not have the appropriate number"
                           "of recruiting sites"),
             recipients=[RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never,
+            schedule=Schedule.daily,
             sql='''
 
 SELECT
