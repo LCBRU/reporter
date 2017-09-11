@@ -143,7 +143,7 @@ def get_recipients(recipients):
 def get_case_link(link_text, case_id, contact_id):
     CIVICRM_CASE_URL = ('[{}]('
                         'http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view/case'
-                        '?id={}&cid={})')
+                        '?id={}&cid={}&action=view)')
 
     return (CIVICRM_CASE_URL.format(
         link_text,

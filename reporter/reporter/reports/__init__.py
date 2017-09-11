@@ -3,7 +3,6 @@ import logging
 import re
 import datetime
 import io
-import os
 from datetime import date
 from enum import Enum
 from weasyprint import HTML
@@ -64,6 +63,9 @@ class Report:
 
     def get_report(self):
         attachments = None
+
+        # logging.info("Running SQL: {}".format(self._sql))
+        # logging.info("Parameters: {}".format(self._parameters))
 
         with self._conn() as conn:
 
