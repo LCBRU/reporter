@@ -189,7 +189,7 @@ WHERE SampleFetchedDate IS NULL
 
 
 class InvalidGender(Report):
-    def __init__(self, database, recipients, schedule):
+    def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "
                           "not have a valid gender"),
@@ -219,8 +219,7 @@ class AsProgressionPatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_ASProgression_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_ASProgression_Data')
 
 
 class AsProgressionPatientSummaryMissingData(
@@ -230,8 +229,7 @@ class AsProgressionPatientSummaryMissingData(
             'i2b2_app03_ASProgression_Data',
             ['CiviCrmId', 'NhsNumber', 'UhlSystemNumber',
              'StudyNumber', 'InterviewDate', 'Gender',
-             'DateOfBirth', 'HeightAtInterview', 'WeightAtInterview'],
-            schedule=Schedule.never
+             'DateOfBirth', 'HeightAtInterview', 'WeightAtInterview']
         )
 
 
@@ -239,8 +237,7 @@ class AsProgressionPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_ASProgression_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_ASProgression_Data')
 
 
 # Bioresource
@@ -275,8 +272,7 @@ class BriccsPatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_b1_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_b1_Data')
 
 
 class BriccsPatientSummaryMissingData(
@@ -284,10 +280,9 @@ class BriccsPatientSummaryMissingData(
     def __init__(self):
         super().__init__(
             'i2b2_app03_b1_Data',
-            ['CiviCrmId', 'NhsNumber', 'UhlSystemNumber',
+            ['NhsNumber', 'ConsentDate',
              'StudyNumber', 'InterviewDate', 'Gender', 'DateOfBirth',
-             'HeightAtInterview', 'WeightAtInterview'],
-            schedule=Schedule.never
+             'HeightAtInterview', 'WeightAtInterview']
         )
 
 
@@ -295,8 +290,7 @@ class BriccsPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_b1_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_b1_Data')
 
 
 # GENVASC
@@ -305,8 +299,7 @@ class GenvascPatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_genvasc_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_genvasc_Data')
 
 
 class GenvascPatientSummaryMissingData(
@@ -315,8 +308,8 @@ class GenvascPatientSummaryMissingData(
         super().__init__(
             'i2b2_app03_genvasc_Data',
             ['CiviCrmId', 'StudyNumber', 'RecruitmentDate', 'Gender',
-             'HeightAtRecruitment', 'WeightAtRecruitment', 'Ethnicity'],
-            schedule=Schedule.never
+             'HeightAtRecruitment', 'WeightAtRecruitment', 'Ethnicity',
+             'ConsentDate']
         )
 
 
@@ -324,8 +317,7 @@ class GenavscPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_genvasc_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_genvasc_Data')
 
 
 class GenvascMissingNhsNumber(
@@ -333,8 +325,7 @@ class GenvascMissingNhsNumber(
     def __init__(self):
         super().__init__(
             'i2b2_app03_genvasc_Data',
-            [RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_GENVASC_ADMIN])
 
 
 class GenvascMissingDateOfBirth(
@@ -342,8 +333,7 @@ class GenvascMissingDateOfBirth(
     def __init__(self):
         super().__init__(
             'i2b2_app03_genvasc_Data',
-            [RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_GENVASC_ADMIN])
 
 
 class GenvascMissingRecruitmentDate(
@@ -351,8 +341,7 @@ class GenvascMissingRecruitmentDate(
     def __init__(self):
         super().__init__(
             'i2b2_app03_genvasc_Data',
-            [RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_GENVASC_ADMIN])
 
 
 class GenvascMissingSampleFetchedDate(
@@ -360,8 +349,7 @@ class GenvascMissingSampleFetchedDate(
     def __init__(self):
         super().__init__(
             'i2b2_app03_genvasc_Data',
-            [RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_GENVASC_ADMIN])
 
 
 class GenvascInvalidGender(
@@ -369,8 +357,7 @@ class GenvascInvalidGender(
     def __init__(self):
         super().__init__(
             'i2b2_app03_genvasc_Data',
-            [RECIPIENT_GENVASC_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_GENVASC_ADMIN])
 
 
 # GRAPHIC 2
@@ -380,8 +367,7 @@ class Graphic2PatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_graphic2_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_graphic2_Data')
 
 
 class Graphic2PatientSummaryMissingData(
@@ -391,8 +377,7 @@ class Graphic2PatientSummaryMissingData(
             'i2b2_app03_graphic2_Data',
             ['CiviCrmId', 'NhsNumber', 'UhlSystemNumber',
              'StudyNumber', 'DateOfInterview', 'Gender', 'DateOfBirth',
-             'Height', 'Weight', 'Ethnicity'],
-            schedule=Schedule.never
+             'Height', 'Weight', 'Ethnicity']
         )
 
 
@@ -400,8 +385,7 @@ class Graphic2PatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_graphic2_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_graphic2_Data')
 
 
 # OMICS
@@ -411,8 +395,7 @@ class OmicsPatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_omics_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_omics_Data')
 
 
 class OmicsPatientSummaryMissingData(
@@ -423,8 +406,7 @@ class OmicsPatientSummaryMissingData(
             ['CiviCrmId', 'NhsNumber', 'UhlSystemNumber',
              'StudyNumber', 'RecruitmentDateToSourceStudy',
              'Gender', 'DateOfBirth',
-             'OmicsType', 'SourceStudy', 'Ethnicity'],
-            schedule=Schedule.never
+             'OmicsType', 'SourceStudy', 'Ethnicity']
         )
 
 
@@ -432,5 +414,4 @@ class OmicsPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
         super().__init__(
-            'i2b2_app03_omics_Data',
-            schedule=Schedule.never)
+            'i2b2_app03_omics_Data')

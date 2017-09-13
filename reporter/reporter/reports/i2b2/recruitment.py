@@ -9,6 +9,7 @@ from reporter.reports import Report, Schedule
 from reporter import (
     RECIPIENT_BIORESOURCE_MANAGER,
     RECIPIENT_BRICCS_MANAGER,
+    RECIPIENT_GENVASC_MANAGER,
     RECIPIENT_IT_DQ,
     RECIPIENT_LAB_MANAGER
 )
@@ -80,7 +81,7 @@ ORDER BY ConsentDate
             fig.text(
                 0.01,
                 0.01,
-                '* including \'recruited\' status only',
+                '* including recruited statuses only',
                 fontsize=10
             )
 
@@ -116,6 +117,14 @@ class BriccsCumulativeRecruitment(
             'i2b2_app03_b1_Data',
             [
                 RECIPIENT_BRICCS_MANAGER,
-                RECIPIENT_IT_DQ,
-                RECIPIENT_LAB_MANAGER],
-            schedule=Schedule.never)
+                RECIPIENT_IT_DQ])
+
+
+class GenvascCumulativeRecruitment(
+        CumulativeRecruitment):
+    def __init__(self):
+        super().__init__(
+            'i2b2_app03_genvasc_Data',
+            [
+                RECIPIENT_GENVASC_MANAGER,
+                RECIPIENT_IT_DQ])

@@ -4,6 +4,7 @@ from reporter.reports import Report, Schedule
 from reporter import (get_case_link,
                       RECIPIENT_BRICCS_MANAGER, RECIPIENT_BRICCS_ADMIN,
                       RECIPIENT_BRAVE_MANAGER, RECIPIENT_BRAVE_ADMIN,
+                      RECIPIENT_GENVASC_MANAGER, RECIPIENT_GENVASC_ADMIN,
                       RECIPIENT_SCAD_MANAGER, RECIPIENT_SCAD_ADMIN,
                       RECIPIENT_BIORESOURCE_MANAGER,
                       RECIPIENT_BIORESOURCE_ADMIN,
@@ -117,6 +118,19 @@ class BraveCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Withdrawn'
             ],
             [RECIPIENT_BRAVE_MANAGER, RECIPIENT_BRAVE_ADMIN])
+
+
+class GenvascCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
+    def __init__(self):
+        super().__init__(
+            'GENVASC',
+            [
+                'Available for cohort',
+                'Recruited',
+                'Excluded',
+                'Withdrawn'
+            ],
+            [RECIPIENT_GENVASC_MANAGER, RECIPIENT_GENVASC_ADMIN])
 
 
 class ScadCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
