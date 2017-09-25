@@ -48,6 +48,6 @@ WHERE cas.case_type_id = 18 -- FAST
     def get_report_line(self, row):
         return '- {}\r\n\r\n'.format(
             get_case_link(
-                row['fast_id'],
+                row['fast_id'] or 'Click Here',
                 row["civicrm_case_id"],
                 row["civicrm_contact_id"]))

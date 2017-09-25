@@ -41,7 +41,3 @@ WHERE cas.case_type_id = 3 -- GENVASC
                 'Click to View',
                 row["civicrm_case_id"],
                 row["civicrm_contact_id"]))
-
-
-r = GenvascMissingGptNumber()
-r.run()
