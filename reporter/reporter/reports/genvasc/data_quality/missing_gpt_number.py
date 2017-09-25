@@ -19,6 +19,9 @@ SELECT
 FROM    STG_CiviCRM.dbo.civicrm_case cas
 JOIN    STG_CiviCRM.dbo.civicrm_case_contact cas_con
     ON cas_con.case_id = cas.id
+JOIN    STG_CiviCRM.dbo.civicrm_contact con
+    ON con.id = cas_con.contact_id
+    AND con.is_deleted = 0
 LEFT JOIN    STG_CiviCRM.dbo.civicrm_value_genvasc_recruitment_data_5 gen
     ON gen.entity_id = cas.id
 WHERE cas.case_type_id = 3 -- GENVASC
@@ -38,3 +41,7 @@ WHERE cas.case_type_id = 3 -- GENVASC
                 'Click to View',
                 row["civicrm_case_id"],
                 row["civicrm_contact_id"]))
+
+
+r = GenvascMissingGptNumber()
+r.run()
