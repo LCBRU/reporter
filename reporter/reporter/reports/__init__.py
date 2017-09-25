@@ -28,8 +28,7 @@ class Report:
                  schedule=None):
 
         self._sql = sql
-        self._name = name or '{} ({:%d-%b-%Y})'.format(
-            type(self).__name__, date.today())
+        self._name = name or type(self).__name__
 
         # Unpick CamelCase
         self._name = re.sub('([a-z])([A-Z])', r'\1 \2', self._name)
@@ -77,7 +76,9 @@ class Report:
 
                 report, rows = self.get_report_lines(cursor)
 
-        markdown = "**{}**\r\n\r\n".format(self._name)
+        markdown = "**{} ({:%d-%b-%Y})**\r\n\r\n".format(
+            self._name,
+            date.today())
         markdown += "_{}_:\r\n\r\n".format(self._introduction)
         markdown += report
         markdown += "\r\n\r\n{} Record(s) Found".format(rows)
