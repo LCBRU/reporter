@@ -4,6 +4,7 @@ from reporter.reports import Report, Schedule
 from reporter import (get_case_link,
                       RECIPIENT_BRICCS_MANAGER, RECIPIENT_BRICCS_ADMIN,
                       RECIPIENT_BRAVE_MANAGER, RECIPIENT_BRAVE_ADMIN,
+                      RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN,
                       RECIPIENT_GENVASC_MANAGER, RECIPIENT_GENVASC_ADMIN,
                       RECIPIENT_SCAD_MANAGER, RECIPIENT_SCAD_ADMIN,
                       RECIPIENT_BIORESOURCE_MANAGER,
@@ -120,6 +121,18 @@ class BraveCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
             [RECIPIENT_BRAVE_MANAGER, RECIPIENT_BRAVE_ADMIN])
 
 
+class FastCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
+    def __init__(self):
+        super().__init__(
+            'FAST',
+            [
+                'Recruited',
+                'Excluded',
+                'Withdrawn'
+            ],
+            [RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN])
+
+
 class GenvascCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
     def __init__(self):
         super().__init__(
@@ -139,10 +152,6 @@ class ScadCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
             'SCAD',
             [
                 'Recruited',
-                'Completed',
-                'Declined',
-                'Failed to Respond',
-                'Recruitment Pending',
                 'Excluded',
                 'Duplicate',
                 'Withdrawn'
