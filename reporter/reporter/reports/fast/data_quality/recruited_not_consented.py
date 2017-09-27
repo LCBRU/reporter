@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN
+from reporter import (
+    get_redcap_link, RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN
+)
 
 
 class FastRecruitedNotConsentedReport(Report):
@@ -39,8 +41,8 @@ WHERE NOT EXISTS (
         markdown = ''
 
         for p in cursor:
-            markdown += "- **{}**\r\n".format(
-                p['fast_id'])
+            markdown += "- **{}**\r\n".format(get_redcap_link(
+                p['fast_id'], 43, p['fast_id']))
 
         markdown += "\r\n\r\n".format()
 

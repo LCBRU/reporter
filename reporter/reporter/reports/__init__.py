@@ -189,6 +189,7 @@ class PmiPatientMismatch(Report):
 from reporter.reports.bioresource import *
 from reporter.reports.briccs import *
 from reporter.reports.genvasc import *
+from reporter.reports.genvasc_practices import *
 from reporter.reports.graphic2 import *
 from reporter.reports.omics import *
 from reporter.reports.redcap import *
@@ -198,4 +199,5 @@ from reporter.reports.lenten import *
 from reporter.reports.fast import *
 from reporter.reports.indapamide import *
 from reporter.reports.mari import *
+from reporter.reports.scad import *
 from reporter.reports.tmao import *
