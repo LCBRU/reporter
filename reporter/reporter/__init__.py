@@ -67,6 +67,20 @@ logging.basicConfig(
 )
 
 
+class RedcapInstance(Enum):
+    def internal():
+        return {
+            'staging_database': 'STG_redcap',
+            'link_generator': get_redcap_link
+        }
+
+    def external():
+        return {
+            'staging_database': 'STG_redcap_briccsext',
+            'link_generator': get_redcap_external_link
+        }
+
+
 class DatabaseConnection(Enum):
     def reporting():
         return pymssql.connect(

@@ -2,7 +2,8 @@
 
 from reporter.reports import Report, Schedule
 from reporter import (
-    get_redcap_external_link, RECIPIENT_GENVASC_MANAGER, RECIPIENT_GENVASC_ADMIN
+    get_redcap_external_link,
+    RECIPIENT_GENVASC_MANAGER, RECIPIENT_GENVASC_ADMIN
 )
 
 
@@ -59,7 +60,3 @@ WHERE NOT EXISTS (
         markdown += "\r\n\r\n".format()
 
         return markdown, cursor.rowcount + 1
-
-
-r = GenvascPracticesMissingDataReport()
-r.run()

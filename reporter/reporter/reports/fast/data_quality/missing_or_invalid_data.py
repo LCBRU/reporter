@@ -53,19 +53,6 @@ WHERE NOT EXISTS (
 UNION
 SELECT
     r.fast_id,
-    'Missing NHS Number' AS [error_message]
-FROM recruited r
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM STG_redcap.dbo.redcap_data e
-    WHERE e.project_id = 48
-        AND e.record = r.record
-        AND e.field_name = 'nhs_no'
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-)
-UNION
-SELECT
-    r.fast_id,
     'Invalid NHS Number: ' + e.value AS [error_message]
 FROM recruited r
 JOIN STG_redcap.dbo.redcap_data e
@@ -113,7 +100,7 @@ JOIN STG_redcap.dbo.redcap_data e
 UNION
 SELECT
     r.fast_id,
-    'Missing Gender' AS [error_message]
+    'Gender not female' AS [error_message]
 FROM recruited r
 WHERE NOT EXISTS (
     SELECT 1
@@ -121,7 +108,7 @@ WHERE NOT EXISTS (
     WHERE e.project_id = 43
         AND e.record = r.record
         AND e.field_name = 'gender'
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+        AND RTRIM(LTRIM(COALESCE(e.value, ''))) = '0'
 )
 UNION
 SELECT
@@ -134,43 +121,6 @@ JOIN STG_redcap.dbo.redcap_data e
     AND e.field_name = 'email_add'
     AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
     AND i2b2ClinDataIntegration.dbo.isInvalidEmail(e.value) = 1
-UNION
-SELECT
-    r.fast_id,
-    'Missing Ethnicity' AS [error_message]
-FROM recruited r
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM STG_redcap.dbo.redcap_data e
-    WHERE e.project_id = 43
-        AND e.record = r.record
-        AND e.field_name = 'ethnicity'
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-)
-UNION
-SELECT
-    r.fast_id,
-    'Missing Date of Birth' AS [error_message]
-FROM recruited r
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM STG_redcap.dbo.redcap_data e
-    WHERE e.project_id = 43
-        AND e.record = r.record
-        AND e.field_name = 'dob'
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-)
-UNION
-SELECT
-    r.fast_id,
-    'Invalid Date of Birth: ' + e.value [error_message]
-FROM recruited r
-JOIN STG_redcap.dbo.redcap_data e
-    ON e.project_id = 48
-    AND e.record = r.record
-    AND e.field_name = 'dob'
-    AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-    AND ISDATE(e.value) = 0
 UNION
 SELECT
     r.fast_id,
@@ -248,19 +198,6 @@ WHERE NOT EXISTS (
 UNION
 SELECT
     r.fast_id,
-    'Missing Invitation Type' AS [error_message]
-FROM recruited r
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM STG_redcap.dbo.redcap_data e
-    WHERE e.project_id = 43
-        AND e.record = r.record
-        AND e.field_name = 'invitation_type'
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-)
-UNION
-SELECT
-    r.fast_id,
     'Patient attended flag not set' AS [error_message]
 FROM recruited r
 WHERE NOT EXISTS (
@@ -290,6 +227,32 @@ SELECT
     'Invalid Study Number' [error_message]
 FROM recruited r
 WHERE i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(r.fast_id) = 1
+UNION
+SELECT
+    r.fast_id,
+    'Missing Height' AS [error_message]
+FROM recruited r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM STG_redcap.dbo.redcap_data e
+    WHERE e.project_id = 43
+        AND e.record = r.record
+        AND e.field_name IN ('height_ft', 'height_inches', 'height_cms')
+        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+)
+UNION
+SELECT
+    r.fast_id,
+    'Missing Weight' AS [error_message]
+FROM recruited r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM STG_redcap.dbo.redcap_data e
+    WHERE e.project_id = 43
+        AND e.record = r.record
+        AND e.field_name IN ('weight_stones', 'weight_pounds', 'weight_kgs')
+        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+)
 
 ORDER BY fast_id
 

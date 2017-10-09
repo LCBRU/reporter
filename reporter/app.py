@@ -25,7 +25,8 @@ reports = get_concrete_reports()
 
 for r in reports:
     r.schedule()
-    # r.run()
+#    if type(r).__name__[:4] == 'Fast':
+#        r.run()
 
 logging.info("---- All reports scheduled ----")
 

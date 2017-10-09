@@ -36,8 +36,8 @@ WHERE NOT EXISTS (
 
     def get_report_line(self, row):
         consent_date = (
-            '; Consent Date: {:%d-%b-%Y}'.format(row['consent_date'])
-            if row['consent_date'] else '')
+            '; Consent Date: {}'.format(row['consent_date_value'])
+            if row['consent_date_value'] else '')
 
         consent_source = ''
 

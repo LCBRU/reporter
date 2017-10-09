@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import Report
 from reporter import (
     RECIPIENT_GENVASC_ADMIN, RECIPIENT_IT_DWH,
     get_contact_link, get_case_link)
@@ -291,6 +291,32 @@ class BriccsPatientSummaryMissingParticipants(
     def __init__(self):
         super().__init__(
             'i2b2_app03_b1_Data')
+
+
+# FAST
+
+class FastPatientSummaryDuplicatesReport(
+        PatientSummaryDuplicatesReport):
+    def __init__(self):
+        super().__init__(
+            'i2b2_app03_fast_Data')
+
+
+class FastPatientSummaryMissingData(
+        PatientSummaryMissingData):
+    def __init__(self):
+        super().__init__(
+            'i2b2_app03_fast_Data',
+            ['NhsNumber', 'StudyNumber', 'CiviCrmId', 'consent_date',
+             'gender']
+        )
+
+
+class FastPatientSummaryMissingParticipants(
+        PatientSummaryMissingParticipants):
+    def __init__(self):
+        super().__init__(
+            'i2b2_app03_fast_Data')
 
 
 # GENVASC

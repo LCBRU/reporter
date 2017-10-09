@@ -18,6 +18,9 @@ class Schedule(Enum):
     def weekly(func):
         schedule.every().monday.at("08:00").do(func)
 
+    def monthly(func):
+        schedule.every(4).weeks.do(func)
+
     def never(func):
         pass
 
