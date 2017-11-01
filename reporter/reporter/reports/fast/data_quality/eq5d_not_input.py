@@ -51,7 +51,3 @@ WHERE NOT EXISTS (
             get_redcap_link(
                 row['record'], row['project_id'], row['record'])
         )
-
-
-r = FastEq5dNotEntered()
-r.run()
