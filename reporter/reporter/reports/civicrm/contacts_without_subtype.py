@@ -17,7 +17,9 @@ SELECT
 FROM STG_CiviCRM.dbo.civicrm_contact
 WHERE LTRIM(RTRIM(ISNULL(contact_sub_type, ''))) = ''
     AND is_deleted = 0
-;
+    AND id NOT IN (
+        7981 -- LCBRU
+    );
                 ''',
                 schedule=Schedule.daily
         )
@@ -26,3 +28,7 @@ WHERE LTRIM(RTRIM(ISNULL(contact_sub_type, ''))) = ''
         return '- {}\r\n'.format(
             get_contact_link(row['contact_type'], row['contact_id'])
         )
+
+
+r = CivicrmContactsWithoutSubtypes()
+r.run()
