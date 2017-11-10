@@ -3,7 +3,9 @@
 from reporter.reports import Report
 from reporter import (
     RedcapInstance,
-    RECIPIENT_FAST_ADMIN
+    RECIPIENT_FAST_ADMIN,
+    RECIPIENT_LENTEN_ADMIN,
+    RECIPIENT_SCAD_ADMIN
 )
 
 # Abstract Reports
@@ -95,6 +97,136 @@ JOIN {0}.dbo.redcap_metadata md
 WHERE e.project_id = %s
     AND e.field_name IN ({1})
     AND i2b2ClinDataIntegration.dbo.isInvalidNhsNumber(e.value) = 1
+
+                '''.format(
+                redcap_instance()['staging_database'],
+                ', '.join(['\'{}\''.format(f) for f in fields])
+            ),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['element_label']
+        )
+
+
+class RedcapInvalidStudyNumber(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants an invalid study Number "
+                          "in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record,
+    md.element_label
+FROM {0}.dbo.redcap_data e
+JOIN {0}.dbo.redcap_metadata md
+    ON md.project_id = e.project_id
+    AND md.field_name = e.field_name
+WHERE e.project_id = %s
+    AND e.field_name IN ({1})
+    AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.value) = 1
+
+                '''.format(
+                redcap_instance()['staging_database'],
+                ', '.join(['\'{}\''.format(f) for f in fields])
+            ),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['element_label']
+        )
+
+
+class RedcapRecordInvalidStudyNumber(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants have an invalid "
+                          "study Number in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record
+FROM {0}.dbo.redcap_data e
+WHERE e.project_id = %s
+    AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.record) = 1
+GROUP BY
+    e.project_id,
+    e.record
+
+                '''.format(
+                redcap_instance()['staging_database']
+            ),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record'])
+        )
+
+
+class RedcapInvalidUhlSystemNumber(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants an invalid UHL S Number "
+                          "in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record,
+    md.element_label
+FROM {0}.dbo.redcap_data e
+JOIN {0}.dbo.redcap_metadata md
+    ON md.project_id = e.project_id
+    AND md.field_name = e.field_name
+WHERE e.project_id = %s
+    AND e.field_name IN ({1})
+    AND i2b2ClinDataIntegration.dbo.isInvalidUhlSystemNumber(e.value) = 1
 
                 '''.format(
                 redcap_instance()['staging_database'],
@@ -315,7 +447,7 @@ FROM {0}.dbo.redcap_data e
 JOIN {0}.dbo.redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-WHERE e.project_id = 48
+WHERE e.project_id = %s
     AND e.field_name IN ({1})
     AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
     AND ISDATE(e.value) = 0
@@ -328,7 +460,7 @@ FROM {0}.dbo.redcap_data e
 JOIN {0}.dbo.redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-WHERE  e.project_id = 48
+WHERE  e.project_id = %s
     AND e.field_name IN ({1})
     AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
     AND ISDATE(e.value) = 1
@@ -338,14 +470,14 @@ WHERE  e.project_id = 48
                 redcap_instance()['staging_database'],
                 ', '.join(['\'{}\''.format(f) for f in fields])
             ),
-            parameters=(project_id)
+            parameters=(project_id, project_id)
         )
 
     def get_report_line(self, row):
         return '- {}: {}\r\n'.format(
             self._redcap_instance()['link_generator'](
                 row['record'], row['project_id'], row['record']),
-            row['md.element_label']
+            row['element_label']
         )
 
 
@@ -633,6 +765,27 @@ class FastRedcapInvalidNhsNumber(
         )
 
 
+class FastRedcapInvalidStudyNumber(
+        RedcapInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            48,
+            ['fst_label', 'record_id'],
+            [RECIPIENT_FAST_ADMIN]
+        )
+
+
+class FastRedcapRecordInvalidStudyNumber(
+        RedcapRecordInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            48,
+            [RECIPIENT_FAST_ADMIN]
+        )
+
+
 class FastRedcapInvalidBloodPressure(
         RedcapInvalidBloodPressure):
     def __init__(self):
@@ -721,4 +874,342 @@ class FastRedcapInvalidDate(
             43,
             ['dob', 'date'],
             [RECIPIENT_FAST_ADMIN]
+        )
+
+
+# SCAD Clinical Visit
+
+
+class ScadClinicalRedcapMissingData(
+        RedcapMissingData):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            [
+                'scad_local_id',
+                'dob',
+                'gender',
+                'ethnicity',
+                'referral_site',
+                'int_date',
+                'rec_type',
+                'scadreg_id',
+                'consent_version',
+                'consent_date',
+                'part_height',
+                'part_weight',
+                'part_bmi',
+                'part_pulse1',
+                'part_bp1_sys',
+                'part_bp_dias',
+                'study_status'
+            ],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadRedcapRecordInvalidStudyNumber(
+        RedcapRecordInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadClinicalRedcapInvalidBloodPressure(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            'part_bp1_sys',
+            'part_bp_dias',
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadClinicalRedcapInvalidPulse(
+        RedcapInvalidPulse):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            ['part_pulse1'],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadClinicalRedcapInvalidHeightInCm(
+        RedcapInvalidHeightInCm):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            ['part_height'],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadClinicalRedcapInvalidWeightInKg(
+        RedcapInvalidWeightInKg):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            ['part_weight'],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadClinicalRedcapInvalidBmi(
+        RedcapInvalidBmi):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            ['part_bmi'],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadClinicalRedcapInvalidDate(
+        RedcapInvalidDate):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            28,
+            [
+                'int_date',
+                'first_scad_event_date',
+                'second_scad_event_date',
+                'third_scad_event_date',
+                'consent_date',
+                'prev_consent_date',
+                'prev_consent_date_v2',
+                'prev_consent_date_v3',
+                'prev_consent_date_v4',
+                'prev_consent_date_hv_v2',
+                'date_bx',
+                'wound_check_date',
+                'angio_date',
+                'mri_date',
+                'mra_date',
+                'card_ct_date',
+                'fmd_date',
+                'imt_date',
+                'sws_date',
+                'retinal_date',
+                'bloods_taken_date',
+                'second_bloods_taken_date',
+                'third_bloods_taken_date',
+                'fourth_bloods_taken_date'
+            ],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+# SCAD Registry & Screening Visit
+
+
+class ScadRegistryRedcapMissingData(
+        RedcapMissingData):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            31,
+            [
+                'reg_mode',
+                'scad_reg_date',
+                'scad_reg_typ',
+                'frst_nm',
+                'lst_nm',
+                'gender',
+                'dob',
+                'addrss_pstcd',
+                'consent_version',
+                'nhs_no'
+            ],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadRegistryInvalidNhsNumber(
+        RedcapInvalidNhsNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            31,
+            ['nhs_no'],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+class ScadRegistryInvalidUhlSystemNumber(
+        RedcapInvalidUhlSystemNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            31,
+            ['s_number'],
+            [RECIPIENT_SCAD_ADMIN]
+        )
+
+
+# LENTEN
+
+class LentenRedcapMissingData(
+        RedcapMissingData):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            [
+                'record_id',
+                's_number',
+                'v1_visit_date',
+                'age',
+                'ethnicity',
+                'gender'
+            ],
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidStudyNumber(
+        RedcapInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            ['record_id'],
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapRecordInvalidStudyNumber(
+        RedcapRecordInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidBloodPressureVisit1(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            'v1_bp1_sys',
+            'v1_bp_dias',
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidBloodPressureVisit2(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            'v2_bp1_sys',
+            'v2_bp_dias',
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidBloodPressureVisit3(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            'v3_bp1_sys',
+            'v3_bp_dias',
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidBloodPressureVisit4(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            'v4_bp1_sys',
+            'v4_bp_dias',
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidBloodPressureVisitUnscheduled(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            'bp1_sys_unsched',
+            'bp_dias_unsched',
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidPulse(
+        RedcapInvalidPulse):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            [
+                'pulse1_unsched',
+                'v4_pulse1',
+                'v3_pulse1',
+                'v2_pulse1',
+                'v1_pulse1'
+            ],
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidHeightInCm(
+        RedcapInvalidHeightInCm):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            ['v1_height'],
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidWeightInKg(
+        RedcapInvalidWeightInKg):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            [
+                'v1_weight',
+                'v2_weight',
+                'v3_weight',
+                'v4_weight',
+                'weight_unsched'
+            ],
+            [RECIPIENT_LENTEN_ADMIN]
+        )
+
+
+class LentenRedcapInvalidBmi(
+        RedcapInvalidBmi):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            56,
+            ['bmi'],
+            [RECIPIENT_LENTEN_ADMIN]
         )

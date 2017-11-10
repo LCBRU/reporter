@@ -224,12 +224,6 @@ WHERE NOT EXISTS (
 UNION
 SELECT
     r.fast_id,
-    'Invalid Study Number' [error_message]
-FROM recruited r
-WHERE i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(r.fast_id) = 1
-UNION
-SELECT
-    r.fast_id,
     'Missing Height' AS [error_message]
 FROM recruited r
 WHERE NOT EXISTS (
