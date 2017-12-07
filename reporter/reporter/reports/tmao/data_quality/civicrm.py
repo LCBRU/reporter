@@ -4,7 +4,8 @@ from reporter import RECIPIENT_TMAO_ADMIN
 from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,
-    MultipleRecruitementsReport
+    MultipleRecruitementsReport,
+    MissingUhlSystemNumberAndNhsNumberReport
 )
 
 
@@ -23,6 +24,14 @@ class TmaoCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
 
 
 class TmaoCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
+    def __init__(self):
+        super().__init__(
+            12,
+            recipients=[RECIPIENT_TMAO_ADMIN])
+
+
+class TmaoCiviCrmMissingUhlNumberAndNhsNumber(
+        MissingUhlSystemNumberAndNhsNumberReport):
     def __init__(self):
         super().__init__(
             12,

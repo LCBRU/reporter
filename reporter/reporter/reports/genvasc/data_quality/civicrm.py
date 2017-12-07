@@ -4,7 +4,8 @@ from reporter import RECIPIENT_GENVASC_ADMIN
 from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,
-    MultipleRecruitementsReport
+    MultipleRecruitementsReport,
+    MissingNhsNumberReport
 )
 
 
@@ -23,6 +24,13 @@ class GenvascCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
 
 
 class GenvascCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
+    def __init__(self):
+        super().__init__(
+            3,
+            recipients=[RECIPIENT_GENVASC_ADMIN])
+
+
+class GenvascCiviCrmMissingNhsNumber(MissingNhsNumberReport):
     def __init__(self):
         super().__init__(
             3,

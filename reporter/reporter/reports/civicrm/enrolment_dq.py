@@ -116,3 +116,72 @@ HAVING COUNT(*) > 1
             get_contact_link(
                 row['case_type_name'],
                 row['civicrm_contact_id']))
+
+
+class MissingNhsNumberReport(Report):
+    def __init__(self, case_type_id, recipients, schedule=None):
+        super().__init__(
+            introduction=("The following contacts do not have "
+                          "an NHS Number in CiviCRM"),
+            recipients=recipients,
+            schedule=schedule or Schedule.daily,
+            sql='''
+
+SELECT
+    COALESCE(cd.StudyNumber, cd.case_type_name) StudyNumber,
+    cd.civicrm_contact_id,
+    cd.case_type_name
+FROM STG_CiviCRM.dbo.LCBRU_CaseDetails cd
+WHERE cd.case_status_id IN (
+        5, --recruited
+        8,  -- withdrawn
+        6 -- Available for Cohort
+    )
+    AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(cd.StudyNumber) = 0
+    AND cd.case_type_id = %s
+    AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(NhsNumber) = 1
+
+                ''',
+            parameters=(case_type_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}\r\n'.format(
+            get_contact_link(
+                row['StudyNumber'],
+                row['civicrm_contact_id']))
+
+
+class MissingUhlSystemNumberAndNhsNumberReport(Report):
+    def __init__(self, case_type_id, recipients, schedule=None):
+        super().__init__(
+            introduction=("The following contacts do not have "
+                          "an UHL System Number or an NHS Number"
+                          "in CiviCRM"),
+            recipients=recipients,
+            schedule=schedule or Schedule.daily,
+            sql='''
+
+SELECT
+    COALESCE(cd.StudyNumber, cd.case_type_name) StudyNumber,
+    cd.civicrm_contact_id,
+    cd.case_type_name
+FROM STG_CiviCRM.dbo.LCBRU_CaseDetails cd
+WHERE cd.case_status_id IN (
+        5, --recruited
+        8,  -- withdrawn
+        6 -- Available for Cohort
+    )
+    AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(cd.StudyNumber) = 0
+    AND cd.case_type_id = %s
+    AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(UhlSystemNumber) = 1
+    AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(NhsNumber) = 1
+                ''',
+            parameters=(case_type_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}\r\n'.format(
+            get_contact_link(
+                row['StudyNumber'],
+                row['civicrm_contact_id']))
