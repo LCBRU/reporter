@@ -16,10 +16,15 @@ class GenvascDuplicatePracticeCode(Report):
 
 SELECT practice_code
 FROM    (
-    SELECT LEFT(value, CHARINDEX('(', value + '(') - 1) [practice_code]
+    SELECT DISTINCT
+        record,
+        LEFT(value, CHARINDEX('(', value + '(') - 1) [practice_code]
     FROM STG_redcap_briccsext.dbo.redcap_data
     WHERE   field_name = 'practice_code'
-        AND project_id IN (29, 53)
+        AND project_id IN (
+            29,
+            53
+        )
 ) x
 GROUP BY practice_code
 HAVING COUNT(*) > 1
