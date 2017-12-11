@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter import RECIPIENT_BRICCS_ADMIN
+from reporter import RECIPIENT_BRAVE_ADMIN
 from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,
@@ -9,33 +9,34 @@ from reporter.reports.civicrm.enrolment_dq import (
 )
 
 
-class BriccsCiviCrmDuplicateStudyIdReport(DuplicateStudyIdReport):
+class BraveCiviCrmMissingStudyNumber(MissingStudyNumber):
     def __init__(self):
         super().__init__(
-            6,
-            recipients=[RECIPIENT_BRICCS_ADMIN])
+            10,
+            recipients=[RECIPIENT_BRAVE_ADMIN])
 
 
-class BriccsCiviCrmMissingStudyNumber(MissingStudyNumber):
+class BraveCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
     def __init__(self):
         super().__init__(
-            6,
-            recipients=[RECIPIENT_BRICCS_ADMIN])
+            10,
+            recipients=[RECIPIENT_BRAVE_ADMIN])
 
 
-class BriccsCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
+class BraveCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
     def __init__(self):
         super().__init__(
-            6,
-            recipients=[RECIPIENT_BRICCS_ADMIN])
+            10,
+            recipients=[RECIPIENT_BRAVE_ADMIN])
 
 
-class BriccsCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
+class BraveCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
     def __init__(self):
         super().__init__(
-            6,
+            10,
             [
                 'Recruited',
+                'Completed',
                 'Declined',
                 'Failed to Respond',
                 'Recruitment Pending',
@@ -43,4 +44,4 @@ class BriccsCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Duplicate',
                 'Withdrawn'
             ],
-            [RECIPIENT_BRICCS_ADMIN])
+            [RECIPIENT_BRAVE_ADMIN])

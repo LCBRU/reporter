@@ -190,6 +190,7 @@ class PmiPatientMismatch(Report):
 
 
 from reporter.reports.bioresource import *
+from reporter.reports.brave import *
 from reporter.reports.briccs import *
 from reporter.reports.genvasc import *
 from reporter.reports.genvasc_practices import *

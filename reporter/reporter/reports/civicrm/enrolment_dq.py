@@ -185,3 +185,36 @@ WHERE cd.case_status_id IN (
             get_contact_link(
                 row['StudyNumber'],
                 row['civicrm_contact_id']))
+
+
+class CivicrmInvalidCaseStatus(Report):
+    def __init__(self, case_type_id, valid_statuses, recipients):
+        super().__init__(
+            introduction=("The following cases have "
+                          "invalid statuses:"),
+            recipients=recipients,
+            sql='''
+
+SELECT
+    COALESCE(cd.StudyNumber, cd.case_type_name) StudyNumber,
+    cd.civicrm_contact_id,
+    cd.case_type_name,
+    *
+FROM STG_CiviCRM.dbo.LCBRU_CaseDetails cd
+WHERE cd.case_type_id = %s
+    AND cd.case_status_name NOT IN ({})
+
+
+                '''.format(','.join(['%s'] * len(valid_statuses))),
+                parameters=tuple([case_type_id]) + tuple(valid_statuses),
+                schedule=Schedule.daily
+        )
+
+    def get_report_line(self, row):
+        return '- {}\r\n'.format(
+            get_case_link(
+                row['case_status_name'],
+                row['civicrm_case_id'],
+                row['civicrm_contact_id']
+            )
+        )

@@ -4,7 +4,8 @@ from reporter import RECIPIENT_FAST_ADMIN
 from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,
-    MultipleRecruitementsReport
+    MultipleRecruitementsReport,
+    CivicrmInvalidCaseStatus
 )
 
 
@@ -27,3 +28,15 @@ class FastCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
         super().__init__(
             18,
             recipients=[RECIPIENT_FAST_ADMIN])
+
+
+class FastCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
+    def __init__(self):
+        super().__init__(
+            18,
+            [
+                'Recruited',
+                'Excluded',
+                'Withdrawn'
+            ],
+            [RECIPIENT_FAST_ADMIN])

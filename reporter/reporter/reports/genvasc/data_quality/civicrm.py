@@ -5,7 +5,8 @@ from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,
     MultipleRecruitementsReport,
-    MissingNhsNumberReport
+    MissingNhsNumberReport,
+    CivicrmInvalidCaseStatus
 )
 
 
@@ -35,3 +36,16 @@ class GenvascCiviCrmMissingNhsNumber(MissingNhsNumberReport):
         super().__init__(
             3,
             recipients=[RECIPIENT_GENVASC_ADMIN])
+
+
+class GenvascCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
+    def __init__(self):
+        super().__init__(
+            3,
+            [
+                'Available for cohort',
+                'Recruited',
+                'Excluded',
+                'Withdrawn'
+            ],
+            [RECIPIENT_GENVASC_ADMIN])
