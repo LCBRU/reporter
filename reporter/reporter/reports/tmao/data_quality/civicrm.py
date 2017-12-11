@@ -53,7 +53,3 @@ class TmaoCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Withdrawn'
             ],
             [RECIPIENT_TMAO_ADMIN])
-
-
-r = TmaoCivicrmInvalidCaseStatus()
-r.run()

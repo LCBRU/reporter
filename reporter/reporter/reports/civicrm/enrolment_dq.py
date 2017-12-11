@@ -196,10 +196,9 @@ class CivicrmInvalidCaseStatus(Report):
             sql='''
 
 SELECT
-    COALESCE(cd.StudyNumber, cd.case_type_name) StudyNumber,
     cd.civicrm_contact_id,
-    cd.case_type_name,
-    *
+    cd.civicrm_case_id,
+    cd.case_status_name
 FROM STG_CiviCRM.dbo.LCBRU_CaseDetails cd
 WHERE cd.case_type_id = %s
     AND cd.case_status_name NOT IN ({})
