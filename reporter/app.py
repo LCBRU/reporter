@@ -3,6 +3,7 @@
 import schedule
 import time
 import logging
+import argparse
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -11,18 +12,36 @@ logging.basicConfig(
 
 from reporter.reports import get_concrete_reports
 
-logging.info("---- Finding Reports ----")
 
-reports = get_concrete_reports()
+def schedule_reports():
+    reports = get_concrete_reports()
 
-for r in reports:
-    r.schedule()
-#    if type(r).__name__[:4] == 'Fast':
-#        r.run()
+    for r in reports:
+        r.schedule()
 
+    logging.info("Reports scheduled")
 
-logging.info("---- All reports scheduled ----")
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+def run_reports(report_name):
+    reports = get_concrete_reports()
+
+    for r in reports:
+        if type(r).__name__[:len(report_name)].lower() == report_name.lower():
+            r.run()
+
+    logging.info("Reports run")
+
+parser = argparse.ArgumentParser(description='Run specific reports.')
+parser.add_argument('report_name', metavar='report_name', nargs='?',
+                   help='Report name or start of name')
+
+args = parser.parse_args()
+
+if (args.report_name is None):
+    schedule_reports()
+else:
+    run_reports(args.report_name)
+
