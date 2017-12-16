@@ -29,7 +29,7 @@ WITH recruited AS (
         md.field_name,
         'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
     FROM recruited r
-    JOIN STG_redcap.dbo.redcap_metadata md
+    JOIN {1}.dbo.redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
 )
@@ -96,7 +96,7 @@ WITH recruited AS (
         md.field_name,
         'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
     FROM recruited r
-    JOIN STG_redcap.dbo.redcap_metadata md
+    JOIN {1}.dbo.redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
 )
@@ -121,6 +121,70 @@ WHERE NOT EXISTS (
         AND e.value = %s
 )
 ORDER BY pe.record
+
+                '''.format(
+                ', '.join(['\'{}\''.format(f) for f in fields]),
+                redcap_instance()['staging_database']),
+            parameters=(project_id, indicator_field, indicator_value)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['error_message']
+        )
+
+
+class RedcapMissingAllWhen(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        indicator_field,
+        indicator_value,
+        recipients,
+        schedule=None
+    ):
+        self._redcap_instance = redcap_instance
+
+        super().__init__(
+            introduction=("The following participants have data "
+                          "missing from REDCap when {} = '{}'". format(
+                              indicator_field,
+                              indicator_value
+                          )),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+WITH recruited AS (
+    SELECT  DISTINCT record, project_id
+    FROM    {1}.dbo.redcap_data
+    WHERE project_id = %s
+)
+SELECT
+    r.project_id,
+    r.record
+FROM recruited r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM {1}.dbo.redcap_data e
+    WHERE e.project_id = r.project_id
+        AND e.record = r.record
+        AND e.field_name IN ({0})
+        AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(e.value) = 0
+) AND EXISTS (
+    SELECT 1
+    FROM {1}.dbo.redcap_data e
+    WHERE e.project_id = r.project_id
+        AND e.record = r.record
+        AND e.field_name = %s
+        AND e.value = %s
+)
+ORDER BY r.record
+
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields]),
@@ -334,7 +398,7 @@ WITH participants AS (
     SELECT DISTINCT
         project_id,
         record
-    FROM    STG_redcap.dbo.redcap_data
+    FROM    {0}.dbo.redcap_data
     WHERE project_id = %s
 ), blood_pressures AS (
     SELECT
@@ -847,7 +911,7 @@ WHERE a.project_id = %s
     AND a.value IN ({2})
     AND {5} (
         SELECT 1
-        FROM    STG_redcap.dbo.redcap_data b
+        FROM    {0}.dbo.redcap_data b
         WHERE b.project_id = a.project_id
             AND b.record = a.record
             AND b.field_name IN ({3})

@@ -1,127 +1,145 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import RECIPIENT_BRICCS_ADMIN
+from reporter.reports.redcap.data_quality import RedcapMissingAllWhen
 
 # Abstract Classes
 
 
-class BriccsRedcapBloodSamplesMissing(Report):
-    def __init__(self, database, schedule=None):
+class BriccsRedcapBloodSamplesMissing(
+        RedcapMissingAllWhen):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id
+    ):
         super().__init__(
-            introduction=("The following participants "
-                          "should have blood samples in REDCap, "
-                          "but do not"),
-            recipients=[RECIPIENT_BRICCS_ADMIN],
-            schedule=schedule or Schedule.weekly,
-
-            sql='''
-
-SELECT
-    bt.record [StudyNumber],
-    p.project_name
-FROM    {0}.dbo.redcap_data bt
-JOIN    {0}.dbo.redcap_projects p
-    ON p.project_id = bt.project_id
-LEFT JOIN   STG_redcap.dbo.redcap_data b1
-    ON b1.record = bt.record
-    AND b1.project_id = bt.project_id
-    AND b1.field_name = 'blood_tube1'
-    AND LEN(RTRIM(LTRIM(COALESCE(b1.value, '')))) > 0
-LEFT JOIN   {0}.dbo.redcap_data b2
-    ON b2.record = bt.record
-    AND b2.project_id = bt.project_id
-    AND b2.field_name = 'blood_tube2'
-    AND LEN(RTRIM(LTRIM(COALESCE(b2.value, '')))) > 0
-LEFT JOIN   {0}.dbo.redcap_data b3
-    ON b3.record = bt.record
-    AND b3.project_id = bt.project_id
-    AND b3.field_name = 'blood_tube3'
-    AND LEN(RTRIM(LTRIM(COALESCE(b3.value, '')))) > 0
-LEFT JOIN   {0}.dbo.redcap_data b4
-    ON b4.record = bt.record
-    AND b4.project_id = bt.project_id
-    AND b4.field_name = 'blood_tube4'
-    AND LEN(RTRIM(LTRIM(COALESCE(b4.value, '')))) > 0
-LEFT JOIN   {0}.dbo.redcap_data b5
-    ON b5.record = bt.record
-    AND b5.project_id = bt.project_id
-    AND b5.field_name = 'blood_tube5'
-    AND LEN(RTRIM(LTRIM(COALESCE(b5.value, '')))) > 0
-WHERE bt.project_id = 24
-    AND bt.field_name = 'blood_taken'
-    AND bt.value = 1
-    AND COALESCE(b1.value, b2.value, b3.value, b4.value, b5.value) IS NULL
-
-                '''.format(database)
+            redcap_instance,
+            project_id,
+            [
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            'blood_taken',
+            '1',
+            [RECIPIENT_BRICCS_ADMIN]
         )
 
-    def get_report_line(self, row):
-        return '- {} ({})\r\n'.format(
-            row['StudyNumber'],
-            row['project_name'])
 
-
-class BriccsRedcapUrineSamplesMissing(Report):
-    def __init__(self, database, schedule=None):
+class BriccsRedcapUrineSamplesMissing(
+        RedcapMissingAllWhen):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id
+    ):
         super().__init__(
-            introduction=("The following participants have "
-                          "should have urine samples in REDCap, "
-                          "but do not"),
-            recipients=[RECIPIENT_BRICCS_ADMIN],
-            schedule=schedule or Schedule.weekly,
-
-            sql='''
-
-SELECT
-    bt.record [StudyNumber],
-    p.project_name
-FROM    {0}.dbo.redcap_data bt
-JOIN    {0}.dbo.redcap_projects p
-    ON p.project_id = bt.project_id
-LEFT JOIN   {0}.dbo.redcap_data u
-    ON u.record = bt.record
-    AND u.project_id = bt.project_id
-    AND u.field_name = 'urine_sample'
-    AND LEN(RTRIM(LTRIM(COALESCE(u.value, '')))) > 0
-WHERE bt.project_id = 24
-    AND bt.field_name = 'taken_urine_sample'
-    AND bt.value = 1
-    AND u.value IS NULL
-
-                '''.format(database)
+            redcap_instance,
+            project_id,
+            [
+                'urine_sample',
+            ],
+            'taken_urine_sample',
+            '1',
+            [RECIPIENT_BRICCS_ADMIN]
         )
-
-    def get_report_line(self, row):
-        return '- {} ({})\r\n'.format(
-            row['StudyNumber'],
-            row['project_name'])
-
-# Glenfield
 
 
 class GlenfieldBriccsRedcapBloodSamplesMissing(
         BriccsRedcapBloodSamplesMissing):
     def __init__(self):
-        super().__init__('STG_redcap')
+        super().__init__(RedcapInstance.internal, 24)
 
 
 class GlenfieldBriccsRedcapUrineSamplesMissing(
         BriccsRedcapUrineSamplesMissing):
     def __init__(self):
-        super().__init__('STG_redcap')
+        super().__init__(RedcapInstance.internal, 24)
 
 
-# External
-
-
-class ExternalBriccsRedcapBloodSamplesMissing(
+class DoncasterBriccsRedcapBloodSamplesMissing(
         BriccsRedcapBloodSamplesMissing):
     def __init__(self):
-        super().__init__('STG_redcap_briccsext')
+        super().__init__(RedcapInstance.external, 13)
 
 
-class ExternalBriccsRedcapUrineSamplesMissing(
+class DoncasterBriccsRedcapUrineSamplesMissing(
         BriccsRedcapUrineSamplesMissing):
     def __init__(self):
-        super().__init__('STG_redcap_briccsext')
+        super().__init__(RedcapInstance.external, 13)
+
+
+class SheffieldBriccsRedcapBloodSamplesMissing(
+        BriccsRedcapBloodSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 14)
+
+
+class SheffieldBriccsRedcapUrineSamplesMissing(
+        BriccsRedcapUrineSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 14)
+
+
+class KetteringBriccsRedcapBloodSamplesMissing(
+        BriccsRedcapBloodSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 15)
+
+
+class KetteringBriccsRedcapUrineSamplesMissing(
+        BriccsRedcapUrineSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 15)
+
+
+class ChesterfieldBriccsRedcapBloodSamplesMissing(
+        BriccsRedcapBloodSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 16)
+
+
+class ChesterfieldBriccsRedcapUrineSamplesMissing(
+        BriccsRedcapUrineSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 16)
+
+
+class GranthamBriccsRedcapBloodSamplesMissing(
+        BriccsRedcapBloodSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 17)
+
+
+class GranthamBriccsRedcapUrineSamplesMissing(
+        BriccsRedcapUrineSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 17)
+
+
+class LincolnBriccsRedcapBloodSamplesMissing(
+        BriccsRedcapBloodSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 18)
+
+
+class LincolnBriccsRedcapUrineSamplesMissing(
+        BriccsRedcapUrineSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 18)
+
+
+class NorthamptonBriccsRedcapBloodSamplesMissing(
+        BriccsRedcapBloodSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 19)
+
+
+class NorthamptonBriccsRedcapUrineSamplesMissing(
+        BriccsRedcapUrineSamplesMissing):
+    def __init__(self):
+        super().__init__(RedcapInstance.external, 19)

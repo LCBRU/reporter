@@ -2,7 +2,7 @@
 
 from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import RECIPIENT_LENTEN_ADMIN
-from reporter.reports.redcap.missing_data import (
+from reporter.reports.redcap.data_quality import (
     RedcapMissingData,
     RedcapInvalidStudyNumber,
     RedcapRecordInvalidStudyNumber,
