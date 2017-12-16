@@ -19,7 +19,7 @@ def schedule_reports():
     for r in reports:
         r.schedule()
 
-    logging.info("Reports scheduled")
+    logging.info("---- All reports scheduled ----")
 
     while True:
         schedule.run_pending()
@@ -32,11 +32,11 @@ def run_reports(report_name):
         if type(r).__name__[:len(report_name)].lower() == report_name.lower():
             r.run()
 
-    logging.info("Reports run")
+    logging.info("---- All reports run ----")
 
 parser = argparse.ArgumentParser(description='Run specific reports.')
 parser.add_argument('report_name', metavar='report_name', nargs='?',
-                   help='Report name or start of name')
+                   help='Report name or start of the report name')
 
 args = parser.parse_args()
 
