@@ -7,8 +7,9 @@ from datetime import date
 from enum import Enum
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
-from reporter import (send_markdown_email, DatabaseConnection,
-                      get_contact_id_search_link)
+from reporter.reports.civicrm import get_contact_id_search_link
+from reporter.reports.emailing import send_markdown_email
+from reporter.reports.databases import DatabaseConnection
 
 
 class Schedule(Enum):
@@ -65,9 +66,6 @@ class Report:
 
     def get_report(self):
         attachments = None
-
-        # logging.info("Running SQL: {}".format(self._sql))
-        # logging.info("Parameters: {}".format(self._parameters))
 
         with self._conn() as conn:
 
@@ -189,6 +187,20 @@ class PmiPatientMismatch(Report):
         )
 
 
+def get_concrete_reports(cls=None):
+
+    if (cls is None):
+        cls = Report
+
+    result = [sub() for sub in cls.__subclasses__()
+              if len(sub.__subclasses__()) == 0]
+
+    for sub in [sub for sub in cls.__subclasses__()
+                if len(sub.__subclasses__()) != 0]:
+        result += get_concrete_reports(sub)
+
+    return result
+
 from reporter.reports.bioresource import *
 from reporter.reports.brave import *
 from reporter.reports.briccs import *
@@ -205,3 +217,4 @@ from reporter.reports.indapamide import *
 from reporter.reports.mari import *
 from reporter.reports.scad import *
 from reporter.reports.tmao import *
+from reporter.reports.predict import *

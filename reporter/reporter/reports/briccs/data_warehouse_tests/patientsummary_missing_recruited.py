@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import get_case_link, RECIPIENT_IT_DWH
+from reporter.reports.emailing import RECIPIENT_IT_DWH
+from reporter.reports.civicrm import get_case_link
 
 
 class BriccsPatientSummaryMissingRecruited(Report):

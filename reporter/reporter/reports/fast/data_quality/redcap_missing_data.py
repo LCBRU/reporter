@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report
-from reporter import (
-    RedcapInstance,
-    RECIPIENT_FAST_ADMIN
-)
+from reporter.reports.databases import RedcapInstance
+from reporter.reports.emailing import RECIPIENT_FAST_ADMIN
 from reporter.reports.redcap.missing_data import (
     RedcapInvalidStudyNumber,
     RedcapInvalidDate,

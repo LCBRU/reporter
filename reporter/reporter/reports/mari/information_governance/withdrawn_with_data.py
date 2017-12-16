@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import RECIPIENT_MARI_MANAGER, RECIPIENT_MARI_ADMIN
+from reporter.reports.emailing import (
+    RECIPIENT_MARI_MANAGER,
+    RECIPIENT_MARI_ADMIN
+)
 
 
 class MariWithdrawnWithDataReport(Report):

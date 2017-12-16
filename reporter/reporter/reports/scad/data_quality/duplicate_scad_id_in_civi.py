@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report
-from reporter import (
-    get_contact_id_search_link, RECIPIENT_SCAD_ADMIN
-)
+from reporter.reports.emailing import RECIPIENT_SCAD_ADMIN
+from reporter.reports.civicrm import get_contact_id_search_link
 
 
 class DuplicateScadIdInCivi(Report):

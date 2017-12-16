@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report
-from reporter import (
-    RECIPIENT_GENVASC_ADMIN, RECIPIENT_IT_DWH,
-    get_contact_link, get_case_link)
+from reporter.reports.emailing import (
+    RECIPIENT_GENVASC_ADMIN,
+    RECIPIENT_IT_DWH
+)
+from reporter.reports.civicrm import get_case_link, get_contact_link
 
 # Abstract Reports
 

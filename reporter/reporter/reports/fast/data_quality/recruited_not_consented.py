@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import (
-    get_redcap_link, RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN
+from reporter.reports.emailing import (
+    RECIPIENT_FAST_MANAGER,
+    RECIPIENT_FAST_ADMIN,
 )
+from reporter.reports.redcap import get_redcap_link
 
 
 class FastRecruitedNotConsentedReport(Report):

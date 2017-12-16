@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-from reporter import (
-    RedcapInstance,
-    RECIPIENT_TMAO_ADMIN
-)
+from reporter.reports.databases import RedcapInstance
+from reporter.reports.emailing import RECIPIENT_TMAO_ADMIN
 from reporter.reports.redcap.missing_data import (
     RedcapMissingData,
     RedcapMissingDataWhen,

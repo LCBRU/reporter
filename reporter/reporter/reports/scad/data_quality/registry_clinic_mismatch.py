@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import RECIPIENT_SCAD_ADMIN, get_redcap_link
+from reporter.reports.emailing import RECIPIENT_SCAD_ADMIN
+from reporter.reports.redcap import get_redcap_link
 
 
 class ScadRegistryClinicMismatchReport(Report):

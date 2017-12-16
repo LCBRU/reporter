@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report
-from reporter import (
-    get_redcap_link, RECIPIENT_SCAD_ADMIN
-)
+from reporter.reports.redcap import get_redcap_link
+from reporter.reports.emailing import RECIPIENT_SCAD_ADMIN
 
 
 class ClinicalVisitWithoutRegId(Report):

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import RECIPIENT_INDAPAMIDE_MANAGER, RECIPIENT_INDAPAMIDE_ADMIN
+from reporter.reports.emailing import (
+    RECIPIENT_INDAPAMIDE_MANAGER,
+    RECIPIENT_INDAPAMIDE_ADMIN,
+)
 
 
 class IndapamideWithdrawnWithDataReport(Report):

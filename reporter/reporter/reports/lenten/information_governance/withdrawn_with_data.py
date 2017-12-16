@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import RECIPIENT_LENTEN_MANAGER, RECIPIENT_LENTEN_ADMIN
+from reporter.reports.emailing import (
+    RECIPIENT_LENTEN_MANAGER,
+    RECIPIENT_LENTEN_ADMIN
+)
 
 
 class LentenWithdrawnWithDataReport(Report):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report
-from reporter import (RECIPIENT_IT_DQ)
+from reporter.reports.emailing import (RECIPIENT_IT_DQ)
 
 
 class DemographicsXrefMismatch(Report):

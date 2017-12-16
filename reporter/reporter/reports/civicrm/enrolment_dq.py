@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import (
-    get_contact_id_search_link,
+from reporter.reports.civicrm import (
     get_case_link,
+    get_contact_id_search_link,
     get_contact_link
 )
 

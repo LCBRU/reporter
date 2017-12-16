@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from reporter.reports import Report, Schedule
-from reporter import (
+from reporter.reports.emailing import (
     RECIPIENT_BIORESOURCE_MANAGER,
     RECIPIENT_BRICCS_MANAGER,
     RECIPIENT_GENVASC_MANAGER,

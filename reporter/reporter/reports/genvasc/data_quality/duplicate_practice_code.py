@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import RECIPIENT_GENVASC_ADMIN
+from reporter.reports.emailing import RECIPIENT_GENVASC_ADMIN
 
 
 class GenvascDuplicatePracticeCode(Report):

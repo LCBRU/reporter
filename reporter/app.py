@@ -3,23 +3,15 @@
 import schedule
 import time
 import logging
-from reporter.reports import *
 
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 
-def get_concrete_reports(cls=None):
+from reporter.reports import get_concrete_reports
 
-    if (cls is None):
-        cls = Report
-
-    result = [sub() for sub in cls.__subclasses__()
-              if len(sub.__subclasses__()) == 0]
-
-    for sub in [sub for sub in cls.__subclasses__()
-                if len(sub.__subclasses__()) != 0]:
-        result += get_concrete_reports(sub)
-
-    return result
-
+logging.info("---- Finding Reports ----")
 
 reports = get_concrete_reports()
 
@@ -27,6 +19,7 @@ for r in reports:
     r.schedule()
 #    if type(r).__name__[:4] == 'Fast':
 #        r.run()
+
 
 logging.info("---- All reports scheduled ----")
 

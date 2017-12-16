@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter import RECIPIENT_BIORESOURCE_ADMIN
+from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN
 from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,

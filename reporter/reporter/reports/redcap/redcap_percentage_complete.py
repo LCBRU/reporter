@@ -3,7 +3,7 @@
 import math
 from itertools import groupby
 from reporter.reports import Report, Schedule
-from reporter import (
+from reporter.reports.emailing import (
     RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_BIORESOURCE_ADMIN,
     RECIPIENT_BRICCS_MANAGER, RECIPIENT_BRICCS_ADMIN,
     RECIPIENT_AS_MANAGER, RECIPIENT_AS_ADMIN,

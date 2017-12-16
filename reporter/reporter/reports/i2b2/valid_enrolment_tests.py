@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 from reporter.reports import Report, Schedule
-from reporter import (
-    get_case_link, get_contact_link,
-    RECIPIENT_BIORESOURCE_ADMIN, RECIPIENT_BRICCS_ADMIN)
+from reporter.reports.emailing import (
+    RECIPIENT_BIORESOURCE_ADMIN,
+    RECIPIENT_BRICCS_ADMIN
+)
+from reporter.reports.civicrm import get_case_link, get_contact_link
 
 
 class StudyIdDuplicates(Report):
