@@ -13,10 +13,46 @@ class BioresourceConsentedNotRecruited(Report):
                           "of recruited in CiviCRM"),
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
-                SELECT bioresource_id,
-                       consent_date
-                FROM CIVICRM_ScheduledReports_Bioresource_NotRecruited
-                ORDER BY consent_date, bioresource_id
+
+SELECT  CONVERT(VARCHAR(100), a.bioresource_id) as bioresource_id
+    , a.consent_date
+FROM    (
+    SELECT  bioresource_id, consent_date
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
+    WHERE   full_consent = 1
+    UNION
+    SELECT  bioresource_id, consent_date
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
+    WHERE   full_consent = 1
+    UNION
+    SELECT  bioresource_id, NULL AS consent_date
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_Bioresource
+    WHERE   full_consent = 1
+    UNION
+    SELECT  bioresource_id, NULL AS consent_date
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_JointBriccs
+    WHERE   full_consent = 1
+) a
+WHERE   a.bioresource_id NOT IN (
+    SELECT  bioresource_id
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
+    WHERE   (is_recruited = 1 OR is_excluded = 1 OR is_failed_to_respond = 1 OR is_declined = 1 OR is_duplicate = 1)
+    UNION
+    SELECT  bioresource_id
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
+    WHERE   (is_recruited = 1 OR is_excluded = 1 OR is_failed_to_respond = 1 OR is_declined = 1 OR is_duplicate = 1)
+    UNION
+    SELECT  legacy_bioresource_id
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
+    WHERE   (is_recruited = 1 OR is_excluded = 1 OR is_failed_to_respond = 1 OR is_declined = 1 OR is_duplicate = 1)
+        AND LEN(RTRIM(LTRIM(ISNULL(legacy_bioresource_id, '')))) > 0
+    UNION
+    SELECT  legacy_bioresource_id
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
+    WHERE   (is_recruited = 1 OR is_excluded = 1 OR is_failed_to_respond = 1 OR is_declined = 1 OR is_duplicate = 1)
+        AND LEN(RTRIM(LTRIM(ISNULL(legacy_bioresource_id, '')))) > 0
+)
+
                 '''
         )
 

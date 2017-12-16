@@ -9,7 +9,7 @@ from reporter.reports.emailing import RECIPIENT_BRICCS_ADMIN
 class BriccsRedcapBloodSamplesMissing(Report):
     def __init__(self, database, schedule=None):
         super().__init__(
-            introduction=("The following participants have "
+            introduction=("The following participants "
                           "should have blood samples in REDCap, "
                           "but do not"),
             recipients=[RECIPIENT_BRICCS_ADMIN],
