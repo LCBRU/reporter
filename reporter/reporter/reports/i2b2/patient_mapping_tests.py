@@ -10,7 +10,7 @@ class PatientMappingDuplicatesReport(Report):
         super().__init__(
             introduction='''
                 Duplicates found in {} patient_mapping:'''.format(database),
-            recipients=RECIPIENT_IT_DWH,
+            recipients=[RECIPIENT_IT_DWH],
             schedule=schedule,
             sql='''
                 SELECT PATIENT_IDE, PATIENT_IDE_SOURCE, COUNT(*) AS ct
@@ -90,10 +90,10 @@ class BioresourcePatientMappingMultiplesIdsReport(
 class BriccsPatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
-        super().__init__('i2b2_app03_b1_Data', Schedule.never)
+        super().__init__('i2b2_app03_b1_Data')
 
 
 class BriccsPatientMappingMultiplesIdsReport(
         PatientMappingMultiplesIdsReport):
     def __init__(self):
-        super().__init__('i2b2_app03_b1_Data', Schedule.never)
+        super().__init__('i2b2_app03_b1_Data')

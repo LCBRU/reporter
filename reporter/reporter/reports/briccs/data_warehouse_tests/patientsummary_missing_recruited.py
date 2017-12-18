@@ -11,7 +11,6 @@ class BriccsPatientSummaryMissingRecruited(Report):
             introduction=("The following participants have an error "
                           "so they have not reached i2b2"),
             recipients=[RECIPIENT_IT_DWH],
-            schedule=Schedule.never,
             sql='''
 
 SELECT  civicrm_case_id, civicrm_contact_id

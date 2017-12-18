@@ -11,7 +11,6 @@ class BriccsRecruitedWithoutFullConsent(Report):
                           "or duplicates in CiviCRM, but a "
                           "record of full consent cannot be found"),
             recipients=[RECIPIENT_BRICCS_ADMIN],
-            schedule=Schedule.never,
             sql='''
 
 SELECT

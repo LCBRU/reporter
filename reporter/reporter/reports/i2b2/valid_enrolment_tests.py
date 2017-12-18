@@ -84,8 +84,7 @@ class BriccsStudyIdDuplicates(
     def __init__(self):
         super().__init__(
             'i2b2_app03_b1_Data',
-            [RECIPIENT_BRICCS_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_BRICCS_ADMIN])
 
 
 class BriccsContactMultipleRecruitments(
@@ -93,5 +92,4 @@ class BriccsContactMultipleRecruitments(
     def __init__(self):
         super().__init__(
             'i2b2_app03_b1_Data',
-            [RECIPIENT_BRICCS_ADMIN],
-            schedule=Schedule.never)
+            [RECIPIENT_BRICCS_ADMIN])

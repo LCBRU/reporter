@@ -12,7 +12,6 @@ class BriccsRecruitsNotInRedcapOrOnyx(Report):
                           "a record in CiviCRM, but do not have "
                           "a record in REDCap or Onyx"),
             recipients=[RECIPIENT_BRICCS_ADMIN],
-            schedule=Schedule.never,
             sql='''
 
 SELECT  studynumber, consent_date
@@ -23,7 +22,7 @@ WHERE NOT EXISTS (
         WHERE   StudyNumber = a.StudyNumber
     ) AND NOT EXISTS (
         SELECT 1
-        FROM i2b2_app03_b1_Data.dbo.LOAD_Redcap
+        FROM i2b2_app03_b1_Data.dbo.LOAD_RedcapExternal
         WHERE StudyNumber = a.StudyNumber
     ) AND NOT EXISTS (
         SELECT  1
