@@ -25,6 +25,7 @@ def schedule_reports():
         schedule.run_pending()
         time.sleep(1)
 
+
 def run_reports(report_name):
     reports = get_concrete_reports()
 
@@ -32,16 +33,21 @@ def run_reports(report_name):
         if type(r).__name__[:len(report_name)].lower() == report_name.lower():
             r.run()
 
-    logging.info("---- All reports run ----")
 
 parser = argparse.ArgumentParser(description='Run specific reports.')
-parser.add_argument('report_name', metavar='report_name', nargs='?',
-                   help='Report name or start of the report name')
+parser.add_argument(
+    'report_names',
+    metavar='report_names',
+    nargs='*',
+    help='Report names or start of the report name'
+)
 
 args = parser.parse_args()
 
-if (args.report_name is None):
+if (args.report_names is None):
     schedule_reports()
 else:
-    run_reports(args.report_name)
+    for report_name in args.report_names:
+        run_reports(report_name)
 
+    logging.info("---- All reports run ----")

@@ -5,7 +5,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from reporter.reports import Report, Schedule
+from reporter.reports import Report
 from reporter.reports.emailing import (
     RECIPIENT_BIORESOURCE_MANAGER,
     RECIPIENT_BRICCS_MANAGER,
@@ -94,7 +94,11 @@ ORDER BY ConsentDate
             mkdn = "![{}](cid:recruitment.png)\r\n\r\n".format(
                 self._name)
 
-            attachments = [{'filename': 'recruitment.png', 'inline': True, 'stream': buf}]
+            attachments = [{
+                'filename': 'recruitment.png',
+                'inline': True,
+                'stream': buf
+            }]
 
             return mkdn, 1, attachments
 

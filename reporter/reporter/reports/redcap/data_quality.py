@@ -375,6 +375,97 @@ WHERE e.project_id = %s
         )
 
 
+class RedcapInvalidPostCode(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants an invalid post code "
+                          "in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record,
+    md.element_label
+FROM {0}.dbo.redcap_data e
+JOIN {0}.dbo.redcap_metadata md
+    ON md.project_id = e.project_id
+    AND md.field_name = e.field_name
+WHERE e.project_id = %s
+    AND e.field_name IN ({1})
+    AND i2b2ClinDataIntegration.dbo.isInvalidPostcode(e.value) = 1
+
+                '''.format(
+                redcap_instance()['staging_database'],
+                ', '.join(['\'{}\''.format(f) for f in fields])
+            ),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['element_label']
+        )
+
+
+class RedcapInvalidEmailAddress(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants an invalid "
+                          "email address in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record,
+    md.element_label
+FROM {0}.dbo.redcap_data e
+JOIN {0}.dbo.redcap_metadata md
+    ON md.project_id = e.project_id
+    AND md.field_name = e.field_name
+WHERE e.project_id = %s
+    AND e.field_name IN ({1})
+    AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(e.value) = 0
+    AND i2b2ClinDataIntegration.dbo.isInvalidEmail(e.value) = 1
+
+                '''.format(
+                redcap_instance()['staging_database'],
+                ', '.join(['\'{}\''.format(f) for f in fields])
+            ),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['element_label']
+        )
+
+
 class RedcapInvalidBloodPressure(Report):
     def __init__(
         self,
@@ -873,6 +964,64 @@ WHERE e.project_id = %s
         )
 
 
+class RedcapOutsideAgeRange(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        dob_field,
+        recruited_date_field,
+        min_age,
+        max_age,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants were recruited "
+                          "outside the specified age range witin REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    dob.project_id,
+    dob.record,
+    [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
+        CONVERT(DATE, dob.value),
+        CONVERT(DATE, rec.value)) AgeAtRecruitment
+FROM    {0}.dbo.redcap_data dob
+JOIN    {0}.dbo.redcap_data rec
+    ON rec.project_id = dob.project_id
+    AND rec.record = dob.record
+    AND rec.field_name = %s
+WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
+        CONVERT(DATE, dob.value),
+        CONVERT(DATE, rec.value)) NOT BETWEEN %s AND %s
+    AND dob.field_name = %s
+    AND dob.project_id = %s
+
+                '''.format(
+                redcap_instance()['staging_database'],
+            ),
+            parameters=(
+                recruited_date_field,
+                min_age,
+                max_age,
+                dob_field,
+                project_id,
+            )
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['AgeAtRecruitment']
+        )
+
+
 class RedcapImpliesCheck(Report):
     def __init__(
         self,
@@ -936,4 +1085,91 @@ WHERE a.project_id = %s
             self._redcap_instance()['link_generator'](
                 row['record'], row['project_id'], row['record']),
             self._error_message
+        )
+
+
+class RedcapXrefMismatch(Report):
+    def __init__(
+        self,
+        redcap_instance_a,
+        project_id_a,
+        field_name_a,
+        redcap_instance_b,
+        project_id_b,
+        field_name_b,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance_a = redcap_instance_a
+        self._redcap_instance_b = redcap_instance_b
+
+        super().__init__(
+            introduction=("The following fields do not match "
+                          "in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+DECLARE @project_id_a INT,
+        @project_id_b INT,
+        @field_name_a VARCHAR(100),
+        @field_name_b VARCHAR(100)
+
+SELECT  @project_id_a = %s,
+        @project_id_b = %s,
+        @field_name_a = %s,
+        @field_name_b = %s
+
+SELECT
+    a.record,
+    @field_name_a [field_name_a],
+    @field_name_b [field_name_b],
+    @project_id_a [project_id_a],
+    @project_id_b [project_id_b],
+    pa.app_title [project_title_a],
+    pb.app_title [project_title_b]
+FROM    {0}.dbo.redcap_data a
+JOIN    {0}.dbo.redcap_projects pa
+    ON pa.project_id = @project_id_a
+JOIN    {1}.dbo.redcap_projects pb
+    ON pb.project_id = @project_id_b
+LEFT JOIN {1}.dbo.redcap_data b
+    ON b.project_id = @project_id_b
+        AND b.field_name = @field_name_b
+        AND b.record = a.record
+WHERE a.project_id = @project_id_a
+    AND a.field_name = @field_name_a
+    AND COALESCE(a.value, '') <> COALESCE(b.value, '')
+
+
+                '''.format(
+                redcap_instance_a()['staging_database'],
+                redcap_instance_b()['staging_database'],
+            ),
+            parameters=(
+                project_id_a,
+                project_id_b,
+                field_name_a,
+                field_name_b,
+            )
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {} <> {}\r\n'.format(
+            row['record'],
+            self._redcap_instance_a()['link_generator'](
+                '{}({})'.format(
+                    row['project_title_a'],
+                    row['field_name_a'],
+                ),
+                row['project_id_a'],
+                row['record']),
+            self._redcap_instance_a()['link_generator'](
+                '{}({})'.format(
+                    row['project_title_b'],
+                    row['field_name_b'],
+                ),
+                row['project_id_b'],
+                row['record']),
         )

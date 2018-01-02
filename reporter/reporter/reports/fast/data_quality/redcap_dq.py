@@ -15,7 +15,8 @@ from reporter.reports.redcap.data_quality import (
     RedcapInvalidWeightInKg,
     RedcapInvalidWeightInStonesAndPounds,
     RedcapInvalidBmi,
-    RedcapImpliesCheck
+    RedcapImpliesCheck,
+    RedcapOutsideAgeRange,
 )
 
 
@@ -320,4 +321,18 @@ class FastWhiteEthnicGroupButInEthinicMinority(
             'Participant in white ethnic group, but in ethnic minority',
             [RECIPIENT_FAST_ADMIN],
             True
+        )
+
+
+class FastRedcapOutsideAgeRange(
+        RedcapOutsideAgeRange):
+    def __init__(self):
+        super().__init__(
+            RedcapInstance.internal,
+            43,
+            'dob',
+            'date',
+            65,
+            74,
+            [RECIPIENT_FAST_ADMIN]
         )

@@ -7,7 +7,6 @@ from datetime import date
 from enum import Enum
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
-from reporter.reports.civicrm import get_contact_id_search_link
 from reporter.reports.emailing import send_markdown_email
 from reporter.reports.databases import DatabaseConnection
 
@@ -151,6 +150,7 @@ def get_concrete_reports(cls=None):
 
     return result
 
+from reporter.reports.as_progression import *
 from reporter.reports.bioresource import *
 from reporter.reports.brave import *
 from reporter.reports.briccs import *

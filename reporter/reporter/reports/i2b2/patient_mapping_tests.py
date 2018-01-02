@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import Report
 from reporter.reports.civicrm import get_contact_link
 from reporter.reports.emailing import RECIPIENT_IT_DWH
 
@@ -69,31 +69,3 @@ class PatientMappingMultiplesIdsReport(Report):
             row['id'],
             row['patient_ide_source']
         )
-
-
-# Bioresource
-
-class BioresourcePatientMappingDuplicatesReport(
-        PatientMappingDuplicatesReport):
-    def __init__(self):
-        super().__init__('i2b2_app03_bioresource_Data')
-
-
-class BioresourcePatientMappingMultiplesIdsReport(
-        PatientMappingMultiplesIdsReport):
-    def __init__(self):
-        super().__init__('i2b2_app03_bioresource_Data')
-
-
-# BRICCS
-
-class BriccsPatientMappingDuplicatesReport(
-        PatientMappingDuplicatesReport):
-    def __init__(self):
-        super().__init__('i2b2_app03_b1_Data')
-
-
-class BriccsPatientMappingMultiplesIdsReport(
-        PatientMappingMultiplesIdsReport):
-    def __init__(self):
-        super().__init__('i2b2_app03_b1_Data')

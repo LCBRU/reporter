@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
-from reporter.reports.emailing import (
-    RECIPIENT_BIORESOURCE_ADMIN,
-    RECIPIENT_BRICCS_ADMIN
-)
+from reporter.reports import Report
 from reporter.reports.civicrm import get_case_link, get_contact_link
 
 
-class StudyIdDuplicates(Report):
+class ValidEnrolmentsStudyIdDuplicates(Report):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following recruited participants have "
@@ -39,7 +35,7 @@ class StudyIdDuplicates(Report):
                 row["CiviCrmId"]))
 
 
-class ContactMultipleRecruitments(Report):
+class ValidEnrolmentsContactMultipleRecruitments(Report):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants have multiple "
@@ -57,39 +53,3 @@ class ContactMultipleRecruitments(Report):
     def get_report_line(self, row):
         return '- {}\r\n\r\n'.format(
             get_contact_link('Click to View', row["CiviCrmId"]))
-
-
-# Bioresource
-
-class BioresourceStudyIdDuplicates(
-        StudyIdDuplicates):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_bioresource_Data',
-            [RECIPIENT_BIORESOURCE_ADMIN])
-
-
-class BioresourceContactMultipleRecruitments(
-        ContactMultipleRecruitments):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_bioresource_Data',
-            [RECIPIENT_BIORESOURCE_ADMIN])
-
-
-# BRICCS
-
-class BriccsStudyIdDuplicates(
-        StudyIdDuplicates):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_b1_Data',
-            [RECIPIENT_BRICCS_ADMIN])
-
-
-class BriccsContactMultipleRecruitments(
-        ContactMultipleRecruitments):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_b1_Data',
-            [RECIPIENT_BRICCS_ADMIN])
