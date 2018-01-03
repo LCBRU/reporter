@@ -6,13 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from reporter.reports import Report
-from reporter.reports.emailing import (
-    RECIPIENT_BIORESOURCE_MANAGER,
-    RECIPIENT_BRICCS_MANAGER,
-    RECIPIENT_GENVASC_MANAGER,
-    RECIPIENT_IT_DQ,
-    RECIPIENT_LAB_MANAGER
-)
 
 
 class CumulativeRecruitment(Report):
@@ -58,8 +51,8 @@ ORDER BY ConsentDate
 
             ax.plot(df, label='Cumulative')
 
-            datemin = datetime.date(df.index.year.min(), 1, 1)
-            datemax = datetime.date(df.index.year.max() + 1, 1, 1)
+            datemin = datetime.date(int(df.index.year.min()), 1, 1)
+            datemax = datetime.date(int(df.index.year.max()) + 1, 1, 1)
 
             ax.set_xlim(datemin, datemax)
             ax.xaxis.set_major_locator(mdates.YearLocator())
@@ -101,34 +94,3 @@ ORDER BY ConsentDate
             }]
 
             return mkdn, 1, attachments
-
-
-class BioresourceCumulativeRecruitment(
-        CumulativeRecruitment):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_bioresource_Data',
-            [
-                RECIPIENT_BIORESOURCE_MANAGER,
-                RECIPIENT_IT_DQ,
-                RECIPIENT_LAB_MANAGER])
-
-
-class BriccsCumulativeRecruitment(
-        CumulativeRecruitment):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_b1_Data',
-            [
-                RECIPIENT_BRICCS_MANAGER,
-                RECIPIENT_IT_DQ])
-
-
-class GenvascCumulativeRecruitment(
-        CumulativeRecruitment):
-    def __init__(self):
-        super().__init__(
-            'i2b2_app03_genvasc_Data',
-            [
-                RECIPIENT_GENVASC_MANAGER,
-                RECIPIENT_IT_DQ])

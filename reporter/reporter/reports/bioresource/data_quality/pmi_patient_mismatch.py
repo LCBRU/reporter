@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 from reporter.reports.dwbriccs.pmi import PmiPatientMismatch
-from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN, RECIPIENT_IT_DQ
+from reporter.reports.emailing import (
+    RECIPIENT_BIORESOURCE_ADMIN,
+    RECIPIENT_IT_DQ,
+)
 
 
 class BioresourcePmiPatientMismatch(PmiPatientMismatch):

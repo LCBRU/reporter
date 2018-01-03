@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import Report
 from reporter.reports.emailing import RECIPIENT_BRICCS_ADMIN
 from reporter.reports.civicrm import get_contact_id_search_link
 

@@ -7,8 +7,6 @@ from reporter.reports.civicrm import (
     get_contact_link
 )
 
-# Abstract Reports
-
 
 class DuplicateStudyIdReport(Report):
     def __init__(self, case_type_id, recipients, schedule=None):

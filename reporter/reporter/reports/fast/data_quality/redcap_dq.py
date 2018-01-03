@@ -2,7 +2,13 @@
 
 from reporter.reports import Report
 from reporter.reports.databases import RedcapInstance
-from reporter.reports.emailing import RECIPIENT_FAST_ADMIN
+from reporter.reports.emailing import (
+    RECIPIENT_FAST_ADMIN as RECIPIENT_ADMIN,
+    RECIPIENT_FAST_MANAGER as RECIPIENT_MANAGER,
+)
+from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
+    RedcapWithdrawnOrExcludedWithDataReport,
+)
 from reporter.reports.redcap.data_quality import (
     RedcapInvalidStudyNumber,
     RedcapInvalidDate,
@@ -18,6 +24,9 @@ from reporter.reports.redcap.data_quality import (
     RedcapImpliesCheck,
     RedcapOutsideAgeRange,
 )
+from reporter.reports.redcap.redcap_percentage_complete import (
+    RedcapPercentageCompleteReport,
+)
 
 
 class FastRedcapMissingData(Report):
@@ -28,7 +37,7 @@ class FastRedcapMissingData(Report):
                   'date', 'practice_location', 'invitation_grp',
                   'invitation_type', 'iti_max_ap', 'iti_max_trnsvrs',
                   'sys_bp', 'dias_bp', 'pulse']
-        recipients = [RECIPIENT_FAST_ADMIN]
+        recipients = [RECIPIENT_ADMIN]
         schedule = None
 
         super().__init__(
@@ -94,7 +103,7 @@ class FastRedcapInvalidNhsNumber(
             RedcapInstance.internal,
             43,
             ['nhs_number'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -105,7 +114,7 @@ class FastRedcapInvalidStudyNumber(
             RedcapInstance.internal,
             48,
             ['fst_label', 'record_id'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -115,7 +124,7 @@ class FastRedcapRecordInvalidStudyNumber(
         super().__init__(
             RedcapInstance.internal,
             48,
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -127,7 +136,7 @@ class FastRedcapInvalidBloodPressure(
             43,
             'sys_bp',
             'dias_bp',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -138,7 +147,7 @@ class FastRedcapInvalidPulse(
             RedcapInstance.internal,
             43,
             ['pulse'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -149,7 +158,7 @@ class FastRedcapInvalidHeightInCm(
             RedcapInstance.internal,
             43,
             ['height_cms'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -161,7 +170,7 @@ class FastRedcapInvalidHeightInFeetAndInches(
             43,
             'height_ft',
             'height_inches',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -172,7 +181,7 @@ class FastRedcapInvalidWeightInKg(
             RedcapInstance.internal,
             43,
             ['weight_kgs'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -184,7 +193,7 @@ class FastRedcapInvalidWeightInStonesAndPounds(
             43,
             'weight_stones',
             'weight_pounds',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -195,7 +204,7 @@ class FastRedcapInvalidBmi(
             RedcapInstance.internal,
             43,
             ['bmi'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -206,7 +215,7 @@ class FastRedcapInvalidDate(
             RedcapInstance.internal,
             43,
             ['dob', 'date'],
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -221,7 +230,7 @@ class FastCurrentSmokerGroupButNotCurrentSmoker(
             ['curr_smoke'],
             ['1'],
             'Participant in current smoker group, but is not a current smoker',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -236,7 +245,7 @@ class FastExSmokerGroupButNotExSmoker(
             ['ex_smoker'],
             ['1'],
             'Participant in Ex-smoker group, but is not an ex-smoker',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -254,7 +263,7 @@ class FastRiskFactorGroupButNoRiskFactors(
              'reg_meds'],
             ['1', '2', '3', '4'],
             'Participant in risk factor group, but is has no risk factors',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -272,7 +281,7 @@ class FastNoRiskFactorGroupButHasRiskFactors(
              'reg_meds', 'curr_smoke', 'ex_smoker'],
             ['1', '2', '3', '4'],
             'Participant in no risk factors group, but is has risk factors',
-            [RECIPIENT_FAST_ADMIN],
+            [RECIPIENT_ADMIN],
             True
         )
 
@@ -289,7 +298,7 @@ class FastEthnicMinorityGroupButNotInEthnicMinority(
             ['D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S'],
             'Participant in ethinic minority group, '
             'but is not in an ethnic minority',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -304,7 +313,7 @@ class FastSiblingsGroupButNoFamilyHistory(
             ['fam_hist_aaa'],
             ['1'],
             'Participant in siblings group, but has no family history of AAA',
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -319,7 +328,7 @@ class FastWhiteEthnicGroupButInEthinicMinority(
             ['ethnicity'],
             ['D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S'],
             'Participant in white ethnic group, but in ethnic minority',
-            [RECIPIENT_FAST_ADMIN],
+            [RECIPIENT_ADMIN],
             True
         )
 
@@ -334,5 +343,20 @@ class FastRedcapOutsideAgeRange(
             'date',
             65,
             74,
-            [RECIPIENT_FAST_ADMIN]
+            [RECIPIENT_ADMIN]
         )
+
+
+class FastRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
+    def __init__(self):
+        super().__init__(
+            'FAST',
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FastRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+    def __init__(self):
+        super().__init__(
+            'FAST',
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])

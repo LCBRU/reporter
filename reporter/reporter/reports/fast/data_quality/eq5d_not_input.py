@@ -7,6 +7,7 @@ from reporter.reports.emailing import (
 )
 from reporter.reports.redcap import get_redcap_link
 
+
 class FastEq5dNotEntered(Report):
     def __init__(self):
         super().__init__(

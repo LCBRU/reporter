@@ -1,1 +1,1 @@
-from reporter.reports.omics.data_warehouse_tests import *
+from reporter.reports.omics.data_quality import *

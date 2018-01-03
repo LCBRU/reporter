@@ -2,7 +2,10 @@
 
 from reporter.reports import Report
 from reporter.reports.databases import RedcapInstance
-from reporter.reports.emailing import RECIPIENT_PREDICT_ADMIN
+from reporter.reports.emailing import (
+    RECIPIENT_PREDICT_ADMIN as RECIPIENT_ADMIN,
+    RECIPIENT_PREDICT_MANAGER as RECIPIENT_MANAGER,
+)
 from reporter.reports.redcap.data_quality import (
     RedcapInvalidStudyNumber,
     RedcapInvalidNhsNumber,
@@ -12,6 +15,12 @@ from reporter.reports.redcap.data_quality import (
     RedcapInvalidHeightInCm,
     RedcapInvalidWeightInKg,
     RedcapInvalidBmi
+)
+from reporter.reports.redcap.redcap_percentage_complete import (
+    RedcapPercentageCompleteReport,
+)
+from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
+    RedcapWithdrawnOrExcludedWithDataReport,
 )
 
 
@@ -23,7 +32,7 @@ class PredictRedcapMissingData(Report):
                   'date', 'practice_location', 'invitation_grp',
                   'invitation_type', 'iti_max_ap', 'iti_max_trnsvrs',
                   'sys_bp', 'dias_bp', 'pulse']
-        recipients = [RECIPIENT_PREDICT_ADMIN]
+        recipients = [RECIPIENT_ADMIN]
         schedule = None
 
         super().__init__(
@@ -84,7 +93,7 @@ class PredictRedcapInvalidNhsNumber(
             RedcapInstance.internal,
             62,
             ['nhs_number'],
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -95,7 +104,7 @@ class PredictRedcapInvalidStudyNumber(
             RedcapInstance.internal,
             62,
             ['record_id'],
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -105,7 +114,7 @@ class PredictRedcapRecordInvalidStudyNumber(
         super().__init__(
             RedcapInstance.internal,
             62,
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -117,7 +126,7 @@ class PredictRedcapInvalidBloodPressure1(
             62,
             'sbp1_mmhg',
             'dbp1_mmhg',
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -129,7 +138,7 @@ class PredictRedcapInvalidBloodPressure2(
             62,
             'sbp2_mmhg',
             'dbp2_mmhg',
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -141,7 +150,7 @@ class PredictRedcapInvalidBloodPressure3(
             62,
             'sbp3_mmhg',
             'dbp3_mmhg',
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -153,7 +162,7 @@ class PredictRedcapInvalidBloodPressureAvg(
             62,
             'avg_sbp_mmhg',
             'avg_dbp_mmhg',
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -164,7 +173,7 @@ class PredictRedcapInvalidPulse(
             RedcapInstance.internal,
             62,
             ['hr1_bpm', 'hr2_bpm', 'hr3_bpm', 'avg_hr_bpm'],
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -175,7 +184,7 @@ class PredictRedcapInvalidHeightInCm(
             RedcapInstance.internal,
             62,
             ['height_cm'],
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -186,7 +195,7 @@ class PredictRedcapInvalidWeightInKg(
             RedcapInstance.internal,
             62,
             ['weight_kg'],
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
 
@@ -197,9 +206,23 @@ class PredictRedcapInvalidBmi(
             RedcapInstance.internal,
             62,
             ['bmi_kg_m2'],
-            [RECIPIENT_PREDICT_ADMIN]
+            [RECIPIENT_ADMIN]
         )
 
+
+class PredictRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
+    def __init__(self):
+        super().__init__(
+            'Predict',
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class PredictRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+    def __init__(self):
+        super().__init__(
+            'Predict',
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
 '''
 r = PredictRedcapInvalidBmi()
 r.run()
