@@ -39,7 +39,13 @@ parser.add_argument(
     'report_names',
     metavar='report_names',
     nargs='*',
-    help='Report names or start of the report name'
+    help='Report names or start of the report name',
+)
+parser.add_argument(
+    "-a",
+    "--all",
+    help="Run all reports",
+    action="store_true",
 )
 
 args = parser.parse_args()

@@ -193,11 +193,9 @@ ORDER BY r.record
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
+        return '- {}\r\n'.format(
             self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+                row['record'], row['project_id'], row['record']))
 
 
 class RedcapInvalidNhsNumber(Report):
