@@ -2,19 +2,19 @@
 
 from reporter.reports import Report, Schedule
 from reporter.reports.emailing import (
-    RECIPIENT_INDAPAMIDE_MANAGER,
-    RECIPIENT_INDAPAMIDE_ADMIN,
+    RECIPIENT_CARDIOMET_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_CARDIOMET_ADMIN as RECIPIENT_ADMIN,
 )
 
 
-class IndapamideWithdrawnWithDataReport(Report):
+class CardiometWithdrawnWithDataReport(Report):
     def __init__(self):
         super().__init__(
             introduction=("Withdrawn participants with data "
-                          "in REDCap for Indapamide study"),
+                          "in REDCap study"),
             recipients=[
-                RECIPIENT_INDAPAMIDE_MANAGER,
-                RECIPIENT_INDAPAMIDE_ADMIN],
+                RECIPIENT_MANAGER,
+                RECIPIENT_ADMIN],
             schedule=Schedule.weekly,
             sql='''
 

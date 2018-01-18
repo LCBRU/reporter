@@ -2,19 +2,15 @@
 
 import math
 from itertools import groupby
-from reporter.reports import Report, Schedule
-from reporter.reports.emailing import (
-    RECIPIENT_BIORESOURCE_MANAGER, RECIPIENT_BIORESOURCE_ADMIN,
-    RECIPIENT_BRICCS_MANAGER, RECIPIENT_BRICCS_ADMIN,
-    RECIPIENT_AS_MANAGER, RECIPIENT_AS_ADMIN,
-    RECIPIENT_BRAVE_MANAGER, RECIPIENT_BRAVE_ADMIN,
-    RECIPIENT_DREAM_MANAGER, RECIPIENT_DREAM_ADMIN,
-    RECIPIENT_SCAD_MANAGER, RECIPIENT_SCAD_ADMIN,
-    RECIPIENT_TMAO_MANAGER, RECIPIENT_TMAO_ADMIN)
+from reporter.reports import Report
 
 
 class RedcapPercentageCompleteReport(Report):
-    def __init__(self, study_name, recipients, schedule=None):
+    def __init__(
+            self,
+            study_name,
+            recipients,
+            schedule=None):
         super().__init__(
             name="Redcap Percentage Complete Report ({})".format(study_name),
             introduction=("Percentage completeness of REDCap CRFs"

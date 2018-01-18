@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
 from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import (
     RECIPIENT_PREDICT_ADMIN as RECIPIENT_ADMIN,
@@ -14,7 +13,10 @@ from reporter.reports.redcap.data_quality import (
     RedcapInvalidPulse,
     RedcapInvalidHeightInCm,
     RedcapInvalidWeightInKg,
-    RedcapInvalidBmi
+    RedcapInvalidBmi,
+    RedcapInvalidDate,
+    RedcapInvalidUhlSystemNumber,
+    RedcapInvalidPostCode,
 )
 from reporter.reports.redcap.redcap_percentage_complete import (
     RedcapPercentageCompleteReport,
@@ -22,230 +24,323 @@ from reporter.reports.redcap.redcap_percentage_complete import (
 from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
     RedcapWithdrawnOrExcludedWithDataReport,
 )
-
-
-class PredictRedcapMissingData(Report):
-    def __init__(self):
-        self._redcap_instance = RedcapInstance.internal
-        project_id = 62
-        fields = ['nhs_number', 'gender', 'ethnicity', 'dob',
-                  'date', 'practice_location', 'invitation_grp',
-                  'invitation_type', 'iti_max_ap', 'iti_max_trnsvrs',
-                  'sys_bp', 'dias_bp', 'pulse']
-        recipients = [RECIPIENT_ADMIN]
-        schedule = None
-
-        super().__init__(
-            introduction=("The following participants have data "
-                          "missing from REDCap"),
-            recipients=recipients,
-            schedule=schedule,
-            sql='''
-
-WITH recruited AS (
-    SELECT  DISTINCT record, project_id
-    FROM    {1}.dbo.redcap_data
-    WHERE project_id = %s
-), potential_errors AS (
-    SELECT
-        r.record,
-        r.project_id,
-        md.field_name,
-        'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
-    FROM recruited r
-    JOIN {1}.dbo.redcap_metadata md
-        ON md.project_id = r.project_id
-        AND md.field_name IN ({0})
+from reporter.reports.redcap.data_quality import (
+    RedcapMissingData,
 )
-SELECT
-    pe.project_id,
-    pe.record,
-    pe.error AS [error_message]
-FROM potential_errors pe
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM {1}.dbo.redcap_data e
-    WHERE e.project_id = pe.project_id
-        AND e.record = pe.record
-        AND e.field_name = pe.field_name
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+from reporter.reports.redcap.data_quality import (
+    RedcapXrefMismatch,
 )
-ORDER BY pe.record
-
-                '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields]),
-                self._redcap_instance()['staging_database']),
-            parameters=(project_id)
-        )
-
-    def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
 
 
-class PredictRedcapInvalidNhsNumber(
-        RedcapInvalidNhsNumber):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            ['nhs_number'],
-            [RECIPIENT_ADMIN]
-        )
+CRF_PROJECT_ID = 62
+DEMOGRAPHICS_PROJECT_ID = 63
 
 
-class PredictRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            ['record_id'],
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidBloodPressure1(
-        RedcapInvalidBloodPressure):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            'sbp1_mmhg',
-            'dbp1_mmhg',
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidBloodPressure2(
-        RedcapInvalidBloodPressure):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            'sbp2_mmhg',
-            'dbp2_mmhg',
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidBloodPressure3(
-        RedcapInvalidBloodPressure):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            'sbp3_mmhg',
-            'dbp3_mmhg',
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidBloodPressureAvg(
-        RedcapInvalidBloodPressure):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            'avg_sbp_mmhg',
-            'avg_dbp_mmhg',
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidPulse(
-        RedcapInvalidPulse):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            ['hr1_bpm', 'hr2_bpm', 'hr3_bpm', 'avg_hr_bpm'],
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidHeightInCm(
-        RedcapInvalidHeightInCm):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            ['height_cm'],
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidWeightInKg(
-        RedcapInvalidWeightInKg):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            ['weight_kg'],
-            [RECIPIENT_ADMIN]
-        )
-
-
-class PredictRedcapInvalidBmi(
-        RedcapInvalidBmi):
-    def __init__(self):
-        super().__init__(
-            RedcapInstance.internal,
-            62,
-            ['bmi_kg_m2'],
-            [RECIPIENT_ADMIN]
-        )
-
+# All
 
 class PredictRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
     def __init__(self):
         super().__init__(
-            'Predict',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            study_name='Predict',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
-class PredictRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class PredictRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
-            'Predict',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
-'''
-r = PredictRedcapInvalidBmi()
-r.run()
-r = PredictRedcapInvalidPulse()
-r.run()
-r = PredictRedcapMissingData()
-r.run()
-r = PredictRedcapInvalidBloodPressure1()
-r.run()
-r = PredictRedcapInvalidBloodPressure2()
-r.run()
-r = PredictRedcapInvalidBloodPressure3()
-r.run()
-r = PredictRedcapInvalidNhsNumber()
-r.run()
-r = PredictRedcapInvalidStudyNumber()
-r.run()
-r = PredictRedcapInvalidBloodPressureAvg()
-r.run()
-r = PredictRedcapInvalidHeightInCm()
-r.run()
-r = PredictRedcapInvalidWeightInKg()
-r.run()
-r = PredictRedcapRecordInvalidStudyNumber()
-r.run()
-'''
+            study_name='Predict',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+# CRF Validation
+
+class PredictRedcapCrfMissingData(
+        RedcapMissingData):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=[
+                'patient_id',
+                'date_of_visit',
+                'consent_date',
+                'dob',
+                'age_years',
+                'gender',
+                'height_cm',
+                'weight_kg',
+                'bmi_kg_m2',
+                'hip_circumference_cm',
+                'waist_circumference_cm',
+                'smoker',
+                'ethnicity',
+                'sbp1_mmhg',
+                'sbp2_mmhg',
+                'sbp3_mmhg',
+                'avg_sbp_mmhg',
+                'dbp1_mmhg',
+                'dbp2_mmhg',
+                'dbp3_mmhg',
+                'avg_dbp_mmhg',
+                'hr1_bpm',
+                'hr2_bpm',
+                'hr3_bpm',
+                'avg_hr_bpm',
+            ],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidPatientId(
+        RedcapInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=['patient_id'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfRecordInvalidStudyNumber(
+        RedcapRecordInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidDates(
+        RedcapInvalidDate):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidBloodPressure1(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            systolic_field_name='sbp1_mmhg',
+            diastolic_field_name='dbp1_mmhg',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidBloodPressure2(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            systolic_field_name='sbp2_mmhg',
+            diastolic_field_name='dbp2_mmhg',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidBloodPressure3(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            systolic_field_name='sbp3_mmhg',
+            diastolic_field_name='dbp3_mmhg',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidBloodPressureAvg(
+        RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            systolic_field_name='avg_sbp_mmhg',
+            diastolic_field_name='avg_dbp_mmhg',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidPulse(
+        RedcapInvalidPulse):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=['hr1_bpm', 'hr2_bpm', 'hr3_bpm', 'avg_hr_bpm'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidHeightInCm(
+        RedcapInvalidHeightInCm):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=['height_cm'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidWeightInKg(
+        RedcapInvalidWeightInKg):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=['weight_kg'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapCrfInvalidBmi(
+        RedcapInvalidBmi):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=['bmi_kg_m2'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+# Demographics Validation
+
+class PredictRedcapDemographicsMissingData(
+        RedcapMissingData):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=CRF_PROJECT_ID,
+            fields=[
+                'patient_id',
+                'research_appt_date',
+                'nhs_no',
+                's_no',
+                'first_name',
+                'last_name',
+                'dob',
+                'add_1',
+                'postcode',
+                'gender',
+                'ethnicity',
+                'gp_name',
+                'gp_address_line_1',
+                'gp_postcode',
+            ],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapDemographicsInvalidNhsNumber(
+        RedcapInvalidNhsNumber):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=DEMOGRAPHICS_PROJECT_ID,
+            fields=['nhs_no'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapDemographicsInvalidDates(
+        RedcapInvalidDate):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=DEMOGRAPHICS_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapDemographicsInvalidUhlSystemNumber(
+        RedcapInvalidUhlSystemNumber):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=DEMOGRAPHICS_PROJECT_ID,
+            fields=['s_no'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapDemographicsInvalidPostCode(
+        RedcapInvalidPostCode):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=DEMOGRAPHICS_PROJECT_ID,
+            fields=['postcode', 'gp_postcode'],
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+# CRF / Demographics XRef Validation
+
+class PredictRedcapXrefMismatchPatientId(
+        RedcapXrefMismatch):
+    def __init__(self):
+        super().__init__(
+            redcap_instance_a=RedcapInstance.internal,
+            project_id_a=CRF_PROJECT_ID,
+            field_name_a='patient_id',
+            redcap_instance_b=RedcapInstance.internal,
+            project_id_b=DEMOGRAPHICS_PROJECT_ID,
+            field_name_b='patient_id',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapXrefMismatchDob(
+        RedcapXrefMismatch):
+    def __init__(self):
+        super().__init__(
+            redcap_instance_a=RedcapInstance.internal,
+            project_id_a=CRF_PROJECT_ID,
+            field_name_a='dob',
+            redcap_instance_b=RedcapInstance.internal,
+            project_id_b=DEMOGRAPHICS_PROJECT_ID,
+            field_name_b='dob',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapXrefMismatchGender(
+        RedcapXrefMismatch):
+    def __init__(self):
+        super().__init__(
+            redcap_instance_a=RedcapInstance.internal,
+            project_id_a=CRF_PROJECT_ID,
+            field_name_a='gender',
+            redcap_instance_b=RedcapInstance.internal,
+            project_id_b=DEMOGRAPHICS_PROJECT_ID,
+            field_name_b='gender',
+            recipients=[RECIPIENT_ADMIN],
+        )
+
+
+class PredictRedcapXrefMismatchEthnicity(
+        RedcapXrefMismatch):
+    def __init__(self):
+        super().__init__(
+            redcap_instance_a=RedcapInstance.internal,
+            project_id_a=CRF_PROJECT_ID,
+            field_name_a='ethnicity',
+            redcap_instance_b=RedcapInstance.internal,
+            project_id_b=DEMOGRAPHICS_PROJECT_ID,
+            field_name_b='ethnicity',
+            recipients=[RECIPIENT_ADMIN],
+        )

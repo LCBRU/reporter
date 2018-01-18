@@ -20,7 +20,8 @@ class ScadRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         )
 
 
-class ScadRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class ScadRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'SCAD',

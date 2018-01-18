@@ -5,7 +5,6 @@ from reporter.reports.civicrm.enrolment_dq import (
     DuplicateStudyIdReport,
     MissingStudyNumber,
     MultipleRecruitementsReport,
-    MissingNhsNumberReport,
     CivicrmInvalidCaseStatus
 )
 

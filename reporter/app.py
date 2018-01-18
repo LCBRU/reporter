@@ -26,12 +26,27 @@ def schedule_reports():
         time.sleep(1)
 
 
-def run_reports(report_name):
+def run_reports(report_name, exclude):
     reports = get_concrete_reports()
 
     for r in reports:
+
+        if type(r).__name__.lower() in exclude:
+            continue
+
         if type(r).__name__[:len(report_name)].lower() == report_name.lower():
             r.run()
+
+
+def run_all(exclude):
+    reports = get_concrete_reports()
+
+    for r in reports:
+
+        if type(r).__name__.lower() in exclude:
+            continue
+
+        r.run()
 
 
 parser = argparse.ArgumentParser(description='Run specific reports.')
@@ -42,6 +57,13 @@ parser.add_argument(
     help='Report names or start of the report name',
 )
 parser.add_argument(
+    '-x',
+    '--exclude',
+    nargs='*',
+    help='Reports names to exclude',
+    default=[]
+)
+parser.add_argument(
     "-a",
     "--all",
     help="Run all reports",
@@ -50,10 +72,16 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if (args.report_names is None):
+exclude = [x.lower() for x in args.exclude]
+
+if args.all:
+    run_all(exclude)
+
+    logging.info("---- All reports run ----")
+elif not args.report_names:
     schedule_reports()
 else:
     for report_name in args.report_names:
-        run_reports(report_name)
+        run_reports(report_name, exclude)
 
     logging.info("---- All reports run ----")

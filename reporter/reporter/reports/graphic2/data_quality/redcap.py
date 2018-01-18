@@ -19,7 +19,8 @@ class Graphic2RedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
 
 
-class Graphic2RedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class Graphic2RedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'Graphic2',

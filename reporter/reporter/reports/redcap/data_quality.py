@@ -7,7 +7,12 @@ from reporter.reports import Report
 
 class RedcapMissingData(Report):
     def __init__(
-        self, redcap_instance, project_id, fields, recipients, schedule=None
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        recipients,
+        schedule=None
     ):
         self._redcap_instance = redcap_instance
 
@@ -642,12 +647,59 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidDate(Report):
+class RedcapInvalidHeightInM(Report):
     def __init__(
         self,
         redcap_instance,
         project_id,
         fields,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        super().__init__(
+            introduction=("The following participants have an invalid "
+                          "Height(m) in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record,
+    md.element_label
+FROM {0}.dbo.redcap_data e
+JOIN {0}.dbo.redcap_metadata md
+    ON md.project_id = e.project_id
+    AND md.field_name = e.field_name
+WHERE e.project_id = %s
+    AND e.field_name IN ({1})
+    AND i2b2ClinDataIntegration.dbo.IsNa(e.value) = 0
+    AND (i2b2ClinDataIntegration.dbo.IsReallyNumeric(e.value) = 0
+        OR i2b2ClinDataIntegration.dbo.isInvalidHeightInCm(e.value * 100) = 1
+        )
+
+                '''.format(
+                redcap_instance()['staging_database'],
+                ', '.join(['\'{}\''.format(f) for f in fields])
+            ),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['element_label']
+        )
+
+
+class RedcapInvalidDate(Report):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
         recipients,
         schedule=None
     ):
@@ -668,8 +720,9 @@ FROM {0}.dbo.redcap_data e
 JOIN {0}.dbo.redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+    AND md.element_type = 'text'
+    AND md.element_validation_type LIKE 'date_%'
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
     AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
     AND ISDATE(e.value) = 0
 UNION
@@ -681,15 +734,15 @@ FROM {0}.dbo.redcap_data e
 JOIN {0}.dbo.redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+    AND md.element_type = 'text'
+    AND md.element_validation_type LIKE 'date_%'
 WHERE  e.project_id = %s
-    AND e.field_name IN ({1})
     AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
     AND ISDATE(e.value) = 1
     AND YEAR(e.value) < 1900
 
                 '''.format(
                 redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
             ),
             parameters=(project_id, project_id)
         )

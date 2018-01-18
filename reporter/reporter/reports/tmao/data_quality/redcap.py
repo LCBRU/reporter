@@ -102,7 +102,6 @@ class TmaoRedcapInvalidDate(
         super().__init__(
             RedcapInstance.internal,
             25,
-            ['tmao_dob'],
             [RECIPIENT_ADMIN]
         )
 
@@ -114,7 +113,8 @@ class TmaoRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
             [RECIPIENT_MANAGER, RECIPIENT_ADMIN])
 
 
-class TmaoRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class TmaoRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'TMAO',

@@ -19,7 +19,8 @@ class BraveRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
 
 
-class BraveRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class BraveRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'BRAVE',

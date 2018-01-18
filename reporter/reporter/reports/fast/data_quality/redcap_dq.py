@@ -214,7 +214,6 @@ class FastRedcapInvalidDate(
         super().__init__(
             RedcapInstance.internal,
             43,
-            ['dob', 'date'],
             [RECIPIENT_ADMIN]
         )
 
@@ -355,7 +354,8 @@ class FastRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         )
 
 
-class FastRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class FastRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'FAST',

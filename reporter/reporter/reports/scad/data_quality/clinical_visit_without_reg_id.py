@@ -18,7 +18,8 @@ WITH participants AS (
     FROM    STG_redcap.dbo.redcap_data
     WHERE project_id = 28
 )
-SELECT p.record
+SELECT p.record,
+    p.project_id
 FROM participants p
 WHERE NOT EXISTS (
     SELECT 1

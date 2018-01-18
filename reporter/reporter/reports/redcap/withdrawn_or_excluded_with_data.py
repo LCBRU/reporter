@@ -50,7 +50,10 @@ ORDER BY Questionnaire, StudyNumber
     def get_report_lines(self, cursor):
         markdown = ''
 
-        for questionnaire, participants in groupby(cursor, lambda x: x['Questionnaire']):
+        for questionnaire, participants in groupby(
+                cursor,
+                lambda x: x['Questionnaire']):
+
             markdown += "**{}**\r\n\r\n".format(questionnaire)
 
             for p in participants:

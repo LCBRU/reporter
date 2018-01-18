@@ -19,7 +19,8 @@ class BriccsRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
 
 
-class BriccsRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class BriccsRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'BRICCS',

@@ -153,6 +153,7 @@ def get_concrete_reports(cls=None):
 from reporter.reports.as_progression import *
 from reporter.reports.bioresource import *
 from reporter.reports.brave import *
+from reporter.reports.cardiomet import *
 from reporter.reports.briccs import *
 from reporter.reports.genvasc import *
 from reporter.reports.genvasc_practices import *
@@ -166,6 +167,7 @@ from reporter.reports.lenten import *
 from reporter.reports.fast import *
 from reporter.reports.indapamide import *
 from reporter.reports.mari import *
+from reporter.reports.minerva import *
 from reporter.reports.scad import *
 from reporter.reports.tmao import *
 from reporter.reports.predict import *

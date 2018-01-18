@@ -19,7 +19,8 @@ class BioresRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
 
 
-class BioresourceRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class BioresourceRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'Bioresource',

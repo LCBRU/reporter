@@ -22,7 +22,8 @@ class DreamRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         )
 
 
-class DreamRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class DreamRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'DREAM',

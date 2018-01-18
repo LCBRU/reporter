@@ -20,7 +20,8 @@ class MariRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         )
 
 
-class MariRedcapWithdrawnOrExcludedWithDataReport(RedcapWithdrawnOrExcludedWithDataReport):
+class MariRedcapWithdrawnOrExcludedWithDataReport(
+        RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
             'Mari',

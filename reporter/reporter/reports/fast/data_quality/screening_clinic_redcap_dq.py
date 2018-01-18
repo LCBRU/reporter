@@ -52,11 +52,6 @@ class FastRedcapInvalidDate(
         super().__init__(
             RedcapInstance.internal,
             48,
-            [
-                'dob',
-                'clinic_date',
-                'date',
-            ],
             [RECIPIENT_FAST_ADMIN]
         )
 

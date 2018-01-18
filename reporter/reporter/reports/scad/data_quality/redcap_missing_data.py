@@ -119,32 +119,6 @@ class ScadClinicalRedcapInvalidDate(
         super().__init__(
             RedcapInstance.internal,
             28,
-            [
-                'int_date',
-                'first_scad_event_date',
-                'second_scad_event_date',
-                'third_scad_event_date',
-                'consent_date',
-                'prev_consent_date',
-                'prev_consent_date_v2',
-                'prev_consent_date_v3',
-                'prev_consent_date_v4',
-                'prev_consent_date_hv_v2',
-                'date_bx',
-                'wound_check_date',
-                'angio_date',
-                'mri_date',
-                'mra_date',
-                'card_ct_date',
-                'fmd_date',
-                'imt_date',
-                'sws_date',
-                'retinal_date',
-                'bloods_taken_date',
-                'second_bloods_taken_date',
-                'third_bloods_taken_date',
-                'fourth_bloods_taken_date'
-            ],
             [RECIPIENT_SCAD_ADMIN]
         )
 
