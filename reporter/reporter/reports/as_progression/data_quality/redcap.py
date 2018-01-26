@@ -7,6 +7,7 @@ from reporter.reports.redcap.redcap_percentage_complete import (
 from reporter.reports.emailing import (
     RECIPIENT_AS_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_AS_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
@@ -28,5 +29,5 @@ class AsRedcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

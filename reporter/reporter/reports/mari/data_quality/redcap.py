@@ -10,6 +10,7 @@ from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
 from reporter.reports.emailing import (
     RECIPIENT_MARI_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_MARI_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
@@ -49,7 +50,7 @@ class MariRedcapNorthMidsWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_NORTH_MIDS_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -58,7 +59,7 @@ class MariRedcapCoventryWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_COV_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -67,7 +68,7 @@ class MariRedcapQueenElizabethWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_QUEEN_ELIZABETH_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -76,7 +77,7 @@ class MariRedcapDudleyWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_DUDLEY_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -85,7 +86,7 @@ class MariRedcapWorchesterWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_WORCHESTER_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -94,7 +95,7 @@ class MariRedcapCambridgeWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_CAMBRIDGE_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -103,7 +104,7 @@ class MariRedcapHeartOfEnglandWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_HEART_OF_ENGLAND_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -112,7 +113,7 @@ class MariRedcapHullWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_HULL_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -121,7 +122,7 @@ class MariRedcapGwentWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_GWENT_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -130,5 +131,5 @@ class MariRedcapNorfolkWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_NORFOLK_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

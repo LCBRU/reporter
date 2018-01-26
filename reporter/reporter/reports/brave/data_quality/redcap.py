@@ -10,6 +10,7 @@ from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
 from reporter.reports.emailing import (
     RECIPIENT_BRAVE_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_BRAVE_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
@@ -44,7 +45,7 @@ class BraveRedcapLeicesterWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.internal,
             REDCAP_LEICESTER_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -53,7 +54,7 @@ class BraveRedcapKetteringWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_KETTERING_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -62,7 +63,7 @@ class BraveRedcapLincolnWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_LINCOLN_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -71,7 +72,7 @@ class BraveRedcapSheffieldWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_SHEFFIELD_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -80,7 +81,7 @@ class BraveRedcapImperialWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_IMPERIAL_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -89,7 +90,7 @@ class BraveRedcapGranthamWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_GRANTHAM_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -98,5 +99,5 @@ class BraveRedcapWestSuffolkWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_WEST_SUFFOLK_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

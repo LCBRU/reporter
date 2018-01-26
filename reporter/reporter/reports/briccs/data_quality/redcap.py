@@ -10,6 +10,7 @@ from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
 from reporter.reports.emailing import (
     RECIPIENT_BRICCS_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_BRICCS_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
@@ -48,7 +49,7 @@ class BriccsRedcapLeicesterWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.internal,
             REDCAP_LEICESTER_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -57,7 +58,7 @@ class BriccsRedcapDoncasterWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_DONCASTER_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -66,7 +67,7 @@ class BriccsRedcapSheffieldWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_SHEFFIELD_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -75,7 +76,7 @@ class BriccsRedcapKetteringWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_KETTERING_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -84,7 +85,7 @@ class BriccsRedcapChesterfieldWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_CHESTERFIELD_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -93,7 +94,7 @@ class BriccsRedcapGranthamWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_GRANTHAM_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -102,7 +103,7 @@ class BriccsRedcapLincolnWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_LINCOLN_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -111,7 +112,7 @@ class BriccsRedcapNorthamptonWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_NORTHAMPTON_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -120,7 +121,7 @@ class BriccsRedcapDerbyWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_DERBY_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -129,7 +130,7 @@ class BriccsRedcapBostonWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_BOSTON_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -138,5 +139,5 @@ class BriccsRedcapNottinghamWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             RedcapInstance.external,
             REDCAP_NOTTINGHAM_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

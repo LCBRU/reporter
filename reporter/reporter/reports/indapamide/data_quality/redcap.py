@@ -10,6 +10,7 @@ from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
 from reporter.reports.emailing import (
     RECIPIENT_INDAPAMIDE_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_INDAPAMIDE_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.data_quality import (
     RedcapMissingData,
@@ -290,7 +291,7 @@ class IndapamideRedcapCrfWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -299,5 +300,5 @@ class IndapamideRedcapScreeningcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             SCREENING_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

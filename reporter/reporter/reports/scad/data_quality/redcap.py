@@ -10,6 +10,7 @@ from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
 from reporter.reports.emailing import (
     RECIPIENT_SCAD_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_SCAD_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
@@ -41,7 +42,7 @@ class ScadRedcapClinicalVisitWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_CLINICAL_VISIT_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -50,5 +51,5 @@ class ScadRedcapRegistryWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_REGISTRY_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

@@ -4,6 +4,7 @@ from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import (
     RECIPIENT_TMAO_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_TMAO_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.data_quality import (
     RedcapMissingData,
@@ -132,5 +133,5 @@ class TmaoRedcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

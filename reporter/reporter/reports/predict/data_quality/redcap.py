@@ -4,6 +4,7 @@ from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import (
     RECIPIENT_PREDICT_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_PREDICT_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.data_quality import (
     RedcapInvalidStudyNumber,
@@ -355,7 +356,7 @@ class PredictRedcapCrfWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -364,5 +365,5 @@ class PredictRedcapDemographicsWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             DEMOGRAPHICS_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )

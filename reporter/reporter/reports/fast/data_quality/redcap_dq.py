@@ -5,6 +5,7 @@ from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import (
     RECIPIENT_FAST_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_FAST_MANAGER as RECIPIENT_MANAGER,
+    RECIPIENT_IT_DQ,
 )
 from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
     RedcapWithdrawnOrExcludedWithDataReport,
@@ -374,7 +375,7 @@ class FastRedcapCrfWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_CRF_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
 
 
@@ -383,5 +384,5 @@ class FastRedcapScreeningWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_SCREENING_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DQ]
         )
