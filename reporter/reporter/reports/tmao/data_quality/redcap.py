@@ -17,14 +17,20 @@ from reporter.reports.redcap.redcap_percentage_complete import (
 from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
     RedcapWithdrawnOrExcludedWithDataReport,
 )
+from reporter.reports.redcap.web_data_quality import (
+    RedcapWebDataQuality,
+)
+
+REDCAP_PROJECT_ID = 25
+REDCAP_INSTANCE = RedcapInstance.internal
 
 
 class TmaoRedcapMissingData(
         RedcapMissingData):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            25,
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
             [
                 'tmao_gender',
                 'how_would_you_best_describ',
@@ -41,8 +47,8 @@ class TmaoRedcapMissingDataWhenEatRedMeat(
         RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            25,
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
             [
                 'how_many_times_per_week_do',
                 'how_many_times_pork',
@@ -58,8 +64,8 @@ class TmaoRedcapMissingDataWhenNotVegan(
         RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            25,
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
             [
                 'do_you_eat_eggs',
                 'do_you_eat_red_meat'
@@ -74,8 +80,8 @@ class TmaoRedcapMissingDataWhenEggEater(
         RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            25,
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
             [
                 'how_many_eggs_in_a_week'
             ],
@@ -89,8 +95,8 @@ class TmaoRedcapInvalidStudyNumber(
         RedcapInvalidStudyNumber):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            25,
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
             ['record_id'],
             [RECIPIENT_ADMIN]
         )
@@ -100,8 +106,8 @@ class TmaoRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            25,
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
             [RECIPIENT_ADMIN]
         )
 
@@ -119,3 +125,12 @@ class TmaoRedcapWithdrawnOrExcludedWithDataReport(
         super().__init__(
             'TMAO',
             [RECIPIENT_MANAGER, RECIPIENT_ADMIN])
+
+
+class TmaoRedcapWebDataQuality(RedcapWebDataQuality):
+    def __init__(self):
+        super().__init__(
+            REDCAP_INSTANCE,
+            REDCAP_PROJECT_ID,
+            [RECIPIENT_ADMIN]
+        )

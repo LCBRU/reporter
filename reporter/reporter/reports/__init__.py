@@ -26,20 +26,16 @@ class Schedule(Enum):
 
 
 class Report:
-    def __init__(self, sql, introduction=None, recipients=None,
-                 name=None, conn=None, parameters=None, send_email=True,
-                 schedule=None):
+    def __init__(self, introduction=None, recipients=None,
+                 name=None, send_email=True, schedule=None):
 
-        self._sql = sql
         self._name = name or type(self).__name__
 
         # Unpick CamelCase
         self._name = re.sub('([a-z])([A-Z])', r'\1 \2', self._name)
 
-        self._conn = conn or DatabaseConnection.reporting
         self._recipients = recipients or ('DEFAULT_RECIPIENT')
         self._introduction = introduction or ''
-        self._parameters = parameters or ()
         self._send_email = send_email
         self._schedule = schedule or Schedule.weekly
 
@@ -63,6 +59,25 @@ class Report:
                 report,
                 attachments)
 
+    def get_introduction(self):
+        result = "**{} ({:%d-%b-%Y})**\r\n\r\n".format(
+            self._name,
+            date.today())
+        result += "_{}_:\r\n\r\n".format(self._introduction)
+        return result
+
+    def get_report(self):
+        return None, 0, None
+
+
+class SqlReport(Report):
+    def __init__(self, sql, conn=None, parameters=None, **kwargs):
+
+        super().__init__(**kwargs)
+        self._sql = sql
+        self._conn = conn or DatabaseConnection.reporting
+        self._parameters = parameters or ()
+
     def get_report(self):
         attachments = None
 
@@ -76,10 +91,7 @@ class Report:
 
                 report, rows = self.get_report_lines(cursor)
 
-        markdown = "**{} ({:%d-%b-%Y})**\r\n\r\n".format(
-            self._name,
-            date.today())
-        markdown += "_{}_:\r\n\r\n".format(self._introduction)
+        markdown = self.get_introduction()
         markdown += report
         markdown += "\r\n\r\n{} Record(s) Found".format(rows)
 
@@ -97,7 +109,7 @@ class Report:
         return '- {}\r\n'.format(row)
 
 
-class PdfReport(Report):
+class PdfReport(SqlReport):
     def __init__(self, template, **kwargs):
 
         super().__init__(**kwargs)
@@ -124,8 +136,7 @@ class PdfReport(Report):
                 HTML(string=html, base_url='.').write_pdf(buf)
                 buf.seek(0)
 
-        mkdn = "{0}\r\n\r\n".format(
-            self._introduction)
+        mkdn = self.get_introduction()
 
         attachments = [{
             'filename': '{}.pdf'.format(self._name),

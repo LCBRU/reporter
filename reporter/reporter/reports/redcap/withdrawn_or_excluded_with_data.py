@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from itertools import groupby
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 
 
-class RedcapWithdrawnOrExcludedWithDataReport(Report):
+class RedcapWithdrawnOrExcludedWithDataReport(SqlReport):
     def __init__(self, study_name, recipients):
         super().__init__(
             name="Withdrawn or Excluded with Data Report ({})".format(

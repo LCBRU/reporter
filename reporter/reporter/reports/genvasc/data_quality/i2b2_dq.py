@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.civicrm import get_case_link
 from reporter.reports.i2b2.patient_mapping_tests import (
     PatientMappingDuplicatesReport,
@@ -129,7 +129,7 @@ class GenvascValidEnrolmentsContactMultipleRecruitments(
         )
 
 
-class GenvascPatientSummaryMissingRecruited(Report):
+class GenvascPatientSummaryMissingRecruited(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants have an error "

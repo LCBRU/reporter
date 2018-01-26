@@ -2,10 +2,10 @@
 
 import math
 from itertools import groupby
-from reporter.reports import Report
+from reporter.reports import SqlReport
 
 
-class RedcapPercentageCompleteReport(Report):
+class RedcapPercentageCompleteReport(SqlReport):
     def __init__(
             self,
             study_name,

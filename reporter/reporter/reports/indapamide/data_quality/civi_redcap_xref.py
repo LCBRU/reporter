@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.emailing import RECIPIENT_INDAPAMIDE_ADMIN
 from reporter.reports.redcap import get_redcap_link
 from reporter.reports.civicrm import get_case_link
 
 
-class CivicrmNotInRedcap(Report):
+class CivicrmNotInRedcap(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants have "
@@ -37,7 +37,7 @@ WHERE NOT EXISTS (
             ))
 
 
-class RedcapNotInCiviCrm(Report):
+class RedcapNotInCiviCrm(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants have "

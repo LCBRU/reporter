@@ -1,9 +1,9 @@
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.civicrm import get_contact_id_search_link
 from reporter.reports.databases import DatabaseConnection
 
 
-class PmiPatientMismatch(Report):
+class PmiPatientMismatch(SqlReport):
     def __init__(self, project, recipients, schedule=None):
         super().__init__(
             introduction=('The following participant details do not match '

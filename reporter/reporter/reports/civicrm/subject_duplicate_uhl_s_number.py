@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.emailing import RECIPIENT_IT_DQ
 from reporter.reports.civicrm import get_contact_id_search_link
 
 
-class CivicrmSubjectDuplicateUhlSNumber(Report):
+class CivicrmSubjectDuplicateUhlSNumber(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following subjects have "

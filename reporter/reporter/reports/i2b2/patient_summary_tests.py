@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.emailing import RECIPIENT_IT_DWH
 from reporter.reports.civicrm import get_case_link, get_contact_link
 
 # Abstract Reports
 
 
-class PatientSummaryDuplicatesReport(Report):
+class PatientSummaryDuplicatesReport(SqlReport):
     def __init__(self, database, schedule=None):
         super().__init__(
             introduction=("The following participants are duplicated "
@@ -26,7 +26,7 @@ class PatientSummaryDuplicatesReport(Report):
         return '- {}\r\n'.format(row['patient_num'])
 
 
-class PatientSummaryMissingData(Report):
+class PatientSummaryMissingData(SqlReport):
     def __init__(self, database, fields, schedule=None):
         self.fields = fields
 
@@ -65,7 +65,7 @@ class PatientSummaryMissingData(Report):
         )
 
 
-class PatientSummaryMissingParticipants(Report):
+class PatientSummaryMissingParticipants(SqlReport):
     def __init__(self, database, schedule=None):
         super().__init__(
             introduction=("The following participants are "
@@ -85,7 +85,7 @@ class PatientSummaryMissingParticipants(Report):
         return '- {}\r\n'.format(row['patient_num'])
 
 
-class MissingNhsNumber(Report):
+class MissingNhsNumber(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "
@@ -110,7 +110,7 @@ WHERE RTRIM(LTRIM(LEN(COALESCE(NhsNumber, '')))) = 0
                 row["CiviCrmId"]))
 
 
-class MissingDateOfBirth(Report):
+class MissingDateOfBirth(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "
@@ -135,7 +135,7 @@ WHERE DateOfBirth IS NULL
                 row["CiviCrmId"]))
 
 
-class MissingRecruitmentDate(Report):
+class MissingRecruitmentDate(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "
@@ -160,7 +160,7 @@ WHERE RecruitmentDate IS NULL
                 row["CiviCrmId"]))
 
 
-class MissingSampleFetchedDate(Report):
+class MissingSampleFetchedDate(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "
@@ -187,7 +187,7 @@ WHERE SampleFetchedDate IS NULL
                 row["CiviCrmId"]))
 
 
-class InvalidGender(Report):
+class InvalidGender(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "

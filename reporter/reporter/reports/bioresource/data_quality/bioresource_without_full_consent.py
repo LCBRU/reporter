@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN
 from reporter.reports.civicrm import get_contact_id_search_link
 
 
-class BioresourceWithoutFullConsent(Report):
+class BioresourceWithoutFullConsent(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants are recruited or "

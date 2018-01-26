@@ -5,10 +5,10 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from reporter.reports import Report
+from reporter.reports import SqlReport
 
 
-class CumulativeRecruitment(Report):
+class CumulativeRecruitment(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             recipients=recipients,

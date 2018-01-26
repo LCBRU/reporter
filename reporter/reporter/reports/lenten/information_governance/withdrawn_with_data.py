@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.emailing import (
     RECIPIENT_LENTEN_MANAGER,
     RECIPIENT_LENTEN_ADMIN
 )
 
 
-class LentenWithdrawnWithDataReport(Report):
+class LentenWithdrawnWithDataReport(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("Withdrawn participants with data "

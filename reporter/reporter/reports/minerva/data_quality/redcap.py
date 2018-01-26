@@ -18,9 +18,12 @@ from reporter.reports.redcap.data_quality import (
     RedcapInvalidWeightInKg,
     RedcapInvalidDate,
 )
+from reporter.reports.redcap.web_data_quality import (
+    RedcapWebDataQuality,
+)
 
-
-GLENFIELD_PROJECT_ID = 50
+GLENFIELD_PROJECT_ID = 53
+REDCAP_INSTANCE = RedcapInstance.internal
 
 
 class MinervaRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
@@ -45,7 +48,7 @@ class MinervaRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
         super().__init__(
-            redcap_instance=RedcapInstance.external,
+            redcap_instance=REDCAP_INSTANCE,
             project_id=GLENFIELD_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN]
         )
@@ -55,7 +58,7 @@ class MinervaRedcapInvalidBloodPressure(
         RedcapInvalidBloodPressure):
     def __init__(self):
         super().__init__(
-            redcap_instance=RedcapInstance.external,
+            redcap_instance=REDCAP_INSTANCE,
             project_id=GLENFIELD_PROJECT_ID,
             systolic_field_name='systolic',
             diastolic_field_name='diastolic',
@@ -67,7 +70,7 @@ class MinervaRedcapInvalidPulse(
         RedcapInvalidPulse):
     def __init__(self):
         super().__init__(
-            redcap_instance=RedcapInstance.external,
+            redcap_instance=REDCAP_INSTANCE,
             project_id=GLENFIELD_PROJECT_ID,
             fields=[
                 'pulse',
@@ -80,7 +83,7 @@ class MinervaRedcapInvalidHeightInM(
         RedcapInvalidHeightInM):
     def __init__(self):
         super().__init__(
-            redcap_instance=RedcapInstance.external,
+            redcap_instance=REDCAP_INSTANCE,
             project_id=GLENFIELD_PROJECT_ID,
             fields=['height'],
             recipients=[RECIPIENT_ADMIN]
@@ -91,10 +94,19 @@ class MinervaRedcapInvalidWeightInKg(
         RedcapInvalidWeightInKg):
     def __init__(self):
         super().__init__(
-            redcap_instance=RedcapInstance.external,
+            redcap_instance=REDCAP_INSTANCE,
             project_id=GLENFIELD_PROJECT_ID,
             fields=[
                 'weight',
             ],
             recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class MinervaRedcapWebDataQuality(RedcapWebDataQuality):
+    def __init__(self):
+        super().__init__(
+            REDCAP_INSTANCE,
+            GLENFIELD_PROJECT_ID,
+            [RECIPIENT_ADMIN]
         )

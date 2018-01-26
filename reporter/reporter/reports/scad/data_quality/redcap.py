@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from reporter.reports.databases import RedcapInstance
 from reporter.reports.redcap.redcap_percentage_complete import (
     RedcapPercentageCompleteReport,
 )
@@ -10,6 +11,13 @@ from reporter.reports.emailing import (
     RECIPIENT_SCAD_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_SCAD_MANAGER as RECIPIENT_MANAGER,
 )
+from reporter.reports.redcap.web_data_quality import (
+    RedcapWebDataQuality,
+)
+
+REDCAP_CLINICAL_VISIT_PROJECT_ID = 28
+REDCAP_REGISTRY_PROJECT_ID = 31
+REDCAP_INSTANCE = RedcapInstance.internal
 
 
 class ScadRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
@@ -26,3 +34,21 @@ class ScadRedcapWithdrawnOrExcludedWithDataReport(
         super().__init__(
             'SCAD',
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+
+
+class ScadRedcapClinicalVisitWebDataQuality(RedcapWebDataQuality):
+    def __init__(self):
+        super().__init__(
+            REDCAP_INSTANCE,
+            REDCAP_CLINICAL_VISIT_PROJECT_ID,
+            [RECIPIENT_ADMIN]
+        )
+
+
+class ScadRedcapRegistryWebDataQuality(RedcapWebDataQuality):
+    def __init__(self):
+        super().__init__(
+            REDCAP_INSTANCE,
+            REDCAP_REGISTRY_PROJECT_ID,
+            [RECIPIENT_ADMIN]
+        )

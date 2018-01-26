@@ -22,10 +22,13 @@ from reporter.reports.redcap.data_quality import (
     RedcapInvalidBmi,
     RedcapInvalidDate,
 )
-
+from reporter.reports.redcap.web_data_quality import (
+    RedcapWebDataQuality,
+)
 
 CRF_PROJECT_ID = 50
 SCREENING_PROJECT_ID = 54
+REDCAP_INSTANCE = RedcapInstance.internal
 
 
 class IndapamideRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
@@ -48,7 +51,7 @@ class IndapamideRedcapMissingData(
         RedcapMissingData):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             [
                 'record_id',
@@ -99,7 +102,7 @@ class IndapamideScreeningRedcapMissingData(
         RedcapMissingData):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             SCREENING_PROJECT_ID,
             [
                 'record_id',
@@ -143,7 +146,7 @@ class IndapamideRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             [RECIPIENT_ADMIN]
         )
@@ -153,7 +156,7 @@ class IndapamideScreeningRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             SCREENING_PROJECT_ID,
             [RECIPIENT_ADMIN]
         )
@@ -163,7 +166,7 @@ class IndapamideRedcapInvalidStudyNumber(
         RedcapInvalidStudyNumber):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             ['record_id'],
             [RECIPIENT_ADMIN]
@@ -174,7 +177,7 @@ class IndapamideRedcapRecordInvalidStudyNumber(
         RedcapRecordInvalidStudyNumber):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             [RECIPIENT_ADMIN]
         )
@@ -184,7 +187,7 @@ class IndapamideRedcapInvalidBloodPressureVisit1(
         RedcapInvalidBloodPressure):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             'v1_systolic',
             'v1_diastolic',
@@ -196,7 +199,7 @@ class IndapamideRedcapInvalidBloodPressureVisit2(
         RedcapInvalidBloodPressure):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             'v2_systolic',
             'v2_diastolic',
@@ -208,7 +211,7 @@ class IndapamideRedcapInvalidBloodPressureVisit3(
         RedcapInvalidBloodPressure):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             'v3_systolic',
             'v3_diastolic',
@@ -220,7 +223,7 @@ class IndapamideRedcapInvalidBloodPressureVisit4(
         RedcapInvalidBloodPressure):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             'v4_systolic',
             'v4_diastolic',
@@ -232,7 +235,7 @@ class IndapamideRedcapInvalidPulse(
         RedcapInvalidPulse):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             [
                 'v1_hr',
@@ -248,7 +251,7 @@ class IndapamideRedcapInvalidHeightInCm(
         RedcapInvalidHeightInCm):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             ['v1_height'],
             [RECIPIENT_ADMIN]
@@ -259,7 +262,7 @@ class IndapamideRedcapInvalidWeightInKg(
         RedcapInvalidWeightInKg):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             [
                 'v1_weight',
@@ -275,8 +278,26 @@ class IndapamideRedcapInvalidBmi(
         RedcapInvalidBmi):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
+            REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             ['v1_bmi'],
+            [RECIPIENT_ADMIN]
+        )
+
+
+class IndapamideRedcapCrfWebDataQuality(RedcapWebDataQuality):
+    def __init__(self):
+        super().__init__(
+            REDCAP_INSTANCE,
+            CRF_PROJECT_ID,
+            [RECIPIENT_ADMIN]
+        )
+
+
+class IndapamideRedcapScreeningcapWebDataQuality(RedcapWebDataQuality):
+    def __init__(self):
+        super().__init__(
+            REDCAP_INSTANCE,
+            SCREENING_PROJECT_ID,
             [RECIPIENT_ADMIN]
         )

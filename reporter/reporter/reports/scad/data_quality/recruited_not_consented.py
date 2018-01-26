@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.redcap import get_redcap_link
 from reporter.reports.emailing import (
     RECIPIENT_SCAD_MANAGER,
@@ -8,7 +8,7 @@ from reporter.reports.emailing import (
 )
 
 
-class ScadRecruitedNotConsentedReport(Report):
+class ScadRecruitedNotConsentedReport(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following SCAD participants are "

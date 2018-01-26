@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.civicrm import (
     get_case_link,
     get_contact_id_search_link,
@@ -8,7 +8,7 @@ from reporter.reports.civicrm import (
 )
 
 
-class DuplicateStudyIdReport(Report):
+class DuplicateStudyIdReport(SqlReport):
     def __init__(self, case_type_id, recipients, schedule=None):
         super().__init__(
             introduction=("The following study IDs "
@@ -45,7 +45,7 @@ HAVING COUNT(*) > 1
                 row['StudyNumber']))
 
 
-class MissingStudyNumber(Report):
+class MissingStudyNumber(SqlReport):
     def __init__(self, case_type_id, recipients, schedule=None):
         super().__init__(
             introduction=("The following enrolments do not have "
@@ -80,7 +80,7 @@ WHERE cd.case_status_id IN (
                 row['civicrm_contact_id']))
 
 
-class MultipleRecruitementsReport(Report):
+class MultipleRecruitementsReport(SqlReport):
     def __init__(self, case_type_id, recipients, schedule=None):
         super().__init__(
             introduction=("The following contacts have "
@@ -116,7 +116,7 @@ HAVING COUNT(*) > 1
                 row['civicrm_contact_id']))
 
 
-class MissingNhsNumberReport(Report):
+class MissingNhsNumberReport(SqlReport):
     def __init__(self, case_type_id, recipients, schedule=None):
         super().__init__(
             introduction=("The following contacts do not have "
@@ -150,7 +150,7 @@ WHERE cd.case_status_id IN (
                 row['civicrm_contact_id']))
 
 
-class MissingUhlSystemNumberAndNhsNumberReport(Report):
+class MissingUhlSystemNumberAndNhsNumberReport(SqlReport):
     def __init__(self, case_type_id, recipients, schedule=None):
         super().__init__(
             introduction=("The following contacts do not have "
@@ -185,7 +185,7 @@ WHERE cd.case_status_id IN (
                 row['civicrm_contact_id']))
 
 
-class CivicrmInvalidCaseStatus(Report):
+class CivicrmInvalidCaseStatus(SqlReport):
     def __init__(self, case_type_id, valid_statuses, recipients):
         super().__init__(
             introduction=("The following cases have "

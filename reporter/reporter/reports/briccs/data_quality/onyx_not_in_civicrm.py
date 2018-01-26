@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.emailing import RECIPIENT_IT_DWH
 
 
-class BriccsInOnyxNotInCiviCrm(Report):
+class BriccsInOnyxNotInCiviCrm(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following Glenfield participants are "

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 
 # Abstract Reports
 
 
-class RedcapMissingData(Report):
+class RedcapMissingData(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -67,7 +67,7 @@ ORDER BY pe.record
         )
 
 
-class RedcapMissingDataWhen(Report):
+class RedcapMissingDataWhen(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -141,7 +141,7 @@ ORDER BY pe.record
         )
 
 
-class RedcapMissingAllWhen(Report):
+class RedcapMissingAllWhen(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -203,7 +203,7 @@ ORDER BY r.record
                 row['record'], row['project_id'], row['record']))
 
 
-class RedcapInvalidNhsNumber(Report):
+class RedcapInvalidNhsNumber(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -248,7 +248,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidStudyNumber(Report):
+class RedcapInvalidStudyNumber(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -293,7 +293,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapRecordInvalidStudyNumber(Report):
+class RedcapRecordInvalidStudyNumber(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -333,7 +333,7 @@ GROUP BY
         )
 
 
-class RedcapInvalidUhlSystemNumber(Report):
+class RedcapInvalidUhlSystemNumber(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -378,7 +378,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidPostCode(Report):
+class RedcapInvalidPostCode(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -423,7 +423,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidEmailAddress(Report):
+class RedcapInvalidEmailAddress(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -469,7 +469,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidBloodPressure(Report):
+class RedcapInvalidBloodPressure(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -551,7 +551,7 @@ WHERE x.error_message IS NOT NULL
         )
 
 
-class RedcapInvalidPulse(Report):
+class RedcapInvalidPulse(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -599,7 +599,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidHeightInCm(Report):
+class RedcapInvalidHeightInCm(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -647,7 +647,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidHeightInM(Report):
+class RedcapInvalidHeightInM(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -695,7 +695,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidDate(Report):
+class RedcapInvalidDate(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -755,7 +755,7 @@ WHERE  e.project_id = %s
         )
 
 
-class RedcapInvalidHeightInFeetAndInches(Report):
+class RedcapInvalidHeightInFeetAndInches(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -838,7 +838,7 @@ WHERE x.error_message IS NOT NULL
         )
 
 
-class RedcapInvalidWeightInKg(Report):
+class RedcapInvalidWeightInKg(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -886,7 +886,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapInvalidWeightInStonesAndPounds(Report):
+class RedcapInvalidWeightInStonesAndPounds(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -967,7 +967,7 @@ WHERE x.error_message IS NOT NULL
         )
 
 
-class RedcapInvalidBmi(Report):
+class RedcapInvalidBmi(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -1015,7 +1015,7 @@ WHERE e.project_id = %s
         )
 
 
-class RedcapOutsideAgeRange(Report):
+class RedcapOutsideAgeRange(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -1073,7 +1073,7 @@ WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         )
 
 
-class RedcapImpliesCheck(Report):
+class RedcapImpliesCheck(SqlReport):
     def __init__(
         self,
         redcap_instance,
@@ -1139,7 +1139,7 @@ WHERE a.project_id = %s
         )
 
 
-class RedcapXrefMismatch(Report):
+class RedcapXrefMismatch(SqlReport):
     def __init__(
         self,
         redcap_instance_a,

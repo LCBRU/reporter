@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.civicrm import get_case_link, get_contact_link
 
 
-class ValidEnrolmentsStudyIdDuplicates(Report):
+class ValidEnrolmentsStudyIdDuplicates(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following recruited participants have "
@@ -35,7 +35,7 @@ class ValidEnrolmentsStudyIdDuplicates(Report):
                 row["CiviCrmId"]))
 
 
-class ValidEnrolmentsContactMultipleRecruitments(Report):
+class ValidEnrolmentsContactMultipleRecruitments(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants have multiple "

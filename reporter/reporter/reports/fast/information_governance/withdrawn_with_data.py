@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.emailing import (
     RECIPIENT_FAST_MANAGER,
     RECIPIENT_FAST_ADMIN,
 )
 
 
-class FastWithdrawnWithDataReport(Report):
+class FastWithdrawnWithDataReport(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("Withdrawn participants with data "

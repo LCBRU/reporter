@@ -5,7 +5,9 @@ import pymssql
 from enum import Enum
 from reporter.reports.redcap import (
     get_redcap_link,
-    get_redcap_external_link
+    get_redcap_external_link,
+    BASE_URL_INTERNAL,
+    BASE_URL_EXTERNAL,
 )
 
 
@@ -24,13 +26,15 @@ class RedcapInstance(Enum):
     def internal():
         return {
             'staging_database': 'STG_redcap',
-            'link_generator': get_redcap_link
+            'link_generator': get_redcap_link,
+            'base_url': BASE_URL_INTERNAL,
         }
 
     def external():
         return {
             'staging_database': 'STG_redcap_briccsext',
-            'link_generator': get_redcap_external_link
+            'link_generator': get_redcap_external_link,
+            'base_url': BASE_URL_EXTERNAL,
         }
 
 

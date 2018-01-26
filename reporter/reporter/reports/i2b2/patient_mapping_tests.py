@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report
+from reporter.reports import SqlReport
 from reporter.reports.civicrm import get_contact_link
 from reporter.reports.emailing import RECIPIENT_IT_DWH
 
 
-class PatientMappingDuplicatesReport(Report):
+class PatientMappingDuplicatesReport(SqlReport):
     def __init__(self, database, schedule=None):
         super().__init__(
             introduction='''
@@ -27,7 +27,7 @@ class PatientMappingDuplicatesReport(Report):
         )
 
 
-class PatientMappingMultiplesIdsReport(Report):
+class PatientMappingMultiplesIdsReport(SqlReport):
     def __init__(self, database, schedule=None):
         super().__init__(
             introduction=("Paticipants with multiple study "

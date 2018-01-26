@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Report, Schedule
+from reporter.reports import SqlReport, Schedule
 from reporter.reports.civicrm import get_contact_link
 from reporter.reports.emailing import RECIPIENT_IT_DQ
 
 
-class CivicrmPracticeDuplicateName(Report):
+class CivicrmPracticeDuplicateName(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following GP Practices have "
