@@ -18,7 +18,10 @@ SELECT
 FROM STG_CiviCRM.dbo.civicrm_address a
 JOIN STG_CiviCRM.dbo.civicrm_contact con
     ON con.id = a.contact_id
+    AND con.is_deleted = 0
 WHERE i2b2ClinDataIntegration.dbo.isInvalidPostcode(postal_code) = 1
+    AND a.country_id = 1226 -- UK
+
                 ''',
                 schedule=Schedule.daily
         )
