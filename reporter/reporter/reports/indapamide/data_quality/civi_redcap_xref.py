@@ -6,7 +6,7 @@ from reporter.reports.redcap import get_redcap_link
 from reporter.reports.civicrm import get_case_link
 
 
-class CivicrmNotInRedcap(SqlReport):
+class IndapamideCivicrmNotInRedcap(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants have "
@@ -22,7 +22,7 @@ FROM    i2b2_app03_indapamide_Data.dbo.LOAD_Civicrm c
 WHERE NOT EXISTS (
     SELECT 1
     FROM i2b2_app03_indapamide_Data.dbo.LOAD_Redcap r
-    WHERE r.UhlSystemNumber = c.UhlSystemNumber
+    WHERE r.StudyNumber = c.StudyNumber
 )
 
                 '''
@@ -37,7 +37,7 @@ WHERE NOT EXISTS (
             ))
 
 
-class RedcapNotInCiviCrm(SqlReport):
+class IndapamideRedcapNotInCiviCrm(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants have "
@@ -46,14 +46,14 @@ class RedcapNotInCiviCrm(SqlReport):
             recipients=[RECIPIENT_INDAPAMIDE_ADMIN],
             sql='''
 
-SELECT UhlSystemNumber
+SELECT StudyNumber
 FROM    i2b2_app03_indapamide_Data.dbo.LOAD_Redcap r
 WHERE
     full_consent = 1
     AND NOT EXISTS (
         SELECT 1
         FROM i2b2_app03_indapamide_Data.dbo.LOAD_Civicrm c
-        WHERE r.UhlSystemNumber = c.UhlSystemNumber
+        WHERE r.StudyNumber = c.StudyNumber
     )
                 '''
         )
@@ -61,7 +61,7 @@ WHERE
     def get_report_line(self, row):
         return '- {}\r\n'.format(
             get_redcap_link(
-                row['UhlSystemNumber'] or 'Click Here',
+                row['StudyNumber'] or 'Click Here',
                 50,
-                row['UhlSystemNumber'],
+                row['StudyNumber'],
             ))
