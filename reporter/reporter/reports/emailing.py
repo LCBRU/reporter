@@ -97,6 +97,8 @@ def send_markdown_email(
 def get_recipients(recipients):
     result = set()
 
+    recipients.append(RECIPIENT_IT_DQ)
+
     list_of_recs = [os.getenv(r) for r in recipients]
 
     for lr in list_of_recs:
