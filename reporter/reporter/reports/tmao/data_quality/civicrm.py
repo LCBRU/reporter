@@ -9,25 +9,27 @@ from reporter.reports.civicrm.enrolment_dq import (
     CivicrmInvalidCaseStatus
 )
 
+CASE_TYPE_ID = 12
+
 
 class TmaoCiviCrmMissingStudyNumber(MissingStudyNumber):
     def __init__(self):
         super().__init__(
-            12,
+            CASE_TYPE_ID,
             recipients=[RECIPIENT_TMAO_ADMIN])
 
 
 class TmaoCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
     def __init__(self):
         super().__init__(
-            12,
+            CASE_TYPE_ID,
             recipients=[RECIPIENT_TMAO_ADMIN])
 
 
 class TmaoCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
     def __init__(self):
         super().__init__(
-            12,
+            CASE_TYPE_ID,
             recipients=[RECIPIENT_TMAO_ADMIN])
 
 
@@ -35,14 +37,14 @@ class TmaoCiviCrmMissingUhlNumberAndNhsNumber(
         MissingUhlSystemNumberAndNhsNumberReport):
     def __init__(self):
         super().__init__(
-            12,
+            CASE_TYPE_ID,
             recipients=[RECIPIENT_TMAO_ADMIN])
 
 
 class TmaoCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
     def __init__(self):
         super().__init__(
-            10,
+            CASE_TYPE_ID,
             [
                 'Recruited',
                 'Declined',
