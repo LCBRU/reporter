@@ -15,6 +15,15 @@ from reporter.reports.emailing import (
 from reporter.reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.reports.redcap.data_quality import (
+    RedcapInvalidDate,
+    RedcapInvalidStudyNumber,
+    RedcapRecordInvalidStudyNumber,
+    RedcapInvalidHeightInCm,
+    RedcapInvalidHeightInFeetAndInches,
+    RedcapInvalidWeightInKg,
+    RedcapInvalidWeightInStonesAndPounds,
+)
 
 REDCAP_PROJECT_ID = 9
 REDCAP_INSTANCE = RedcapInstance.internal
@@ -23,22 +32,101 @@ REDCAP_INSTANCE = RedcapInstance.internal
 class BioresRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
     def __init__(self):
         super().__init__(
-            'Bioresource',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            study_name='Bioresource',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER]
+        )
 
 
 class BioresourceRedcapWithdrawnOrExcludedWithDataReport(
         RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
-            'Bioresource',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            study_name='Bioresource',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER]
+        )
 
 
 class BioresourceRedcapWebDataQuality(RedcapWebDataQuality):
     def __init__(self):
         super().__init__(
-            REDCAP_INSTANCE,
-            REDCAP_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            recipients=[RECIPIENT_IT_DQ]
+        )
+
+
+class BioresourceRedcapInvalidDate(
+        RedcapInvalidDate):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class BioresourceRedcapInvalidStudyNumber(
+        RedcapInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['record_id'],
+            recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class BioresourceRedcapRecordInvalidStudyNumber(
+        RedcapRecordInvalidStudyNumber):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class BioresourceRedcapInvalidHeightInCm(
+        RedcapInvalidHeightInCm):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['your_height_centimetres'],
+            recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class BioresourceRedcapInvalidHeightInFeetAndInches(
+        RedcapInvalidHeightInFeetAndInches):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            feet_field='your_height_feet',
+            inches_field='your_height_inches',
+            recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class BioresourceRedcapInvalidWeightInKg(
+        RedcapInvalidWeightInKg):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['your_weight_kg'],
+            recipients=[RECIPIENT_ADMIN]
+        )
+
+
+class BioresourceRedcapInvalidWeightInStonesAndPounds(
+        RedcapInvalidWeightInStonesAndPounds):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_PROJECT_ID,
+            stones_field='your_weight_stones',
+            pounds_field='your_weight_pounds',
+            recipients=[RECIPIENT_ADMIN]
         )
