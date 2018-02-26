@@ -35,6 +35,33 @@ class RedcapWebDataQuality(Report):
 
     def get_report(self):
 
+        reports = [
+            {
+                'message': 'Missing Required Fields',
+                'div': '6'
+            },
+            {
+                'message': 'Invalid Data Type',
+                'div': '4'
+            },
+            {
+                'message': 'Out of Range',
+                'div': '9'
+            },
+            {
+                'message': 'Hidden fields that contain values',
+                'div': '7'
+            },
+            {
+                'message': 'Invalid Multiple Fields',
+                'div': '8'
+            },
+            {
+                'message': 'Incorrect Calculated Fields',
+                'div': '10'
+            },
+        ]
+
         with SeleniumGrid(SeleniumGrid.CHROME) as driver:
 
             self.login(driver)
@@ -52,18 +79,19 @@ class RedcapWebDataQuality(Report):
                 "subheaderDiv2"
             ).text
 
-            missing_required_fields = self.get_count(driver, 'ruleexe_pd-6')
-            invalid_multiple_fields = self.get_count(driver, 'ruleexe_pd-8')
+            for r in reports:
+                r['errors'] = self.get_count(
+                    driver,
+                    'ruleexe_pd-{}'.format(r['div'])
+                )
 
         errors = ''
 
-        if missing_required_fields != "0":
-            errors += "- Missing Required Fields: {}\r\n\r\n".format(
-                missing_required_fields)
-
-        if invalid_multiple_fields != "0":
-            errors += "- Invalid Multiple Fields: {}\r\n\r\n".format(
-                invalid_multiple_fields)
+        for r in [r for r in reports if r['errors'] != '0']:
+            errors += '- {}: {}\r\n\r\n'.format(
+                r['message'],
+                r['errors']
+            )
 
         if errors:
             markdown = (
