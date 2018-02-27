@@ -16,26 +16,21 @@ class GenvascInvalidRecruitingPracticeCount(SqlReport):
             sql='''
 
 SELECT
-    cas.id [civicrm_case_id],
-    cas_con.contact_id [civicrm_contact_id],
-    gen.genvasc_id_10 [StudyNumber],
+    cas.civicrm_case_id,
+    cas.civicrm_contact_id,
+    cas.StudyNumber,
     COUNT(DISTINCT recruiting_gp_rel.contact_id_b) [recruiting_practices]
-FROM    STG_CiviCRM.dbo.civicrm_case cas
-JOIN    STG_CiviCRM.dbo.civicrm_case_contact cas_con
-    ON cas_con.case_id = cas.id
-JOIN    STG_CiviCRM.dbo.civicrm_value_genvasc_recruitment_data_5 gen
-    ON gen.entity_id = cas.id
+FROM STG_CiviCRM.[dbo].[LCBRU_CaseDetails] cas
 LEFT JOIN   STG_CiviCRM.dbo.civicrm_relationship recruiting_gp_rel
-    ON recruiting_gp_rel.case_id = cas.id
+    ON recruiting_gp_rel.case_id = cas.civicrm_case_id
     AND recruiting_gp_rel.relationship_type_id = 24 -- Recruiting Site
     AND COALESCE(recruiting_gp_rel.start_date, GETDATE()) <= GETDATE()
     AND COALESCE(recruiting_gp_rel.end_date, GETDATE()) > = GETDATE()
 WHERE cas.case_type_id = 3 -- GENVASC
-    AND cas.is_deleted = 0
 GROUP BY
-    cas.id,
-    cas_con.contact_id,
-    gen.genvasc_id_10
+    cas.civicrm_case_id,
+    cas.civicrm_contact_id,
+    cas.StudyNumber
 HAVING COUNT(DISTINCT recruiting_gp_rel.contact_id_b) <> 1
 
                 '''
