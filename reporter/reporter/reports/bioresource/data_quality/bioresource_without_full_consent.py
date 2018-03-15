@@ -23,7 +23,7 @@ WHERE
     AND b.is_recruited = 1
     AND NOT EXISTS (
         SELECT 1
-        FROM    i2b2_app03_bioresource_Data.dbo.Load_Fully_Consented
+        FROM    i2b2_app03_bioresource_Data.dbo.Load_FullyConsented
         WHERE   bioresource_or_legacy_id = b.bioresource_id
             OR bioresource_or_legacy_id = b.legacy_bioresource_id
     )

@@ -14,6 +14,7 @@ from reporter.reports.i2b2.patient_summary_tests import (
 from reporter.reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsStudyIdDuplicates,
     ValidEnrolmentsContactMultipleRecruitments,
+    RecruitedWithoutFullConsent,
 )
 from reporter.reports.emailing import (
     RECIPIENT_BIORESOURCE_ADMIN as RECIPIENT_ADMIN,
@@ -103,7 +104,7 @@ WHERE is_recruited = 1
         SELECT 1
         FROM [i2b2_app03_bioresource_Data].[dbo].PatientSummary
         WHERE StudyNumber = a.bioresource_id
-    )
+)
 
                 '''
         )
@@ -114,3 +115,12 @@ WHERE is_recruited = 1
                 'Click to View',
                 row["civicrm_case_id"],
                 row["civicrm_contact_id"]))
+
+
+class BioresourceRecruitedWithoutFullConsent(
+        RecruitedWithoutFullConsent):
+    def __init__(self):
+        super().__init__(
+            I2B2_DB,
+            [RECIPIENT_ADMIN]
+        )

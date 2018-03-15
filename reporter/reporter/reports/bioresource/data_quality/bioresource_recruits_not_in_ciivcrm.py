@@ -19,7 +19,7 @@ SELECT  CONVERT(VARCHAR(100), a.bioresource_or_legacy_id) as bioresource_id,
       + CASE WHEN joint_briccs_consent = 1 THEN 'Joint BRICCS; ' ELSE '' END
     AS [context]
 
-FROM i2b2_app03_bioresource_Data.dbo.Load_Fully_Consented a
+FROM i2b2_app03_bioresource_Data.dbo.Load_FullyConsented a
 WHERE NOT EXISTS (
     SELECT 1
     FROM i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource b

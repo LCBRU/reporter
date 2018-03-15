@@ -2,6 +2,9 @@
 
 from reporter.reports import SqlReport
 from reporter.reports.emailing import RECIPIENT_BRICCS_ADMIN
+from reporter.reports.civicrm import (
+    get_contact_id_search_link,
+)
 
 
 class BriccsRecruitedWithoutFullConsent(SqlReport):
@@ -27,4 +30,7 @@ WHERE NOT EXISTS (
         )
 
     def get_report_line(self, row):
-        return '- {} ({})\r\n'.format(row["StudyNumber"], row["Source"])
+        return '- {}\r\n'.format(
+            get_contact_id_search_link(
+                row['StudyNumber'],
+                row['StudyNumber']))

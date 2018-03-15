@@ -12,6 +12,8 @@ from reporter.reports.i2b2.patient_summary_tests import (
 from reporter.reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsStudyIdDuplicates,
     ValidEnrolmentsContactMultipleRecruitments,
+    RecruitedWithoutFullConsent,
+    PatientSummaryMissingRecruited,
 )
 from reporter.reports.emailing import (
     RECIPIENT_SCAD_ADMIN as RECIPIENT_ADMIN,
@@ -76,6 +78,24 @@ class ScadValidEnrolmentsStudyIdDuplicates(
 
 class ScadValidEnrolmentsContactMultipleRecruitments(
         ValidEnrolmentsContactMultipleRecruitments):
+    def __init__(self):
+        super().__init__(
+            I2B2_DB,
+            [RECIPIENT_ADMIN]
+        )
+
+
+class ScadRecruitedWithoutFullConsent(
+        RecruitedWithoutFullConsent):
+    def __init__(self):
+        super().__init__(
+            I2B2_DB,
+            [RECIPIENT_ADMIN]
+        )
+
+
+class ScadPatientSummaryMissingRecruited(
+        PatientSummaryMissingRecruited):
     def __init__(self):
         super().__init__(
             I2B2_DB,

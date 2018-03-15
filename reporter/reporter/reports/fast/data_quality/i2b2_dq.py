@@ -14,6 +14,8 @@ from reporter.reports.i2b2.patient_summary_tests import (
 from reporter.reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsStudyIdDuplicates,
     ValidEnrolmentsContactMultipleRecruitments,
+    RecruitedWithoutFullConsent,
+    PatientSummaryMissingRecruited,
 )
 from reporter.reports.emailing import (
     RECIPIENT_FAST_ADMIN as RECIPIENT_ADMIN,
@@ -81,29 +83,19 @@ class FastValidEnrolmentsContactMultipleRecruitments(
         )
 
 
-class FastPatientSummaryMissingRecruited(SqlReport):
+class FastRecruitedWithoutFullConsent(
+        RecruitedWithoutFullConsent):
     def __init__(self):
         super().__init__(
-            introduction=("The following participants have an error "
-                          "so they have not reached i2b2"),
-            recipients=[RECIPIENT_IT_DWH],
-            sql='''
-
-SELECT  StudyNumber, civicrm_case_id, civicrm_contact_id
-FROM [i2b2_app03_fast_Data].[dbo].LOAD_Civicrm a
-WHERE is_recruited = 1
-    AND NOT EXISTS (
-        SELECT 1
-        FROM [i2b2_app03_fast_Data].[dbo].PatientSummary
-        WHERE StudyNumber = a.StudyNumber
-    )
-
-                '''
+            I2B2_DB,
+            [RECIPIENT_ADMIN]
         )
 
-    def get_report_line(self, row):
-        return '- {}\r\n\r\n'.format(
-            get_case_link(
-                row["StudyNumber"] or 'Click to View',
-                row["civicrm_case_id"],
-                row["civicrm_contact_id"]))
+
+class FastPatientSummaryMissingRecruited(
+        PatientSummaryMissingRecruited):
+    def __init__(self):
+        super().__init__(
+            I2B2_DB,
+            [RECIPIENT_ADMIN]
+        )

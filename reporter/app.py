@@ -4,6 +4,8 @@ import schedule
 import time
 import logging
 import argparse
+import traceback
+
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -11,6 +13,7 @@ logging.basicConfig(
 )
 
 from reporter.reports import get_concrete_reports
+from reporter.reports.emailing import email_error
 
 
 def schedule_reports():
@@ -22,8 +25,12 @@ def schedule_reports():
     logging.info("---- All reports scheduled ----")
 
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        try:
+            schedule.run_pending()
+            time.sleep(1)
+        except Exception:
+            logging.error(traceback.format_exc())
+            email_error('Scheduled', traceback.format_exc())
 
 
 def run_reports(report_name, exclude):
@@ -35,7 +42,11 @@ def run_reports(report_name, exclude):
             continue
 
         if type(r).__name__[:len(report_name)].lower() == report_name.lower():
-            r.run()
+            try:
+                r.run()
+            except Exception:
+                logging.error(traceback.format_exc())
+                email_error(r._name, traceback.format_exc())
 
 
 def run_all(exclude):

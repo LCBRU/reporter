@@ -17,8 +17,8 @@ class CardiometCivicrmNotInRedcap(SqlReport):
             recipients=[RECIPIENT_ADMIN],
             sql='''
 
-SELECT c.CaseId,
-        c.CiviCrmId,
+SELECT c.civicrm_case_id,
+        c.civicrm_contact_id,
         c.StudyNumber
 FROM    i2b2_app03_cardiomet_Data.dbo.LOAD_Civicrm c
 WHERE NOT EXISTS (
@@ -34,8 +34,8 @@ WHERE NOT EXISTS (
         return '- {}\r\n'.format(
             get_case_link(
                 row['StudyNumber'] or 'Click Here',
-                row['CaseId'],
-                row['CiviCrmId'],
+                row['civicrm_case_id'],
+                row['civicrm_contact_id'],
             ))
 
 

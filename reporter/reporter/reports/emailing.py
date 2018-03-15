@@ -94,6 +94,17 @@ def send_markdown_email(
     logging.info("{} Email Sent to {}".format(report_name, to_recipients))
 
 
+def email_error(report_name, error_text):
+    msg = MIMEText(error_text)
+    msg['Subject'] = 'Reporter: Error in ' + report_name
+    msg['To'] = DEFAULT_RECIPIENT
+    msg['From'] = EMAIL_FROM_ADDRESS
+
+    s = smtplib.SMTP(EMAIL_SMTP_SERVER)
+    s.send_message(msg)
+    s.quit()
+
+
 def get_recipients(recipients):
     result = set()
 
