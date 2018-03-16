@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import SqlReport
-from reporter.reports.emailing import RECIPIENT_BRICCS_ADMIN
+from reporter.reports.emailing import RECIPIENT_IT_DWH
 
 
 class BriccsNotInCivicrm(SqlReport):
@@ -10,7 +10,7 @@ class BriccsNotInCivicrm(SqlReport):
             introduction=("The following participants have "
                           "a record in REDCap, but do not have "
                           "a record in CiviCRM"),
-            recipients=[RECIPIENT_BRICCS_ADMIN],
+            recipients=[RECIPIENT_IT_DWH],
 
             sql='''
 

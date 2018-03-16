@@ -2,8 +2,7 @@
 
 from reporter.reports import SqlReport, Schedule
 from reporter.reports.emailing import (
-    RECIPIENT_FAST_MANAGER,
-    RECIPIENT_FAST_ADMIN,
+    RECIPIENT_IT_DWH,
 )
 from reporter.reports.redcap import get_redcap_link
 
@@ -14,7 +13,7 @@ class FastRedcapNotCivicrmReport(SqlReport):
             introduction=("The following FAST participants are "
                           "recruited in REDCap, but are not "
                           "recruited is CiviCRM:"),
-            recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
+            recipients=[RECIPIENT_IT_DWH],
             schedule=Schedule.weekly,
             sql='''
 SELECT

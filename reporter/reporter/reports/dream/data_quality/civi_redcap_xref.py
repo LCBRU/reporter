@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
 
+from reporter.reports import Schedule
 from reporter.reports.civicrm.civicrm_redcap_xref import (
     CivicrmNotInRedcap,
     RedcapNotInCiviCrm,
 )
 
-CASE_TYPE_ID = 19
-PROJECT_ID = 50
+CASE_TYPE_ID = 8
+PROJECT_ID = 4
 
 
-class IndapamideCivicrmNotInRedcap(CivicrmNotInRedcap):
+class DreamCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            project_id=PROJECT_ID,
+            schedule=Schedule.never,
         )
 
 
-class IndapamideRedcapNotInCiviCrm(RedcapNotInCiviCrm):
+class DreamRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            project_id=PROJECT_ID,
+            schedule=Schedule.never,
         )

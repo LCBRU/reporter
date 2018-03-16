@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import SqlReport
-from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN
+from reporter.reports.emailing import RECIPIENT_IT_DWH
 
 
 class BioresourceNotInCivicrm(SqlReport):
@@ -10,7 +10,7 @@ class BioresourceNotInCivicrm(SqlReport):
             introduction=("The following participants have "
                           "a record in REDCap, but do not have "
                           "a record in CiviCRM"),
-            recipients=[RECIPIENT_BIORESOURCE_ADMIN],
+            recipients=[RECIPIENT_IT_DWH],
             sql='''
 
 SELECT  CONVERT(VARCHAR(100), a.bioresource_or_legacy_id) as bioresource_id,

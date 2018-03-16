@@ -5,11 +5,11 @@ from reporter.reports.civicrm.civicrm_redcap_xref import (
     RedcapNotInCiviCrm,
 )
 
-CASE_TYPE_ID = 19
-PROJECT_ID = 50
+CASE_TYPE_ID = 22
+PROJECT_ID = 56
 
 
-class IndapamideCivicrmNotInRedcap(CivicrmNotInRedcap):
+class LentenCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
@@ -17,7 +17,7 @@ class IndapamideCivicrmNotInRedcap(CivicrmNotInRedcap):
         )
 
 
-class IndapamideRedcapNotInCiviCrm(RedcapNotInCiviCrm):
+class LentenRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,

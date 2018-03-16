@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports import SqlReport
-from reporter.reports.emailing import RECIPIENT_BRICCS_ADMIN
+from reporter.reports.emailing import RECIPIENT_IT_DWH
 from reporter.reports.civicrm import get_contact_id_search_link
 
 
@@ -11,7 +11,7 @@ class BriccsRecruitsNotInRedcapOrOnyx(SqlReport):
             introduction=("The following participants have "
                           "a record in CiviCRM, but do not have "
                           "a record in REDCap or Onyx"),
-            recipients=[RECIPIENT_BRICCS_ADMIN],
+            recipients=[RECIPIENT_IT_DWH],
             sql='''
 
 SELECT  studynumber, consent_date
