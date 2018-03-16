@@ -180,5 +180,6 @@ from reporter.reports.indapamide import *
 from reporter.reports.mari import *
 from reporter.reports.minerva import *
 from reporter.reports.scad import *
+from reporter.reports.spiral import *
 from reporter.reports.tmao import *
 from reporter.reports.predict import *
