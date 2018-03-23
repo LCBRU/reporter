@@ -183,3 +183,4 @@ from reporter.reports.scad import *
 from reporter.reports.spiral import *
 from reporter.reports.tmao import *
 from reporter.reports.predict import *
+from reporter.reports.preeclampsia import *
