@@ -25,6 +25,7 @@ LEFT JOIN [i2b2_app03_bioresource_Data].[dbo].[LOAD_Civicrm_Bioresource] cv
         OR cv.legacy_bioresource_id = rc.bioresource_id)
 WHERE
     rc.invalid_questionnaire = 0
+    AND COALESCE(excluded_yn, 0) = 0
     AND COALESCE(
         rc.consent_1,
         rc.consent_2,
