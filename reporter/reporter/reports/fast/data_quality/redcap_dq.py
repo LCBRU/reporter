@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import SqlReport
+from reporter.core import SqlReport
 from reporter.reports.databases import RedcapInstance
 from reporter.reports.emailing import (
     RECIPIENT_FAST_ADMIN as RECIPIENT_ADMIN,

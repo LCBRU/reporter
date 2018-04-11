@@ -2,7 +2,7 @@
 
 import math
 from itertools import groupby
-from reporter.reports import SqlReport
+from reporter.core import SqlReport
 
 
 class RedcapPercentageCompleteReport(SqlReport):

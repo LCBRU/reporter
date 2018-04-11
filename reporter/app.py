@@ -12,7 +12,8 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-from reporter.reports import get_concrete_reports
+import reporter.reports
+from reporter.core import get_concrete_reports
 from reporter.reports.emailing import email_error
 
 

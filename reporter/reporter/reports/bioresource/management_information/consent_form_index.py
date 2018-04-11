@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import PdfReport, Schedule
+from reporter.core import PdfReport, Schedule
 from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN
 
 

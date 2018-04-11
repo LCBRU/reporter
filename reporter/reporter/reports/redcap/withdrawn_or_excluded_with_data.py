@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from itertools import groupby
-from reporter.reports import SqlReport, Schedule
+from reporter.core import SqlReport, Schedule
 
 
 class RedcapWithdrawnOrExcludedWithDataReport(SqlReport):

@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
-from reporter.reports import Report
+from reporter.core import Report
 from reporter.reports.selenium import SeleniumGrid
 
 

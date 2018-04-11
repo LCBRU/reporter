@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Schedule
+from reporter.core import Schedule
 from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
     RedcapWithdrawnOrExcludedWithDataReport,
 )

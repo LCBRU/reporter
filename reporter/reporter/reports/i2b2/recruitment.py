@@ -5,7 +5,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from reporter.reports import SqlReport
+from reporter.core import SqlReport
 
 
 class CumulativeRecruitment(SqlReport):

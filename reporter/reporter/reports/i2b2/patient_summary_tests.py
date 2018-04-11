@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import SqlReport
+from reporter.core import SqlReport
 from reporter.reports.emailing import RECIPIENT_IT_DWH
 from reporter.reports.civicrm import get_case_link, get_contact_link
 

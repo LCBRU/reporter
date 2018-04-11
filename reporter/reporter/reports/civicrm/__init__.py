@@ -1,10 +1,3 @@
-from os.path import dirname, basename, isfile
-import glob
-
-modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [basename(f)[:-3] for f in modules if isfile(f)]
-
-
 def get_case_link(link_text, case_id, contact_id):
     CIVICRM_CASE_URL = ('[{}]('
                         'http://lcbru.xuhl-tr.nhs.uk/civicrm/contact/view/case'

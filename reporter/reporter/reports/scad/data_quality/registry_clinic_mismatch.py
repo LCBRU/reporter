@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import SqlReport, Schedule
+from reporter.core import SqlReport, Schedule
 from reporter.reports.emailing import RECIPIENT_SCAD_ADMIN
 from reporter.reports.redcap import get_redcap_link
 

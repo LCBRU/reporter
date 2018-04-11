@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import Schedule
+from reporter.core import Schedule
 from reporter.reports.civicrm.civicrm_redcap_xref import (
     CivicrmNotInRedcap,
     RedcapNotInCiviCrm,

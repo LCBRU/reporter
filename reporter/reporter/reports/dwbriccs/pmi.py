@@ -1,4 +1,4 @@
-from reporter.reports import SqlReport, Schedule
+from reporter.core import SqlReport, Schedule
 from reporter.reports.civicrm import get_contact_id_search_link
 from reporter.reports.databases import DatabaseConnection
 

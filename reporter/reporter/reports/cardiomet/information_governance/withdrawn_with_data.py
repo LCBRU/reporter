@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import SqlReport, Schedule
+from reporter.core import SqlReport, Schedule
 from reporter.reports.emailing import (
     RECIPIENT_CARDIOMET_MANAGER as RECIPIENT_MANAGER,
     RECIPIENT_CARDIOMET_ADMIN as RECIPIENT_ADMIN,

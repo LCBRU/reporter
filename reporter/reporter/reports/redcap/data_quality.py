@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import SqlReport
+from reporter.core import SqlReport
 
 # Abstract Reports
 

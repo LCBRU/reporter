@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports import SqlReport, Schedule
+from reporter.core import SqlReport, Schedule
 from reporter.reports.civicrm import (
     get_case_link,
     get_contact_id_search_link,
