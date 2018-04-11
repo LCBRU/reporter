@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from reporter.reports.databases import RedcapInstance
-from reporter.reports.emailing import (
+from reporter.databases import RedcapInstance
+from reporter.emailing import (
     RECIPIENT_FAST_ADMIN,
 )
 from reporter.reports.redcap.data_quality import (

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.reports.dwbriccs.pmi import PmiPatientMismatch
-from reporter.reports.emailing import RECIPIENT_GENVASC_ADMIN
+from reporter.emailing import RECIPIENT_GENVASC_ADMIN
 
 
 class GenvascPmiPatientMismatch(PmiPatientMismatch):

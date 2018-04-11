@@ -7,8 +7,8 @@ from datetime import date
 from enum import Enum
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
-from reporter.reports.emailing import send_markdown_email
-from reporter.reports.databases import DatabaseConnection
+from reporter.emailing import send_markdown_email
+from reporter.databases import DatabaseConnection
 
 
 class Schedule(Enum):

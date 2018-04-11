@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from reporter.reports.databases import RedcapInstance
-from reporter.reports.emailing import (
+from reporter.databases import RedcapInstance
+from reporter.emailing import (
     RECIPIENT_PREECLAMPSIA_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_PREECLAMPSIA_MANAGER as RECIPIENT_MANAGER,
     RECIPIENT_IT_DQ,

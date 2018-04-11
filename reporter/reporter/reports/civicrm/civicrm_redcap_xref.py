@@ -3,7 +3,7 @@
 from reporter.core import SqlReport
 from reporter.reports.redcap import get_redcap_link
 from reporter.reports.civicrm import get_case_link
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_IT_DWH
 )
 

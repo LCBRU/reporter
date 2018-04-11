@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import SqlReport, Schedule
-from reporter.reports.emailing import RECIPIENT_GENVASC_ADMIN
+from reporter.emailing import RECIPIENT_GENVASC_ADMIN
 from reporter.reports.civicrm import get_case_link
 
 

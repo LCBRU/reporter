@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import SqlReport
-from reporter.reports.emailing import RECIPIENT_IT_DWH
+from reporter.emailing import RECIPIENT_IT_DWH
 
 
 class BioresourceNotInCivicrm(SqlReport):

@@ -17,7 +17,7 @@ from reporter.reports.i2b2.valid_enrolment_tests import (
     RecruitedWithoutFullConsent,
     PatientSummaryMissingRecruited,
 )
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_FAST_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_IT_DWH,
 )

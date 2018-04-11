@@ -2,7 +2,7 @@
 
 from reporter.core import SqlReport
 from reporter.reports.redcap import get_redcap_link
-from reporter.reports.emailing import RECIPIENT_SCAD_ADMIN
+from reporter.emailing import RECIPIENT_SCAD_ADMIN
 
 
 class ClinicalVisitWithoutRegId(SqlReport):

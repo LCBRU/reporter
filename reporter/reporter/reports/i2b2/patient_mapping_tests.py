@@ -2,7 +2,7 @@
 
 from reporter.core import SqlReport
 from reporter.reports.civicrm import get_contact_link
-from reporter.reports.emailing import RECIPIENT_IT_DWH
+from reporter.emailing import RECIPIENT_IT_DWH
 
 
 class PatientMappingDuplicatesReport(SqlReport):

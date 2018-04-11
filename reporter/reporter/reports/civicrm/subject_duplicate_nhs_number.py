@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import SqlReport, Schedule
-from reporter.reports.emailing import RECIPIENT_IT_DQ
+from reporter.emailing import RECIPIENT_IT_DQ
 from reporter.reports.civicrm import get_contact_id_search_link
 
 

@@ -2,7 +2,7 @@
 
 from reporter.core import SqlReport
 from reporter.reports.civicrm import get_case_link, get_contact_id_search_link
-from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN
+from reporter.emailing import RECIPIENT_BIORESOURCE_ADMIN
 
 
 class BioresourceWithoutCheckStudyQuestionnaire(SqlReport):

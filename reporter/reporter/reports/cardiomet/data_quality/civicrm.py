@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_CARDIOMET_ADMIN as RECIPIENT_ADMIN
 )
 from reporter.reports.civicrm.enrolment_dq import (

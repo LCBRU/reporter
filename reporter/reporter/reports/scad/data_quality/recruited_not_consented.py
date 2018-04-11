@@ -2,7 +2,7 @@
 
 from reporter.core import SqlReport, Schedule
 from reporter.reports.redcap import get_redcap_link
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_SCAD_MANAGER,
     RECIPIENT_SCAD_ADMIN,
 )

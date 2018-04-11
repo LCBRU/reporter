@@ -2,7 +2,7 @@
 
 from reporter.core import SqlReport, Schedule
 from reporter.reports.civicrm import get_contact_link
-from reporter.reports.emailing import RECIPIENT_IT_DQ
+from reporter.emailing import RECIPIENT_IT_DQ
 
 
 class CivicrmPracticeDuplicateName(SqlReport):

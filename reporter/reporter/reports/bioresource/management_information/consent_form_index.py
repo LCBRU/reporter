@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import PdfReport, Schedule
-from reporter.reports.emailing import RECIPIENT_BIORESOURCE_ADMIN
+from reporter.emailing import RECIPIENT_BIORESOURCE_ADMIN
 
 
 class BioresourceConsentFormIndex(PdfReport):

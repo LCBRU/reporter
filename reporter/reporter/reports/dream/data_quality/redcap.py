@@ -7,7 +7,7 @@ from reporter.reports.redcap.withdrawn_or_excluded_with_data import (
 from reporter.reports.redcap.redcap_percentage_complete import (
     RedcapPercentageCompleteReport,
 )
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_DREAM_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_DREAM_MANAGER as RECIPIENT_MANAGER,
 )

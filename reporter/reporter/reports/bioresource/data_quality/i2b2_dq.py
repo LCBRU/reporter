@@ -16,7 +16,7 @@ from reporter.reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsContactMultipleRecruitments,
     RecruitedWithoutFullConsent,
 )
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_BIORESOURCE_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_IT_DWH,
 )

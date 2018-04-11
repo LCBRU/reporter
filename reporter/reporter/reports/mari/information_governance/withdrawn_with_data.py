@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import SqlReport, Schedule
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_MARI_MANAGER,
     RECIPIENT_MARI_ADMIN
 )

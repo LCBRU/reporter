@@ -16,7 +16,7 @@ from reporter.reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsContactMultipleRecruitments,
     PatientSummaryMissingRecruited,
 )
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_BRICCS_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_IT_DWH,
 )

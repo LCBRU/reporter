@@ -3,7 +3,7 @@
 from reporter.reports.i2b2.recruitment import (
     CumulativeRecruitment,
 )
-from reporter.reports.emailing import (
+from reporter.emailing import (
     RECIPIENT_BIORESOURCE_MANAGER as RECIPIENT_MANAGER,
 )
 
