@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
 from reporter.core import Report
-from reporter.reports.selenium import SeleniumGrid
+from reporter.selenium import SeleniumGrid
 
 
 class RedcapWebDataQuality(Report):
