@@ -3,7 +3,7 @@
 import os
 import pymssql
 from enum import Enum
-from reporter.reports.redcap import (
+from reporter.uhl_reports.redcap import (
     get_redcap_link,
     get_redcap_external_link,
     BASE_URL_INTERNAL,

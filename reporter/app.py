@@ -1,65 +1,14 @@
 #!/usr/bin/env python3
 
-import schedule
-import time
 import logging
 import argparse
-import traceback
-
+import reporter.uhl_reports
+from reporter.core import run_all, schedule_reports, run_reports
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
-
-import reporter.reports
-from reporter.core import get_concrete_reports
-from reporter.emailing import email_error
-
-
-def schedule_reports():
-    reports = get_concrete_reports()
-
-    for r in reports:
-        r.schedule()
-
-    logging.info("---- All reports scheduled ----")
-
-    while True:
-        try:
-            schedule.run_pending()
-            time.sleep(1)
-        except Exception:
-            logging.error(traceback.format_exc())
-            email_error('Scheduled', traceback.format_exc())
-
-
-def run_reports(report_name, exclude):
-    reports = get_concrete_reports()
-
-    for r in reports:
-
-        if type(r).__name__.lower() in exclude:
-            continue
-
-        if type(r).__name__[:len(report_name)].lower() == report_name.lower():
-            try:
-                r.run()
-            except Exception:
-                logging.error(traceback.format_exc())
-                email_error(r._name, traceback.format_exc())
-
-
-def run_all(exclude):
-    reports = get_concrete_reports()
-
-    for r in reports:
-
-        if type(r).__name__.lower() in exclude:
-            continue
-
-        r.run()
-
 
 parser = argparse.ArgumentParser(description='Run specific reports.')
 parser.add_argument(

@@ -3,12 +3,15 @@ import logging
 import re
 import datetime
 import io
+import time
+import traceback
 from datetime import date
 from enum import Enum
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 from reporter.emailing import send_markdown_email
 from reporter.databases import DatabaseConnection
+from reporter.emailing import email_error
 
 
 class Schedule(Enum):
@@ -160,3 +163,47 @@ def get_concrete_reports(cls=None):
         result += get_concrete_reports(sub)
 
     return result
+
+
+def schedule_reports():
+    reports = get_concrete_reports()
+
+    for r in reports:
+        r.schedule()
+
+    logging.info("---- All reports scheduled ----")
+
+    while True:
+        try:
+            schedule.run_pending()
+            time.sleep(1)
+        except Exception:
+            logging.error(traceback.format_exc())
+            email_error('Scheduled', traceback.format_exc())
+
+
+def run_reports(report_name, exclude):
+    reports = get_concrete_reports()
+
+    for r in reports:
+
+        if type(r).__name__.lower() in exclude:
+            continue
+
+        if type(r).__name__[:len(report_name)].lower() == report_name.lower():
+            try:
+                r.run()
+            except Exception:
+                logging.error(traceback.format_exc())
+                email_error(r._name, traceback.format_exc())
+
+
+def run_all(exclude):
+    reports = get_concrete_reports()
+
+    for r in reports:
+
+        if type(r).__name__.lower() in exclude:
+            continue
+
+        r.run()
