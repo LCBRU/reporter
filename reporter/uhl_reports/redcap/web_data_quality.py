@@ -13,8 +13,8 @@ from reporter.selenium import SeleniumGrid
 class RedcapWebDataQuality(Report):
 
     PAGE_URL = 'DataQuality/index.php?pid={}'
-    REDCAP_USERNAME = os.environ["REDCAP_USERNAME"]
-    REDCAP_PASSWORD = os.environ["REDCAP_PASSWORD"]
+    REDCAP_USERNAME = os.environ.get("REDCAP_USERNAME", '')
+    REDCAP_PASSWORD = os.environ.get("REDCAP_PASSWORD", '')
 
     def __init__(
         self,
