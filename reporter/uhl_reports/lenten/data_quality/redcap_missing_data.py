@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.databases import RedcapInstance
+from reporter.connections import RedcapInstance
 from reporter.emailing import RECIPIENT_LENTEN_ADMIN
 from reporter.uhl_reports.redcap.data_quality import (
     RedcapMissingData,

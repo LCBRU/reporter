@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.databases import RedcapInstance
+from reporter.connections import RedcapInstance
 from reporter.uhl_reports.redcap.redcap_percentage_complete import (
     RedcapPercentageCompleteReport,
 )

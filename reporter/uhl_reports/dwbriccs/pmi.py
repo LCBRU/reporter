@@ -1,6 +1,6 @@
 from reporter.core import SqlReport, Schedule
 from reporter.uhl_reports.civicrm import get_contact_id_search_link
-from reporter.databases import DatabaseConnection
+from reporter.connections import DatabaseConnection
 
 
 class PmiPatientMismatch(SqlReport):

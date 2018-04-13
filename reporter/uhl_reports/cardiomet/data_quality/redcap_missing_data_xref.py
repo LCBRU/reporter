@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.databases import RedcapInstance
+from reporter.connections import RedcapInstance
 from reporter.emailing import (
     RECIPIENT_CARDIOMET_ADMIN as RECIPIENT_ADMIN
 )

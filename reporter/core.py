@@ -10,7 +10,7 @@ from enum import Enum
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 from reporter.emailing import send_markdown_email
-from reporter.databases import DatabaseConnection
+from reporter.connections import DatabaseConnection
 from reporter.emailing import email_error
 
 
