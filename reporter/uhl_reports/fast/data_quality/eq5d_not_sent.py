@@ -5,7 +5,7 @@ from reporter.emailing import (
     RECIPIENT_FAST_MANAGER,
     RECIPIENT_FAST_ADMIN,
 )
-from reporter.uhl_reports.redcap import get_redcap_link
+from reporter.connections import get_redcap_link
 
 
 class FastEq5dNotSent(SqlReport):

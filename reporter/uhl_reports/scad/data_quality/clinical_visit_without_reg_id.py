@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import SqlReport
-from reporter.uhl_reports.redcap import get_redcap_link
+from reporter.connections import get_redcap_link
 from reporter.emailing import RECIPIENT_SCAD_ADMIN
 
 

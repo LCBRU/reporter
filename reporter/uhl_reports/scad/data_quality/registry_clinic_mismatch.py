@@ -2,7 +2,7 @@
 
 from reporter.core import SqlReport, Schedule
 from reporter.emailing import RECIPIENT_SCAD_ADMIN
-from reporter.uhl_reports.redcap import get_redcap_link
+from reporter.connections import get_redcap_link
 
 
 class ScadRegistryClinicMismatchReport(SqlReport):
