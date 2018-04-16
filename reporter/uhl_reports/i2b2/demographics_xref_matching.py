@@ -69,9 +69,18 @@ WHERE i2b2ClinDataIntegration.dbo.IsNullOrEmpty(a_ethnicity) = 0
             row['b_study_id'],
             row['error_message']
         )
-        result += 'Date of Birth: {:%d %B %Y} / {:%d %B %Y}\r\n\r\n'.format(
-            row['a_birth_date'],
-            row['b_birth_date'],
+        if row['a_birth_date']:
+            a_birth_date_str = '{:%d %B %Y}'.format(row['a_birth_date'])
+        else:
+            a_birth_date_str = '[NULL]'
+        if row['b_birth_date']:
+            b_birth_date_str = '{:%d %B %Y}'.format(row['b_birth_date'])
+        else:
+            b_birth_date_str = '[NULL]'
+
+        result += 'Date of Birth: {} / {}\r\n\r\n'.format(
+            a_birth_date_str,
+            b_birth_date_str,
         )
         result += 'Gender: {} / {}\r\n\r\n'.format(
             row['a_gender'],

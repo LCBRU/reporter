@@ -171,7 +171,7 @@ def schedule_reports():
     for r in reports:
         r.schedule()
 
-    logging.info("---- All reports scheduled ----")
+    logging.info("---- {} reports scheduled ----".format(len(reports)))
 
     while True:
         try:
