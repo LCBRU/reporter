@@ -34,10 +34,6 @@ FROM (
     SELECT  bioresource_id, consent_date
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_Bioresource
     WHERE consent_date IS NOT NULL
-    UNION
-    SELECT  bioresource_id, consent_date
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_JointBriccs
-    WHERE consent_date IS NOT NULL
 ) consent
 JOIN    STG_CiviCRM.dbo.civicrm_value_nihr_bioresource_11 bio
     ON bio.[nihr_bioresource_id_41] = consent.bioresource_or_legacy_id

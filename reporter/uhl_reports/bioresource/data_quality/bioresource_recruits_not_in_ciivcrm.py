@@ -13,28 +13,22 @@ class BioresourceNotInCivicrm(SqlReport):
             recipients=[RECIPIENT_IT_DWH],
             sql='''
 
-SELECT  CONVERT(VARCHAR(100), a.bioresource_or_legacy_id) as bioresource_id,
-    CASE WHEN interval_consent = 1 THEN 'INTERVAL; ' ELSE '' END
-      + CASE WHEN redcap_consent = 1 THEN 'REDCap; ' ELSE '' END
-      + CASE WHEN joint_briccs_consent = 1 THEN 'Joint BRICCS; ' ELSE '' END
-    AS [context]
+SELECT record
+FROM STG_redcap.dbo.all_projects_fully_consented redcap
+WHERE project_id = 9
+    AND NOT EXISTS (
+        SELECT 1
+        FROM [STG_CiviCRM].[dbo].[LCBRU_CaseDetails] civi
+        JOIN STG_CiviCRM.dbo.civicrm_value_nihr_bioresource_11 bio
+            ON bio.entity_id = civi.civicrm_case_id
+        WHERE civi.case_type_id = 7
+            AND (   civi.StudyNumber = redcap.record
+                    OR  bio.nihr_bioresource_legacy_id_78 = redcap.record)
+    )
 
-FROM i2b2_app03_bioresource_Data.dbo.Load_FullyConsented a
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource b
-    WHERE (
-            a.bioresource_or_legacy_id = b.bioresource_id
-            OR a.bioresource_or_legacy_id = b.legacy_bioresource_id
-        ) AND (
-            b.is_recruited = 1 OR
-            b.is_excluded = 1 OR
-            b.is_withdrawn = 1 OR
-            b.is_duplicate = 1)
-)
 
                 '''
         )
 
     def get_report_line(self, row):
-        return '- {} {}\r\n'.format(row['bioresource_id'], row['context'])
+        return '- {}\r\n'.format(row['record'])

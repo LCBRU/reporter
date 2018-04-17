@@ -28,10 +28,6 @@ FROM    (
     SELECT  bioresource_id, NULL AS consent_date
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_Bioresource
     WHERE   full_consent = 1
-    UNION
-    SELECT  bioresource_id, NULL AS consent_date
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_JointBriccs
-    WHERE   full_consent = 1
 ) a
 WHERE   a.bioresource_id NOT IN (
     SELECT  bioresource_id

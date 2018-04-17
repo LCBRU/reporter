@@ -22,11 +22,6 @@ WHERE NOT EXISTS (
         WHERE   bioresource_id = a.bioresource_id
             OR bioresource_id = a.legacy_bioresource_id
     ) AND NOT EXISTS (
-        SELECT 1
-        FROM i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_JointBriccs
-        WHERE bioresource_id = a.bioresource_id
-            OR bioresource_id = a.legacy_bioresource_id
-    ) AND NOT EXISTS (
         SELECT  1
         FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
         WHERE   bioresource_id = a.bioresource_id
