@@ -22,9 +22,9 @@ WITH recruited AS (
     FROM    STG_redcap.dbo.redcap_data recruited
     JOIN    STG_redcap.dbo.redcap_data fast_id
         ON fast_id.record = recruited.record
-        AND fast_id.field_name = 'fst_label'
+        AND fast_id.field_name = 'record_id'
     WHERE recruited.project_id = 48
-        AND recruited.field_name = 'patient_reruited'
+        AND recruited.field_name = 'patient_recruited'
         AND recruited.value = 1
 )
 SELECT  fc.StudyNumber fast_id

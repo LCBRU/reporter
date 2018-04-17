@@ -38,6 +38,7 @@ class ScadCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Recruited',
                 'Excluded',
                 'Duplicate',
-                'Withdrawn'
+                'Withdrawn',
+                'Recruitment pending'
             ],
             [RECIPIENT_SCAD_ADMIN])

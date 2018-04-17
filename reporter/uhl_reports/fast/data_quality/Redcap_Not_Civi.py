@@ -24,7 +24,7 @@ FROM    STG_redcap.dbo.redcap_data ri
 JOIN    STG_redcap.dbo.redcap_data pr
     ON pr.record = ri.record
     AND pr.project_id = ri.project_id
-    AND pr.field_name = 'patient_reruited'
+    AND pr.field_name = 'patient_recruited'
 WHERE   ri.project_id = 48
     AND ri.field_name = 'record_id'
     AND pr.value = '1'

@@ -26,7 +26,7 @@ class FastNotFemale(
         super().__init__(
             RedcapInstance.internal,
             48,
-            ['patient_reruited'],
+            ['patient_recruited'],
             ['1'],
             ['gender'],
             ['0'],
@@ -93,7 +93,7 @@ class FastRedcapMissingDataWhenRecruited(RedcapMissingDataWhen):
                 'patient_attend',
                 'patient_agree_scan',
             ],
-            'patient_reruited',
+            'patient_recruited',
             '1',
             [RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN]
         )
@@ -105,7 +105,7 @@ class FastRedcapMissingAddressWhenRecruited(RedcapMissingAllWhen):
             RedcapInstance.internal,
             48,
             ['add_1', 'add_2', 'add_3', 'add_4'],
-            'patient_reruited',
+            'patient_recruited',
             '1',
             [RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN]
         )
@@ -117,7 +117,7 @@ class FastRedcapMissingHeightWhenRecruited(RedcapMissingAllWhen):
             RedcapInstance.internal,
             48,
             ['height_ft', 'height_inches', 'height_cms'],
-            'patient_reruited',
+            'patient_recruited',
             '1',
             [RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN]
         )
@@ -152,7 +152,7 @@ class FastRedcapMissingWeightWhenRecruited(RedcapMissingAllWhen):
             RedcapInstance.internal,
             48,
             ['weight_stones', 'weight_pounds', 'weight_kgs'],
-            'patient_reruited',
+            'patient_recruited',
             '1',
             [RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN]
         )

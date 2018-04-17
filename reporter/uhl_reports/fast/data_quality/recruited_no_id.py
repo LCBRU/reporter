@@ -25,7 +25,7 @@ WITH recruited AS (
         ON fast_id.record = recruited.record
         AND fast_id.field_name = 'fst_label'
     WHERE recruited.project_id = 48
-        AND recruited.field_name = 'patient_reruited'
+        AND recruited.field_name = 'patient_recruited'
         AND recruited.value = 1
 )
 SELECT  fast_id
