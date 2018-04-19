@@ -177,10 +177,12 @@ def schedule_reports():
         try:
             schedule.run_pending()
             time.sleep(1)
+        except KeyboardInterrupt:
+            logging.info('Schedule stopped')
+            return
         except Exception:
             logging.error(traceback.format_exc())
             email_error('Scheduled', traceback.format_exc())
-
 
 def run_reports(report_name, exclude):
     reports = get_concrete_reports()
