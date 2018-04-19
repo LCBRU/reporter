@@ -156,7 +156,8 @@ def get_concrete_reports(cls=None):
         cls = Report
 
     result = [sub() for sub in cls.__subclasses__()
-              if len(sub.__subclasses__()) == 0]
+              if len(sub.__subclasses__()) == 0
+                  and sub not in [Report, SqlReport, PdfReport]]
 
     for sub in [sub for sub in cls.__subclasses__()
                 if len(sub.__subclasses__()) != 0]:
