@@ -6,7 +6,7 @@ import pymysql.cursors
 from contextlib import contextmanager
 from enum import Enum
 
-7REDCAP_VERSION = '7.2.2'
+REDCAP_VERSION = '7.2.2'
 REDCAP_PATH = 'redcap/redcap_v{}/'.format(REDCAP_VERSION)
 REDCAP_INTERNAL_URL = 'https://briccs.xuhl-tr.nhs.uk/{}'.format(REDCAP_PATH)
 REDCAP_EXTERNAL_URL = 'https://uhlbriccsext01.xuhl-tr.nhs.uk/{}'.format(
