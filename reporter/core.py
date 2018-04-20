@@ -5,6 +5,8 @@ import datetime
 import io
 import time
 import traceback
+import importlib
+import pkgutil
 from datetime import date
 from enum import Enum
 from weasyprint import HTML
@@ -210,3 +212,22 @@ def run_all(exclude):
             continue
 
         r.run()
+
+
+def get_sub_modules(path, prefix):
+    result = []
+
+    for m in pkgutil.iter_modules(path):
+        new_module_name = prefix + m[1]
+        result.append(new_module_name)
+        result.extend(get_sub_modules(
+            [path[0] + '/' + m[1]],
+            new_module_name + '.'
+        ))
+
+    return result
+
+
+def import_sub_reports(path, name):
+    for m in get_sub_modules(path, name + '.'):
+        importlib.import_module(m)
