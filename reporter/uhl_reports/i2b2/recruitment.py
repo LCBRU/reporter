@@ -34,11 +34,11 @@ ORDER BY ConsentDate
 
     def get_report(self):
 
-        with self._conn() as conn:
+        with self._conn() as cursor:
 
             df = pd.io.sql.read_sql(
                 self._sql,
-                conn,
+                cursor.connection,
                 index_col='ConsentDate')
 
             fig, ax = plt.subplots()

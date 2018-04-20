@@ -71,21 +71,40 @@ class RedcapInstance(Enum):
 
 
 class DatabaseConnection(Enum):
+
+    @contextmanager
     def reporting():
-        return pymssql.connect(
+        conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
             SQL_REPORTING_PASSWORD,
-            SQL_REPORTING_DATABASE
+            SQL_REPORTING_DATABASE,
         )
 
+        try:
+
+            with conn.cursor(as_dict=True) as cursor:
+                yield cursor
+
+        finally:
+            conn.close()
+
+    @contextmanager
     def dwbriccs():
-        return pymssql.connect(
+        conn = pymssql.connect(
             SQL_DWBRICCS_HOST,
             SQL_DWBRICCS_USER,
             SQL_DWBRICCS_PASSWORD,
             SQL_DWBRICCS_DATABASE
         )
+
+        try:
+
+            with conn.cursor(as_dict=True) as cursor:
+                yield cursor
+
+        finally:
+            conn.close()
 
     @contextmanager
     def uol_lamp():
