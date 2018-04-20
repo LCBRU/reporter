@@ -2,7 +2,7 @@
 
 import os
 import pymssql
-import mysql.connector
+import pymysql.cursors
 from enum import Enum
 
 REDCAP_VERSION = '7.2.2'
@@ -87,5 +87,11 @@ class DatabaseConnection(Enum):
         )
 
     def uol_lamp():
-        return mysql.connector.connect(user=SQL_REPORTING_USER, password=SQL_REPORTING_PASSWORD, database=SQL_REPORTING_DATABASE)
-
+        return pymysql.connect(
+            host=SQL_REPORTING_HOST,
+            user=SQL_REPORTING_USER,
+            password=SQL_REPORTING_PASSWORD,
+            db=SQL_REPORTING_DATABASE,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+        )

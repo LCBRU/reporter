@@ -7,3 +7,4 @@ matplotlib
 weasyprint
 Jinja2
 selenium
+PyMySQL
