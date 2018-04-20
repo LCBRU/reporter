@@ -88,7 +88,8 @@ class SqlReport(Report):
 
         with self._conn() as conn:
 
-            with conn.cursor(as_dict=True) as cursor:
+#            with conn.cursor(as_dict=True) as cursor:
+            with conn.cursor() as cursor:
                 cursor.execute(self._sql, self._parameters)
 
                 if cursor.rowcount == 0:
