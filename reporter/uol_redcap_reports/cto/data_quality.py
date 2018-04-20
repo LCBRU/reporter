@@ -8,7 +8,7 @@ from reporter.emailing import (
     RECIPIENT_BRAVE_MANAGER as RECIPIENT_MANAGER,
 )
 
-REDCAP_PROJECT_ID = 15
+REDCAP_PROJECT_ID = 18
 
 # Abstract Reports
 
