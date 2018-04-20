@@ -87,5 +87,5 @@ class DatabaseConnection(Enum):
         )
 
     def uol_lamp():
-        return mysql.connector.connect(user=SQL_REPORTING_USER, password=SQL_REPORTING_PASSWORD, database=SQL_REPORTING_DATABASE')
+        return mysql.connector.connect(user=SQL_REPORTING_USER, password=SQL_REPORTING_PASSWORD, database=SQL_REPORTING_DATABASE)
 
