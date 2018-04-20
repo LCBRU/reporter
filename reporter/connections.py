@@ -101,7 +101,7 @@ class DatabaseConnection(Enum):
 
         try:
 
-            cursor = with conn.cursor() as cursor
+            with conn.cursor() as cursor
                 yield cursor
 
         finally:
