@@ -43,8 +43,7 @@ JOIN redcap_metadata md
 WHERE e.project_id = %s
     AND e.field_name IN ('nhs_num')
 
-                '''
-            ),
+                ''',
             parameters=(project_id)
         )
 
