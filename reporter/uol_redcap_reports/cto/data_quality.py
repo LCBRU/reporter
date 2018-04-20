@@ -8,7 +8,7 @@ from reporter.emailing import (
     RECIPIENT_BRAVE_MANAGER as RECIPIENT_MANAGER,
 )
 
-REDCAP_PROJECT_ID = 18
+REDCAP_PROJECT_ID = 25
 
 # Abstract Reports
 
@@ -41,7 +41,7 @@ JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ('nhs_num')
+    AND e.field_name IN ('nhs_no')
 
                 ''',
             parameters=(project_id)
