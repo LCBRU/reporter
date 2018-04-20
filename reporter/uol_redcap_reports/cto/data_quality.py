@@ -41,10 +41,9 @@ JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({})
+    AND e.field_name IN ('nhs_num')
 
-                '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields])
+                '''
             ),
             parameters=(project_id)
         )
