@@ -2,6 +2,7 @@
 
 import os
 import pymssql
+import mysql.connector
 from enum import Enum
 
 REDCAP_VERSION = '7.2.2'
@@ -60,6 +61,13 @@ class RedcapInstance(Enum):
             'base_url': REDCAP_EXTERNAL_URL,
         }
 
+    def uol_lamp():
+        return {
+            'staging_database': 'redcap',
+            'link_generator': get_redcap_link,
+            'base_url': REDCAP_INTERNAL_URL,
+        }
+
 
 class DatabaseConnection(Enum):
     def reporting():
@@ -77,3 +85,7 @@ class DatabaseConnection(Enum):
             SQL_DWBRICCS_PASSWORD,
             SQL_DWBRICCS_DATABASE
         )
+
+    def uol_lamp():
+        return mysql.connector.connect(user=SQL_REPORTING_USER, password=SQL_REPORTING_PASSWORD, database=SQL_REPORTING_DATABASE')
+

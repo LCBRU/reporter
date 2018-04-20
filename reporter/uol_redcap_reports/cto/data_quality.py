@@ -2,6 +2,7 @@
 
 from reporter.core import SqlReport
 from reporter.connections import RedcapInstance
+from reporter.connections import DatabaseConnection
 from reporter.emailing import (
     RECIPIENT_BRAVE_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_BRAVE_MANAGER as RECIPIENT_MANAGER,
@@ -28,6 +29,7 @@ class RedcapInvalidNhsNumber(SqlReport):
                           "in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=DatabaseConnection.uol_lamp,
             sql='''
 
 SELECT
