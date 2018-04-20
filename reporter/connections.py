@@ -87,27 +87,22 @@ class DatabaseConnection(Enum):
             SQL_DWBRICCS_DATABASE
         )
 
-@contextmanager
+    @contextmanager
     def uol_lamp():
 
-def tag(name):
-    print("<%s>" % name)
-    yield
-    print("</%s>" % name)
+        conn = pymysql.connect(
+            host=SQL_REPORTING_HOST,
+            user=SQL_REPORTING_USER,
+            password=SQL_REPORTING_PASSWORD,
+            db=SQL_REPORTING_DATABASE,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+        )
 
-    conn = pymysql.connect(
-        host=SQL_REPORTING_HOST,
-        user=SQL_REPORTING_USER,
-        password=SQL_REPORTING_PASSWORD,
-        db=SQL_REPORTING_DATABASE,
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor,
-    )
+        try:
 
-    try:
+            cursor = with conn.cursor() as cursor
+                yield cursor
 
-        with conn.cursor() as cursor
-            yield cursor
-
-    finally:
-        conn.close()
+        finally:
+            conn.close()
