@@ -88,14 +88,12 @@ class SqlReport(Report):
 
         with self._conn() as conn:
 
-#            with conn.cursor(as_dict=True) as cursor:
-            with conn.cursor() as cursor:
-                cursor.execute(self._sql, self._parameters)
+            conn.execute(self._sql, self._parameters)
 
-                if cursor.rowcount == 0:
-                    return None, 0, attachments
+            if conn.rowcount == 0:
+                return None, 0, attachments
 
-                report, rows = self.get_report_lines(cursor)
+            report, rows = self.get_report_lines(conn)
 
         markdown = self.get_introduction()
         markdown += report

@@ -3,9 +3,10 @@
 import os
 import pymssql
 import pymysql.cursors
+from contextlib import contextmanager
 from enum import Enum
 
-REDCAP_VERSION = '7.2.2'
+7REDCAP_VERSION = '7.2.2'
 REDCAP_PATH = 'redcap/redcap_v{}/'.format(REDCAP_VERSION)
 REDCAP_INTERNAL_URL = 'https://briccs.xuhl-tr.nhs.uk/{}'.format(REDCAP_PATH)
 REDCAP_EXTERNAL_URL = 'https://uhlbriccsext01.xuhl-tr.nhs.uk/{}'.format(
@@ -86,12 +87,27 @@ class DatabaseConnection(Enum):
             SQL_DWBRICCS_DATABASE
         )
 
+@contextmanager
     def uol_lamp():
-        return pymysql.connect(
-            host=SQL_REPORTING_HOST,
-            user=SQL_REPORTING_USER,
-            password=SQL_REPORTING_PASSWORD,
-            db=SQL_REPORTING_DATABASE,
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor,
-        )
+
+def tag(name):
+    print("<%s>" % name)
+    yield
+    print("</%s>" % name)
+
+    conn = pymysql.connect(
+        host=SQL_REPORTING_HOST,
+        user=SQL_REPORTING_USER,
+        password=SQL_REPORTING_PASSWORD,
+        db=SQL_REPORTING_DATABASE,
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor,
+    )
+
+    try:
+
+        with conn.cursor() as cursor
+            yield cursor
+
+    finally:
+        conn.close()
