@@ -11,9 +11,7 @@ from reporter.uhl_reports.civicrm import get_case_link
 class DesmondActivityReport(SqlReport):
     def __init__(self):
         super().__init__(
-            introduction=("The following FAST participants are "
-                          "recruited in civicrm, but are not "
-                          "recruited is REDCap:"),
+            introduction=("The latest information for the DESMOND submissions"),
             recipients=[RECIPIENT_IT_DWH],
             schedule=Schedule.weekly,
             conn=DatabaseConnection.uol_lamp,
@@ -105,7 +103,9 @@ Month  | Referrals | Attenndees | DNAs | Courses
 ------ | --------- | ---------- | ---- | -------
 '''
 
-        for m in ['feb_18', 'mar_18', 'apr_18', 'may_18', 'jun_18', 'jul_18', 'aug_18', 'sep_18', 'oct_18', 'nov_18', 'dec_18', 'jan_19', 'feb_18']:
+        for m in ['feb_18', 'mar_18', 'apr_18', 'may_18',
+                  'jun_18', 'jul_18', 'aug_18', 'sep_18',
+                  'oct_18', 'nov_18', 'dec_18', 'jan_19', 'feb_19']:
             markdown += "{} | {} | {} | {} | {}\r\n".format(
                 m.replace('_', ' ').title(),
                 row['patients_referred_{}'.format(m)] or ' ',
