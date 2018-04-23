@@ -68,7 +68,7 @@ DEFAULT_CSS = '''
         }
 
         td, th {
-            border: 5px;
+            padding: 5px;
         }
 
         th {
