@@ -66,6 +66,14 @@ DEFAULT_CSS = '''
         table, th, td {
             border: 1px solid black;
         }
+
+        td, th {
+            border: 5px;
+        }
+
+        th {
+            background-color: #DDD;
+        }
     </style>
 '''
 
