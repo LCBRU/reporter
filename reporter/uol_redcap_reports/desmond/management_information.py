@@ -21,6 +21,7 @@ class DesmondActivityReport(SqlReport):
 
 SELECT
 	group_concat(CASE WHEN field_name = 'site_name' THEN value END) site_name,
+
 	group_concat(CASE WHEN field_name = 'patients_referred_feb_18' THEN value END) patients_referred_feb_18,
 	group_concat(CASE WHEN field_name = 'att_a_desmond_course_feb_18' THEN value END) att_a_desmond_course_feb_18,
 	group_concat(CASE WHEN field_name = 'number_of_dnas_feb_18' THEN value END) number_of_dnas_feb_18,
@@ -111,5 +112,7 @@ Month  | Referrals | Attenndees | DNAs | Courses
             row['number_of_dnas_feb_18'],
             row['courses_available_feb_18'],
         )
+
+        print(row)
 
         return markdown
