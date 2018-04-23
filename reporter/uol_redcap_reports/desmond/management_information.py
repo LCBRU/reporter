@@ -113,6 +113,8 @@ Month  | Referrals | Attenndees | DNAs | Courses
             row['courses_available_feb_18'],
         )
 
+        markdown += '\r\n'
+        
         print(row)
 
         return markdown
