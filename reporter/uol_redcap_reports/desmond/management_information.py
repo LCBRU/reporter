@@ -95,11 +95,21 @@ GROUP BY rc.record
         )
 
     def get_report_line(self, row):
-        return '''
+        markdown = ''
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+        markdown += "**{}**\r\n\r\n".format(row['site_name'])
 
-        '''
+        markdown += '''
+Month  | Referrals | Attenndees | DNAs | Courses
+------ | --------- | ---------- | ---- | -------
+'''
+
+        markdown += "{} | {} | {} | {} | {} ".format(
+            'Feb 2018',
+            row['patients_referred_feb_18'],
+            row['att_a_desmond_course_feb_18'],
+            row['number_of_dnas_feb_18'],
+            row['courses_available_feb_18'],
+        )
+
+        return markdown
