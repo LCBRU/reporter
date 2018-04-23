@@ -105,7 +105,7 @@ Month  | Referrals | Attenndees | DNAs | Courses
 ------ | --------- | ---------- | ---- | -------
 '''
 
-        markdown += "{} | {} | {} | {} | {} ".format(
+        markdown += "{} | {} | {} | {} | {}\r\n".format(
             'Feb 2018',
             row['patients_referred_feb_18'],
             row['att_a_desmond_course_feb_18'],
