@@ -105,16 +105,15 @@ Month  | Referrals | Attenndees | DNAs | Courses
 ------ | --------- | ---------- | ---- | -------
 '''
 
-        markdown += "{} | {} | {} | {} | {}\r\n".format(
-            'Feb 2018',
-            row['patients_referred_feb_18'],
-            row['att_a_desmond_course_feb_18'],
-            row['number_of_dnas_feb_18'],
-            row['courses_available_feb_18'],
-        )
+        for m in ['feb_18', 'mar_18', 'apr_18', 'may_18', 'jun_18', 'jul_18', 'aug_18', 'sep_18', 'oct_18', 'nov_18', 'dec_18', 'jan_19', 'feb_18']:
+            markdown += "{} | {} | {} | {} | {}\r\n".format(
+                m,
+                row['patients_referred_{}'.format(m)],
+                row['att_a_desmond_course_{}'.format(m)],
+                row['number_of_dnas_{}'.format(m)],
+                row['courses_available_{}'.format(m)],
+            )
 
         markdown += '\r\n'
-        
-        print(row)
 
         return markdown
