@@ -126,19 +126,18 @@ class PdfReport(SqlReport):
         template = env.get_template(self._template)
 
         with self._conn() as conn:
-            with conn.cursor(as_dict=True) as cursor:
-                cursor.execute(self._sql, self._parameters)
+            conn.execute(self._sql, self._parameters)
 
-                template_vars = {
-                    "rows": cursor.fetchall(),
-                    "now": datetime.datetime.utcnow()
-                }
+            template_vars = {
+                "rows": conn.fetchall(),
+                "now": datetime.datetime.utcnow()
+            }
 
-                html = template.render(template_vars)
+            html = template.render(template_vars)
 
-                buf = io.BytesIO()
-                HTML(string=html, base_url='.').write_pdf(buf)
-                buf.seek(0)
+            buf = io.BytesIO()
+            HTML(string=html, base_url='.').write_pdf(buf)
+            buf.seek(0)
 
         mkdn = self.get_introduction()
 

@@ -2,7 +2,10 @@
 
 from reporter.core import SqlReport
 from reporter.emailing import RECIPIENT_BIORESOURCE_ADMIN
-from reporter.uhl_reports.civicrm import get_case_link, get_contact_id_search_link
+from reporter.uhl_reports.civicrm import (
+    get_case_link,
+    get_contact_id_search_link,
+)
 
 
 class BioresourceWithoutCheckStudyConsent(SqlReport):
@@ -15,16 +18,33 @@ class BioresourceWithoutCheckStudyConsent(SqlReport):
             sql='''
 
 SELECT
-    rc.bioresource_id,
-    CONVERT(DATE, REPLACE(rc.consent_date, '-', ''), 112) consent_date,
+    rc.record bioresource_id,
+    CONVERT(DATE, REPLACE(rc.date_of_sig, '-', ''), 112) consent_date,
     cv.civicrm_case_id,
     cv.civicrm_contact_id
-FROM [i2b2_app03_bioresource_Data].[dbo].[LOAD_Redcap_Bioresource] rc
+FROM    (
+        SELECT  record, field_name, value
+        FROM    STG_redcap.dbo.redcap_data
+        WHERE   project_id = 9
+    ) p PIVOT
+    (   MAX(value)
+        FOR field_name in (
+            consent_1,
+            consent_2,
+            consent_3,
+            consent_4,
+            consent_5,
+            consent_6,
+            date_of_sig,
+            invalid_questionnaire_yn,
+            excluded_yn
+        )
+    ) AS  rc
 LEFT JOIN [i2b2_app03_bioresource_Data].[dbo].[LOAD_Civicrm_Bioresource] cv
-    ON (cv.bioresource_id = rc.bioresource_id
-        OR cv.legacy_bioresource_id = rc.bioresource_id)
+    ON (cv.bioresource_id = rc.record
+        OR cv.legacy_bioresource_id = rc.record)
 WHERE
-    rc.invalid_questionnaire = 0
+    rc.invalid_questionnaire_yn = 0
     AND COALESCE(excluded_yn, 0) = 0
     AND COALESCE(
         rc.consent_1,
@@ -49,8 +69,8 @@ WHERE
         WHERE cas.case_type_id = 7
             AND cas.is_deleted = 0
             AND (
-                    bio.nihr_bioresource_id_41 = rc.bioresource_id
-                OR bio.nihr_bioresource_legacy_id_78 = rc.bioresource_id
+                    bio.nihr_bioresource_id_41 = rc.record
+                OR bio.nihr_bioresource_legacy_id_78 = rc.record
             )
     )
 
