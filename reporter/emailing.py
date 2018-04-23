@@ -71,7 +71,7 @@ def send_markdown_email(
     msg['To'] = ','.join(to_recipients)
     msg['From'] = EMAIL_FROM_ADDRESS
 
-    html = markdown.markdown(mkdn, extension=['markdown.extensions.tables'])
+    html = markdown.markdown(mkdn, extensions=['markdown.extensions.tables'])
     msg.attach(MIMEText(html, 'html'))
 
     for a in attachments or []:
