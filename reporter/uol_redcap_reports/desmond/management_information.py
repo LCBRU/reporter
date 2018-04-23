@@ -107,7 +107,7 @@ Month  | Referrals | Attenndees | DNAs | Courses
 
         for m in ['feb_18', 'mar_18', 'apr_18', 'may_18', 'jun_18', 'jul_18', 'aug_18', 'sep_18', 'oct_18', 'nov_18', 'dec_18', 'jan_19', 'feb_18']:
             markdown += "{} | {} | {} | {} | {}\r\n".format(
-                m,
+                m.replace('_', ' ').title(),
                 row['patients_referred_{}'.format(m)],
                 row['att_a_desmond_course_{}'.format(m)],
                 row['number_of_dnas_{}'.format(m)],
