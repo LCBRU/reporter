@@ -5,7 +5,6 @@ from reporter.core import SqlReport, Schedule
 from reporter.emailing import (
     RECIPIENT_IT_DWH,
 )
-from reporter.uhl_reports.civicrm import get_case_link
 
 
 class DesmondActivityReport(SqlReport):
