@@ -57,6 +57,26 @@ RECIPIENT_PREECLAMPSIA_ADMIN = 'RECIPIENT_PREECLAMPSIA_ADMIN'
 RECIPIENT_SPIRAL_MANAGER = 'RECIPIENT_SPIRAL_MANAGER'
 RECIPIENT_SPIRAL_ADMIN = 'RECIPIENT_SPIRAL_ADMIN'
 
+DEFAULT_CSS = '''
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        td, th {
+            padding: 5px;
+        }
+
+        th {
+            background-color: #DDD;
+        }
+    </style>
+'''
+
 
 def send_markdown_email(
     report_name,
@@ -71,7 +91,8 @@ def send_markdown_email(
     msg['To'] = ','.join(to_recipients)
     msg['From'] = EMAIL_FROM_ADDRESS
 
-    html = markdown.markdown(mkdn)
+    html = DEFAULT_CSS
+    html += markdown.markdown(mkdn, extensions=['markdown.extensions.tables'])
     msg.attach(MIMEText(html, 'html'))
 
     for a in attachments or []:
