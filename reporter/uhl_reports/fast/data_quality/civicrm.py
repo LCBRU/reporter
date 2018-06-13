@@ -37,6 +37,7 @@ class FastCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
             [
                 'Recruited',
                 'Excluded',
-                'Withdrawn'
+                'Withdrawn',
+                'Declined',
             ],
             [RECIPIENT_FAST_ADMIN])
