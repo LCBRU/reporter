@@ -45,11 +45,17 @@ SELECT
 	CASE WHEN COALESCE(p.ETHNICITY, '') <> ''
 		THEN 1 ELSE 0 END AS with_ethnicity,
 	CASE WHEN COALESCE(p.SOCIAL_SECURITY_NUMBER, '') <> ''
-		THEN 1 ELSE 0 END AS with_social_security_number
+		THEN 1 ELSE 0 END AS with_social_security_number,
+	CASE WHEN COALESCE(r.RACE_NAME, 'Unknown') <> 'Unknown'
+		THEN 1 ELSE 0 END AS with_race,
+	CASE WHEN COALESCE(p.VITAL_STATUS, 'Unknown') <> 'Unknown'
+		THEN 1 ELSE 0 END AS with_vital_status
 FROM catissue_participant p
 JOIN	catissue_coll_prot_reg cpr
 	ON cpr.PARTICIPANT_ID = p.IDENTIFIER
     AND cpr.ACTIVITY_STATUS = 'Active'
+LEFT JOIN catissue_race r
+	ON r.PARTICIPANT_ID = p.IDENTIFIER
 LEFT JOIN	catissue_specimen_coll_group scg
 	ON scg.COLLECTION_PROTOCOL_REG_ID = cpr.IDENTIFIER
 LEFT JOIN catissue_coll_prot_event cpe
@@ -74,6 +80,8 @@ WHERE COALESCE(mid.MEDICAL_RECORD_NUMBER, '') <> ''
 	OR COALESCE(p.GENDER, 'Unspecified') <> 'Unspecified'
 	OR COALESCE(p.ETHNICITY, 'Unknown') <> 'Unknown'
 	OR COALESCE(p.SOCIAL_SECURITY_NUMBER, '') <> ''
+    OR COALESCE(r.RACE_NAME, 'Unknown') <> 'Unknown'
+    OR COALESCE(p.VITAL_STATUS, 'Unknown') <> 'Unknown'
 ORDER BY u.LOGIN_NAME
 ;
 
@@ -94,6 +102,10 @@ ORDER BY u.LOGIN_NAME
             errors.append('Ethnicity')
         if row['with_social_security_number'] == 1:
             errors.append('Social Security Number')
+        if row['with_race'] == 1:
+            errors.append('Race')
+        if row['with_vital_status'] == 1:
+            errors.append('Vital Status')
 
         messages = ', '.join(errors)
 
