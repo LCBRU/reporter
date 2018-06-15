@@ -49,6 +49,7 @@ SELECT
 FROM catissue_participant p
 JOIN	catissue_coll_prot_reg cpr
 	ON cpr.PARTICIPANT_ID = p.IDENTIFIER
+    AND cpr.ACTIVITY_STATUS = 'Active'
 LEFT JOIN	catissue_specimen_coll_group scg
 	ON scg.COLLECTION_PROTOCOL_REG_ID = cpr.IDENTIFIER
 LEFT JOIN catissue_coll_prot_event cpe
