@@ -50,19 +50,25 @@ class Report:
         logging.info("{} scheduled".format(self._name))
 
     def run(self):
-        report, rows, attachments = self.get_report()
+        try:
+            report, rows, attachments = self.get_report()
 
-        logging.info("{} ran with {} rows".format(self._name, rows))
+            logging.info("{} ran with {} rows".format(self._name, rows))
 
-        if (rows == 0):
-            return
+            if (rows == 0):
+                return
 
-        if self._send_email:
-            send_markdown_email(
-                self._name,
-                self._recipients,
-                report,
-                attachments)
+            if self._send_email:
+                send_markdown_email(
+                    self._name,
+                    self._recipients,
+                    report,
+                    attachments)
+        except KeyboardInterrupt as e:
+            raise e
+        except Exception:
+            logging.error(traceback.format_exc())
+            email_error(self._name, traceback.format_exc())
 
     def get_introduction(self):
         result = "**{} ({:%d-%b-%Y})**\r\n\r\n".format(
@@ -156,8 +162,8 @@ def get_concrete_reports(cls=None):
         cls = Report
 
     result = [sub() for sub in cls.__subclasses__()
-              if len(sub.__subclasses__()) == 0
-                  and sub not in [Report, SqlReport, PdfReport]]
+              if len(sub.__subclasses__()) == 0 and
+              sub not in [Report, SqlReport, PdfReport]]
 
     for sub in [sub for sub in cls.__subclasses__()
                 if len(sub.__subclasses__()) != 0]:
@@ -181,9 +187,7 @@ def schedule_reports():
         except KeyboardInterrupt:
             logging.info('Schedule stopped')
             return
-        except Exception:
-            logging.error(traceback.format_exc())
-            email_error('Scheduled', traceback.format_exc())
+
 
 def run_reports(report_name, exclude):
     reports = get_concrete_reports()
@@ -196,9 +200,9 @@ def run_reports(report_name, exclude):
         if type(r).__name__[:len(report_name)].lower() == report_name.lower():
             try:
                 r.run()
-            except Exception:
-                logging.error(traceback.format_exc())
-                email_error(r._name, traceback.format_exc())
+            except KeyboardInterrupt:
+                logging.info('Schedule stopped')
+                return
 
 
 def run_all(exclude):
