@@ -12,7 +12,10 @@ REDCAP_INTERNAL_URL = 'https://briccs.xuhl-tr.nhs.uk/{}'.format(REDCAP_PATH)
 REDCAP_EXTERNAL_URL = 'https://uhlbriccsext01.xuhl-tr.nhs.uk/{}'.format(
     REDCAP_PATH)
 
+OPENSPECIMEN_URL = 'https://catissue-live.lcbru.le.ac.uk/openspecimen/'
+
 SQL_REPORTING_HOST = os.environ.get("SQL_REPORTING_HOST", '')
+SQL_REPORTING_PORT = os.environ.get("SQL_REPORTING_PORT", '3306')
 SQL_REPORTING_USER = os.environ.get("SQL_REPORTING_USER", '')
 SQL_REPORTING_PASSWORD = os.environ.get("SQL_REPORTING_PASSWORD", '')
 SQL_REPORTING_DATABASE = os.environ.get("SQL_REPORTING_DATABASE", '')
@@ -70,6 +73,30 @@ class RedcapInstance(Enum):
         }
 
 
+def get_openspecimen_link(
+    link_text,
+    collection_protocol_id,
+    collection_protocol_reg_id,
+):
+
+    OS_PARTICIPANT_URL = (
+        '[{}]({}#/cp-view/{}/participants/{}/detail/overview)'
+    )
+
+    return (OS_PARTICIPANT_URL.format(
+        link_text,
+        OPENSPECIMEN_URL,
+        collection_protocol_id,
+        collection_protocol_reg_id))
+
+
+class OpenSpecimenInstance(Enum):
+    def live():
+        return {
+            'link_generator': get_openspecimen_link,
+        }
+
+
 class DatabaseConnection(Enum):
 
     @contextmanager
@@ -111,6 +138,7 @@ class DatabaseConnection(Enum):
 
         conn = pymysql.connect(
             host=SQL_REPORTING_HOST,
+            port=int(SQL_REPORTING_PORT),
             user=SQL_REPORTING_USER,
             password=SQL_REPORTING_PASSWORD,
             db=SQL_REPORTING_DATABASE,
