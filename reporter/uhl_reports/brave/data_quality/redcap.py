@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
 from reporter.connections import RedcapInstance
-from reporter.uhl_reports.redcap.redcap_percentage_complete import (
+from reporter.application_abstract_reports.redcap.percentage_complete import (
     RedcapPercentageCompleteReport,
 )
-from reporter.uhl_reports.redcap.withdrawn_or_excluded_with_data import (
+from reporter.application_abstract_reports.redcap.withdrawn_or_excluded_with_data import (
     RedcapWithdrawnOrExcludedWithDataReport,
 )
 from reporter.emailing import (
     RECIPIENT_BRAVE_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_BRAVE_MANAGER as RECIPIENT_MANAGER,
 )
-from reporter.uhl_reports.redcap.web_data_quality import (
+from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
-from reporter.uhl_reports.redcap.data_quality import (
+from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidNhsNumber,
     RedcapInvalidDate,
     RedcapInvalidStudyNumber,

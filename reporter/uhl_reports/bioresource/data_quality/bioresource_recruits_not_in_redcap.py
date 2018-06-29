@@ -14,7 +14,7 @@ class BioresourceNotInRedcap(SqlReport):
             recipients=[RECIPIENT_IT_DWH],
             sql='''
 
-SELECT  CONVERT(VARCHAR(100), bioresource_id) as bioresource_id, consent_date
+SELECT  CONVERT(VARCHAR(100), bioresource_id) as bioresource_id
 FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource a
 WHERE NOT EXISTS (
         SELECT  1
@@ -42,9 +42,9 @@ WHERE NOT EXISTS (
         )
 
     def get_report_line(self, row):
-        return '- {} {}\r\n'.format(
+        return '- {}\r\n'.format(
             get_contact_id_search_link(
-                row['bioresource_id'], row['bioresource_id']),
-            '{:%d-%b-%Y}'.format(row['consent_date'])
-            if row['consent_date'] else ''
+                row['bioresource_id'],
+                row['bioresource_id'],
+            )
         )

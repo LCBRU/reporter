@@ -4,7 +4,7 @@ from reporter.connections import RedcapInstance
 from reporter.emailing import (
     RECIPIENT_CARDIOMET_ADMIN as RECIPIENT_ADMIN
 )
-from reporter.uhl_reports.redcap.data_quality import (
+from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapMissingData,
     RedcapInvalidStudyNumber,
     RedcapRecordInvalidStudyNumber,

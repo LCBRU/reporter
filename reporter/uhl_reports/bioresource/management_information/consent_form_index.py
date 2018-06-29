@@ -22,11 +22,6 @@ SELECT
     con.display_name
 FROM (
     SELECT  bioresource_id AS bioresource_or_legacy_id, consent_date
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
-    WHERE blank_study_id = 0
-        AND consent_date IS NOT NULL
-    UNION
-    SELECT  bioresource_id, consent_date
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
     WHERE blank_study_id = 0
         AND consent_date IS NOT NULL

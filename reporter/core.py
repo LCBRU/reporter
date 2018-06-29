@@ -7,6 +7,7 @@ import time
 import traceback
 import importlib
 import pkgutil
+import inspect
 from datetime import date
 from enum import Enum
 from weasyprint import HTML
@@ -163,7 +164,10 @@ def get_concrete_reports(cls=None):
 
     result = [sub() for sub in cls.__subclasses__()
               if len(sub.__subclasses__()) == 0 and
-              sub not in [Report, SqlReport, PdfReport]]
+              # If the constructor requires parameters
+              # other than self (i.e., it has more than 1
+              # argument), it's an abstract class
+              len(inspect.getfullargspec(sub.__init__)[0]) == 1]
 
     for sub in [sub for sub in cls.__subclasses__()
                 if len(sub.__subclasses__()) != 0]:

@@ -2,7 +2,7 @@
 
 from reporter.connections import RedcapInstance
 from reporter.emailing import RECIPIENT_BRICCS_ADMIN
-from reporter.uhl_reports.redcap.data_quality import RedcapMissingAllWhen
+from reporter.application_abstract_reports.redcap.data_quality import RedcapMissingAllWhen
 
 # Abstract Classes
 

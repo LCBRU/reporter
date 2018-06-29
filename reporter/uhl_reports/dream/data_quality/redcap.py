@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from reporter.core import Schedule
-from reporter.uhl_reports.redcap.withdrawn_or_excluded_with_data import (
+from reporter.application_abstract_reports.redcap.withdrawn_or_excluded_with_data import (
     RedcapWithdrawnOrExcludedWithDataReport,
 )
-from reporter.uhl_reports.redcap.redcap_percentage_complete import (
+from reporter.application_abstract_reports.redcap.percentage_complete import (
     RedcapPercentageCompleteReport,
 )
 from reporter.emailing import (

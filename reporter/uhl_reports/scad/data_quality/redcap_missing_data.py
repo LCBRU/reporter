@@ -2,7 +2,7 @@
 
 from reporter.connections import RedcapInstance
 from reporter.emailing import RECIPIENT_SCAD_ADMIN
-from reporter.uhl_reports.redcap.data_quality import (
+from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapMissingData,
     RedcapInvalidDate,
     RedcapRecordInvalidStudyNumber,

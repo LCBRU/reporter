@@ -15,8 +15,7 @@ class BioresourceWithoutFullConsent(SqlReport):
             sql='''
 
 SELECT
-    CONVERT(VARCHAR(100), b.bioresource_id) as bioresource_id,
-    b.consent_date
+    CONVERT(VARCHAR(100), b.bioresource_id) as bioresource_id
 FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource b
 WHERE
         b.blank_study_id = 0
@@ -32,10 +31,9 @@ WHERE
         )
 
     def get_report_line(self, row):
-        consent_date = ('{:%d-%b-%Y}'.format(row["consent_date"])
-                        if row['consent_date'] else '')
-        return '- {} {}\r\n'.format(
+        return '- {}\r\n'.format(
             get_contact_id_search_link(
                 row["bioresource_id"],
-                row["bioresource_id"]),
-            consent_date)
+                row["bioresource_id"],
+            )
+        )

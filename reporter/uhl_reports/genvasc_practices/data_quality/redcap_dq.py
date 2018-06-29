@@ -6,11 +6,11 @@ from reporter.emailing import (
     RECIPIENT_GENVASC_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_IT_DQ,
 )
-from reporter.uhl_reports.redcap.data_quality import (
+from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapMissingData,
     RedcapInvalidEmailAddress,
 )
-from reporter.uhl_reports.redcap.web_data_quality import (
+from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
 

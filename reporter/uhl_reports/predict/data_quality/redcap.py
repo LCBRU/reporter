@@ -6,7 +6,7 @@ from reporter.emailing import (
     RECIPIENT_PREDICT_MANAGER as RECIPIENT_MANAGER,
     RECIPIENT_IT_DQ,
 )
-from reporter.uhl_reports.redcap.data_quality import (
+from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidStudyNumber,
     RedcapInvalidNhsNumber,
     RedcapRecordInvalidStudyNumber,
@@ -18,20 +18,16 @@ from reporter.uhl_reports.redcap.data_quality import (
     RedcapInvalidDate,
     RedcapInvalidUhlSystemNumber,
     RedcapInvalidPostCode,
-)
-from reporter.uhl_reports.redcap.redcap_percentage_complete import (
-    RedcapPercentageCompleteReport,
-)
-from reporter.uhl_reports.redcap.withdrawn_or_excluded_with_data import (
-    RedcapWithdrawnOrExcludedWithDataReport,
-)
-from reporter.uhl_reports.redcap.data_quality import (
     RedcapMissingData,
-)
-from reporter.uhl_reports.redcap.data_quality import (
     RedcapXrefMismatch,
 )
-from reporter.uhl_reports.redcap.web_data_quality import (
+from reporter.application_abstract_reports.redcap.percentage_complete import (
+    RedcapPercentageCompleteReport,
+)
+from reporter.application_abstract_reports.redcap.withdrawn_or_excluded_with_data import (
+    RedcapWithdrawnOrExcludedWithDataReport,
+)
+from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
 
