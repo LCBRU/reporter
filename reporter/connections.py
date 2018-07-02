@@ -14,6 +14,8 @@ REDCAP_EXTERNAL_URL = 'https://uhlbriccsext01.xuhl-tr.nhs.uk/{}'.format(
     REDCAP_PATH)
 REDCAP_UOL_CRF_URL = 'https://crf.lcbru.le.ac.uk/{}'.format(
     REDCAP_UOL_PATH)
+REDCAP_INTERNAL_DB = 'STG_redcap'
+REDCAP_EXTERNAL_DB = 'STG_redcap_briccsext'
 
 OPENSPECIMEN_URL = 'https://catissue-live.lcbru.le.ac.uk/openspecimen/'
 
@@ -68,16 +70,18 @@ def get_redcap_uol_crf_link(link_text, project_id, record):
 class RedcapInstance(Enum):
     def internal():
         return {
-            'staging_database': 'STG_redcap',
+            'staging_database': REDCAP_INTERNAL_DB,
             'link_generator': get_redcap_link,
             'base_url': REDCAP_INTERNAL_URL,
+            'connection': DatabaseConnection.redcap_internal,
         }
 
     def external():
         return {
-            'staging_database': 'STG_redcap_briccsext',
+            'staging_database': REDCAP_EXTERNAL_DB,
             'link_generator': get_redcap_external_link,
             'base_url': REDCAP_EXTERNAL_URL,
+            'connection': DatabaseConnection.redcap_external,
         }
 
     def uol_lamp():
@@ -85,6 +89,7 @@ class RedcapInstance(Enum):
             'staging_database': 'redcap',
             'link_generator': get_redcap_uol_crf_link,
             'base_url': REDCAP_INTERNAL_URL,
+            'connection': DatabaseConnection.uol_lamp,
         }
 
 
@@ -121,6 +126,40 @@ class DatabaseConnection(Enum):
             SQL_REPORTING_USER,
             SQL_REPORTING_PASSWORD,
             SQL_REPORTING_DATABASE,
+        )
+
+        try:
+
+            with conn.cursor(as_dict=True) as cursor:
+                yield cursor
+
+        finally:
+            conn.close()
+
+    @contextmanager
+    def redcap_internal():
+        conn = pymssql.connect(
+            SQL_REPORTING_HOST,
+            SQL_REPORTING_USER,
+            SQL_REPORTING_PASSWORD,
+            REDCAP_INTERNAL_DB,
+        )
+
+        try:
+
+            with conn.cursor(as_dict=True) as cursor:
+                yield cursor
+
+        finally:
+            conn.close()
+
+    @contextmanager
+    def redcap_external():
+        conn = pymssql.connect(
+            SQL_REPORTING_HOST,
+            SQL_REPORTING_USER,
+            SQL_REPORTING_PASSWORD,
+            REDCAP_EXTERNAL_DB,
         )
 
         try:
