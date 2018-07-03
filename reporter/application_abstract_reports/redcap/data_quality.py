@@ -22,11 +22,12 @@ class RedcapMissingData(SqlReport):
                           "missing from REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 WITH recruited AS (
     SELECT  DISTINCT record, project_id
-    FROM    {1}.dbo.redcap_data
+    FROM    redcap_data
     WHERE project_id = %s
 ), potential_errors AS (
     SELECT
@@ -35,7 +36,7 @@ WITH recruited AS (
         md.field_name,
         'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
     FROM recruited r
-    JOIN {1}.dbo.redcap_metadata md
+    JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
 )
@@ -46,7 +47,7 @@ SELECT
 FROM potential_errors pe
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {1}.dbo.redcap_data e
+    FROM redcap_data e
     WHERE e.project_id = pe.project_id
         AND e.record = pe.record
         AND e.field_name = pe.field_name
@@ -55,8 +56,7 @@ WHERE NOT EXISTS (
 ORDER BY pe.record
 
                 '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields]),
-                redcap_instance()['staging_database']),
+                ', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
         )
 
@@ -89,11 +89,12 @@ class RedcapMissingDataWhen(SqlReport):
                           )),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 WITH recruited AS (
     SELECT  DISTINCT record, project_id
-    FROM    {1}.dbo.redcap_data
+    FROM    redcap_data
     WHERE project_id = %s
 ), potential_errors AS (
     SELECT
@@ -102,7 +103,7 @@ WITH recruited AS (
         md.field_name,
         'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
     FROM recruited r
-    JOIN {1}.dbo.redcap_metadata md
+    JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
 )
@@ -113,14 +114,14 @@ SELECT
 FROM potential_errors pe
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {1}.dbo.redcap_data e
+    FROM redcap_data e
     WHERE e.project_id = pe.project_id
         AND e.record = pe.record
         AND e.field_name = pe.field_name
         AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
 ) AND EXISTS (
     SELECT 1
-    FROM {1}.dbo.redcap_data e
+    FROM redcap_data e
     WHERE e.project_id = pe.project_id
         AND e.record = pe.record
         AND e.field_name = %s
@@ -129,8 +130,7 @@ WHERE NOT EXISTS (
 ORDER BY pe.record
 
                 '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields]),
-                redcap_instance()['staging_database']),
+                ', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id, indicator_field, indicator_value)
         )
 
@@ -163,11 +163,12 @@ class RedcapMissingAllWhen(SqlReport):
                           )),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 WITH recruited AS (
     SELECT  DISTINCT record, project_id
-    FROM    {1}.dbo.redcap_data
+    FROM    redcap_data
     WHERE project_id = %s
 )
 SELECT
@@ -176,14 +177,14 @@ SELECT
 FROM recruited r
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {1}.dbo.redcap_data e
+    FROM redcap_data e
     WHERE e.project_id = r.project_id
         AND e.record = r.record
         AND e.field_name IN ({0})
-        AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(e.value) = 0
+        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
 ) AND EXISTS (
     SELECT 1
-    FROM {1}.dbo.redcap_data e
+    FROM redcap_data e
     WHERE e.project_id = r.project_id
         AND e.record = r.record
         AND e.field_name = %s
@@ -193,8 +194,7 @@ ORDER BY r.record
 
 
                 '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields]),
-                redcap_instance()['staging_database']),
+                ', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id, indicator_field, indicator_value)
         )
 
@@ -233,32 +233,19 @@ JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
+    AND e.field_name IN ({0})
 
-                '''.format(
-                redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
-            ),
+                '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
         )
 
-    def get_report_lines(self, cursor):
-        markdown = ''
-        errors = 0
-
-        for row in cursor:
-            if self.invalid_nhs_number(row['value']):
-                markdown += self.get_report_line(row)
-                errors += 1
-
-        return markdown, errors
-
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.invalid_nhs_number(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
 
     def invalid_nhs_number(self, nhs_number):
         """
@@ -298,22 +285,22 @@ class RedcapInvalidStudyNumber(SqlReport):
                           "in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
+    AND e.field_name IN ({0})
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.value) = 1
 
                 '''.format(
-                redcap_instance()['staging_database'],
                 ', '.join(['\'{}\''.format(f) for f in fields])
             ),
             parameters=(project_id)
@@ -325,6 +312,52 @@ WHERE e.project_id = %s
                 row['record'], row['project_id'], row['record']),
             row['element_label']
         )
+
+
+class RedcapFieldMatchesRegularExpression(SqlReport):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        regular_expression,
+        recipients,
+        schedule=None
+    ):
+
+        self._redcap_instance = redcap_instance
+        self._regular_expression = regular_expression
+        super().__init__(
+            introduction=("The following participants have an invalid "
+                          "field in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            conn=redcap_instance()['connection'],
+            sql='''
+
+SELECT
+    e.project_id,
+    e.record,
+    e.value,
+    md.element_label
+FROM redcap_data e
+JOIN redcap_metadata md
+    ON md.project_id = e.project_id
+    AND md.field_name = e.field_name
+WHERE e.project_id = %s
+    AND e.field_name IN ({0})
+
+                '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
+            parameters=(project_id)
+        )
+
+    def get_report_line(self, row):
+        if not re.search(self._regular_expression, row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
 
 
 class RedcapRecordInvalidStudyNumber(SqlReport):
@@ -342,21 +375,20 @@ class RedcapRecordInvalidStudyNumber(SqlReport):
                           "study Number in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record
-FROM {0}.dbo.redcap_data e
+FROM redcap_data e
 WHERE e.project_id = %s
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.record) = 1
 GROUP BY
     e.project_id,
     e.record
 
-                '''.format(
-                redcap_instance()['staging_database']
-            ),
+                ''',
             parameters=(project_id)
         )
 
@@ -367,7 +399,7 @@ GROUP BY
         )
 
 
-class RedcapInvalidUhlSystemNumber(SqlReport):
+class RedcapInvalidUhlSystemNumber(RedcapFieldMatchesRegularExpression):
     def __init__(
         self,
         redcap_instance,
@@ -376,43 +408,17 @@ class RedcapInvalidUhlSystemNumber(SqlReport):
         recipients,
         schedule=None
     ):
-
-        self._redcap_instance = redcap_instance
         super().__init__(
-            introduction=("The following participants an invalid UHL S Number "
-                          "in REDCap"),
+            redcap_instance=redcap_instance,
+            project_id=project_id,
+            fields=fields,
+            regular_expression='[A-Z]\d{7}',
             recipients=recipients,
             schedule=schedule,
-            sql='''
-
-SELECT
-    e.project_id,
-    e.record,
-    md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
-    ON md.project_id = e.project_id
-    AND md.field_name = e.field_name
-WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.isInvalidUhlSystemNumber(e.value) = 1
-
-                '''.format(
-                redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
-            ),
-            parameters=(project_id)
-        )
-
-    def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
         )
 
 
-class RedcapInvalidPostCode(SqlReport):
+class RedcapInvalidPostCode(RedcapFieldMatchesRegularExpression):
     def __init__(
         self,
         redcap_instance,
@@ -421,43 +427,22 @@ class RedcapInvalidPostCode(SqlReport):
         recipients,
         schedule=None
     ):
-
-        self._redcap_instance = redcap_instance
         super().__init__(
-            introduction=("The following participants an invalid post code "
-                          "in REDCap"),
+            redcap_instance=redcap_instance,
+            project_id=project_id,
+            fields=fields,
+            regular_expression='([A-Z][0-9] [0-9][A-Z][A-Z])'
+            '|([A-Z][0-9][0-9] [0-9][A-Z][A-Z])'
+            '|([A-Z][A-Z][0-9] [0-9][A-Z][A-Z])'
+            '|([A-Z][A-Z][0-9][0-9] [0-9][A-Z][A-Z])'
+            '|([A-Z][0-9][A-Z] [0-9][A-Z][A-Z])'
+            '|([A-Z][A-Z][0-9][A-Z] [0-9][A-Z][A-Z])',
             recipients=recipients,
             schedule=schedule,
-            sql='''
-
-SELECT
-    e.project_id,
-    e.record,
-    md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
-    ON md.project_id = e.project_id
-    AND md.field_name = e.field_name
-WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.isInvalidPostcode(e.value) = 1
-
-                '''.format(
-                redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
-            ),
-            parameters=(project_id)
-        )
-
-    def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
         )
 
 
-class RedcapInvalidEmailAddress(SqlReport):
+class RedcapInvalidEmailAddress(RedcapFieldMatchesRegularExpression):
     def __init__(
         self,
         redcap_instance,
@@ -466,40 +451,13 @@ class RedcapInvalidEmailAddress(SqlReport):
         recipients,
         schedule=None
     ):
-
-        self._redcap_instance = redcap_instance
         super().__init__(
-            introduction=("The following participants an invalid "
-                          "email address in REDCap"),
+            redcap_instance=redcap_instance,
+            project_id=project_id,
+            fields=fields,
+            regular_expression=r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
             recipients=recipients,
             schedule=schedule,
-            sql='''
-
-SELECT
-    e.project_id,
-    e.record,
-    md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
-    ON md.project_id = e.project_id
-    AND md.field_name = e.field_name
-WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(e.value) = 0
-    AND i2b2ClinDataIntegration.dbo.isInvalidEmail(e.value) = 1
-
-                '''.format(
-                redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
-            ),
-            parameters=(project_id)
-        )
-
-    def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
         )
 
 
@@ -516,73 +474,73 @@ class RedcapInvalidBloodPressure(SqlReport):
 
         self._redcap_instance = redcap_instance
         super().__init__(
-            introduction=("The following participants have an blood pressure "
-                          "in REDCap"),
+            introduction=("The following participants have an invalid "
+                          "blood pressure in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
-WITH participants AS (
+SELECT
+    p.project_id,
+    p.record,
+    sbp.value [sbp],
+    dbp.value [dbp]
+FROM (
     SELECT DISTINCT
         project_id,
         record
-    FROM    {0}.dbo.redcap_data
+    FROM redcap_data
     WHERE project_id = %s
-), blood_pressures AS (
-    SELECT
-        p.project_id,
-        p.record,
-        sbp.value [sbp],
-        dbp.value [dbp]
-    FROM participants p
-    LEFT JOIN {0}.dbo.redcap_data sbp
-        ON sbp.project_id = p.project_id
-        AND sbp.record = p.record
-        AND sbp.field_name = %s
-    LEFT JOIN {0}.dbo.redcap_data dbp
-        ON dbp.project_id = p.project_id
-        AND dbp.record = p.record
-        AND dbp.field_name = %s
-)
-SELECT *
-FROM (
-    SELECT  *,
-        CASE
-            WHEN i2b2ClinDataIntegration.dbo.isNa(sbp) = 1
-                OR i2b2ClinDataIntegration.dbo.isNa(dbp) = 1
-                THEN NULL
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(sbp) = 1
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(dbp) = 1
-                THEN NULL
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(sbp) = 1
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(dbp) = 0
-                THEN 'Systolic BP not entered'
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(sbp) = 0
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(dbp) = 1
-                THEN 'Diastolic BP not entered'
-            WHEN i2b2ClinDataIntegration.dbo.IsReallyNumeric(sbp) = 0
-                THEN 'Systolic BP not a number'
-            WHEN i2b2ClinDataIntegration.dbo.IsReallyNumeric(dbp) = 0
-                THEN 'Diastolic BP not a number'
-            WHEN i2b2ClinDataIntegration.dbo.isInvalidBloodPressure(sbp,dbp) = 1
-                THEN 'Invalid values for blood pressure'
-        END [error_message]
-    FROM    blood_pressures
-) x
-WHERE x.error_message IS NOT NULL
-;
-                '''.format(
-                redcap_instance()['staging_database']
-            ),
+) p
+LEFT JOIN redcap_data sbp
+    ON sbp.project_id = p.project_id
+    AND sbp.record = p.record
+    AND sbp.field_name = %s
+LEFT JOIN redcap_data dbp
+    ON dbp.project_id = p.project_id
+    AND dbp.record = p.record
+    AND dbp.field_name = %s
+
+                ''',
             parameters=(project_id, systolic_field_name, diastolic_field_name)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+        error = self.get_error_message(row['sbp'], row['dbp'])
+
+        if error:
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                error
+            )
+
+    def get_error_message(self, sbp, dbp):
+        if self.is_na(sbp) and self.is_na(dbp):
+            return
+        if sbp is None and dbp is None:
+            return
+
+        if sbp is None and dbp is not None:
+            return 'Systolic BP not entered'
+        if sbp is not None and dbp is None:
+            return 'Diastolic BP not entered'
+        if not sbp.replace('.', '', 1).isdigit():
+            return 'Systolic BP is not numeric'
+        if not dbp.replace('.', '', 1).isdigit():
+            return 'Diastolic BP is not numeric'
+        if float(sbp) > 200:
+            return 'Systolic BP is too high'
+        if float(dbp) < 35:
+            return 'Diastolic BP is too low'
+        if float(dbp) >= float(sbp):
+            return 'Diastolic BP is above Systolic BP'
+
+        return
+
+    def is_na(self, value):
+        return (value or '').strip().replace('/', '') == 'na'
 
 
 class RedcapInvalidPulse(SqlReport):
@@ -601,36 +559,42 @@ class RedcapInvalidPulse(SqlReport):
                           "in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
+    e.value,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.IsNa(e.value) = 0
-    AND (i2b2ClinDataIntegration.dbo.IsReallyNumeric(e.value) = 0
-        OR i2b2ClinDataIntegration.dbo.isInvalidPulse(e.value) = 1
-        )
+    AND e.field_name IN ({})
 
                 '''.format(
-                redcap_instance()['staging_database'],
                 ', '.join(['\'{}\''.format(f) for f in fields])
             ),
             parameters=(project_id)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.is_invalid(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
+
+    def is_invalid(self, value):
+        if (value or '').strip().replace('/', '') == 'na':
+            return False
+        if not value.replace('.', '', 1).isdigit():
+            return True
+        if not 20 < float(value) < 200:
+            return True
 
 
 class RedcapInvalidHeightInCm(SqlReport):
@@ -649,36 +613,42 @@ class RedcapInvalidHeightInCm(SqlReport):
                           "Height(cm) in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
+    e.value,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.IsNa(e.value) = 0
-    AND (i2b2ClinDataIntegration.dbo.IsReallyNumeric(e.value) = 0
-        OR i2b2ClinDataIntegration.dbo.isInvalidHeightInCm(e.value) = 1
-        )
+    AND e.field_name IN ({})
 
                 '''.format(
-                redcap_instance()['staging_database'],
                 ', '.join(['\'{}\''.format(f) for f in fields])
             ),
             parameters=(project_id)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.is_invalid(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
+
+    def is_invalid(self, value):
+        if (value or '').strip().replace('/', '') == 'na':
+            return False
+        if not value.replace('.', '', 1).isdigit():
+            return True
+        if not 100 < float(value) < 250:
+            return True
 
 
 class RedcapInvalidHeightInM(SqlReport):
@@ -697,36 +667,42 @@ class RedcapInvalidHeightInM(SqlReport):
                           "Height(m) in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
+    e.value,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.IsNa(e.value) = 0
-    AND (i2b2ClinDataIntegration.dbo.IsReallyNumeric(e.value) = 0
-        OR i2b2ClinDataIntegration.dbo.isInvalidHeightInCm(e.value * 100) = 1
-        )
+    AND e.field_name IN ({})
 
                 '''.format(
-                redcap_instance()['staging_database'],
                 ', '.join(['\'{}\''.format(f) for f in fields])
             ),
             parameters=(project_id)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.is_invalid(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
+
+    def is_invalid(self, value):
+        if (value or '').strip().replace('/', '') == 'na':
+            return False
+        if not value.replace('.', '', 1).isdigit():
+            return True
+        if not 1.0 < float(value) < 2.5:
+            return True
 
 
 class RedcapInvalidDate(SqlReport):
@@ -744,14 +720,15 @@ class RedcapInvalidDate(SqlReport):
                           "in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
     AND md.element_type = 'text'
@@ -764,8 +741,8 @@ SELECT
     e.project_id,
     e.record,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
     AND md.element_type = 'text'
@@ -775,9 +752,7 @@ WHERE  e.project_id = %s
     AND ISDATE(e.value) = 1
     AND YEAR(e.value) < 1900
 
-                '''.format(
-                redcap_instance()['staging_database'],
-            ),
+                ''',
             parameters=(project_id, project_id)
         )
 
@@ -806,70 +781,70 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
                           "Height(feet and inches) in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
-WITH participants AS (
-    SELECT DISTINCT
-        project_id,
-        record
-    FROM    {0}.dbo.redcap_data
-    WHERE project_id = %s
-), heights AS (
     SELECT
         p.project_id,
         p.record,
         feet.value [feet],
         inches.value [inches]
-    FROM participants p
-    LEFT JOIN {0}.dbo.redcap_data feet
+    FROM (
+        SELECT DISTINCT
+            project_id,
+            record
+        FROM    redcap_data
+        WHERE project_id = %s
+    ) p
+    LEFT JOIN redcap_data feet
         ON feet.project_id = p.project_id
         AND feet.record = p.record
         AND feet.field_name = %s
-    LEFT JOIN {0}.dbo.redcap_data inches
+    LEFT JOIN redcap_data inches
         ON inches.project_id = p.project_id
         AND inches.record = p.record
         AND inches.field_name = %s
-)
-SELECT *
-FROM (
-    SELECT  *,
-        CASE
-            WHEN i2b2ClinDataIntegration.dbo.isNa(feet) = 1
-                OR i2b2ClinDataIntegration.dbo.isNa(inches) = 1
-                THEN NULL
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(feet) = 1
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(feet) = 1
-                THEN NULL
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(feet) = 1
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(inches) = 0
-                THEN 'Height in feet not entered'
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(feet) = 0
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(inches) = 1
-                THEN 'Height in inches not entered'
-            WHEN i2b2ClinDataIntegration.dbo.IsReallyNumeric(feet) = 0
-                THEN 'Height in feet not a number'
-            WHEN i2b2ClinDataIntegration.dbo.IsReallyNumeric(inches) = 0
-                THEN 'Height in inches not a number'
-            WHEN i2b2ClinDataIntegration.dbo.isInvalidHeightInFeetAndInches(feet,inches) = 1
-                THEN 'Invalid values for Height in feet and inches'
-        END [error_message]
-    FROM    heights
-) x
-WHERE x.error_message IS NOT NULL
-;
 
-                '''.format(
-                redcap_instance()['staging_database']
-            ),
+
+                ''',
             parameters=(project_id, feet_field, inches_field)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+        error = self.get_error_message(row['feet'], row['inches'])
+
+        if error:
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                error
+            )
+
+    def get_error_message(self, feet, inches):
+        if self.is_na(feet) or self.is_na(inches):
+            return
+        if feet is None and inches is None:
+            return
+
+        if feet is None and inches is not None:
+            return 'Height in feet not entered'
+        if feet is not None and inches is None:
+            return 'Height in inches not entered'
+        if not feet.replace('.', '', 1).isdigit():
+            return 'Height in feet is not numeric'
+        if not inches.replace('.', '', 1).isdigit():
+            return 'Height in inches is not numeric'
+        if float(feet) < 3:
+            return 'Height in feet too low'
+        if float(feet) > 7:
+            return 'Height in feet too high'
+        if not 0 <= float(inches) < 12:
+            return 'Height in inches is incorrect'
+
+        return
+
+    def is_na(self, value):
+        return (value or '').strip().replace('/', '') == 'na'
 
 
 class RedcapInvalidWeightInKg(SqlReport):
@@ -888,36 +863,40 @@ class RedcapInvalidWeightInKg(SqlReport):
                           "Weight(kg) in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
+    e.value,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.IsNa(e.value) = 0
-    AND (i2b2ClinDataIntegration.dbo.IsReallyNumeric(e.value) = 0
-        OR i2b2ClinDataIntegration.dbo.isInvalidWeightInKg(e.value) = 1
-        )
+    AND e.field_name IN ({})
 
-                '''.format(
-                redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
-            ),
+                '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.is_invalid(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
+
+    def is_invalid(self, value):
+        if (value or '').strip().replace('/', '') == 'na':
+            return False
+        if not value.replace('.', '', 1).isdigit():
+            return True
+        if not 20.0 < float(value) < 200.0:
+            return True
 
 
 class RedcapInvalidWeightInStonesAndPounds(SqlReport):
@@ -937,68 +916,67 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
                           "Weight(Stones and pounds) in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
-WITH participants AS (
-    SELECT DISTINCT
-        project_id,
-        record
-    FROM    {0}.dbo.redcap_data
-    WHERE project_id = %s
-), weights AS (
     SELECT
         p.project_id,
         p.record,
         stones.value [stones],
         pounds.value [pounds]
-    FROM participants p
-    LEFT JOIN {0}.dbo.redcap_data stones
+    FROM (
+        SELECT DISTINCT
+            project_id,
+            record
+        FROM    redcap_data
+        WHERE project_id = %s
+    ) p
+    LEFT JOIN redcap_data stones
         ON stones.project_id = p.project_id
         AND stones.record = p.record
         AND stones.field_name = %s
-    LEFT JOIN {0}.dbo.redcap_data pounds
+    LEFT JOIN redcap_data pounds
         ON pounds.project_id = p.project_id
         AND pounds.record = p.record
         AND pounds.field_name = %s
-)
-SELECT *
-FROM (
-    SELECT  *,
-        CASE
-            WHEN i2b2ClinDataIntegration.dbo.isNa(stones) = 1
-                OR i2b2ClinDataIntegration.dbo.isNa(pounds) = 1
-                THEN NULL
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(stones) = 1
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(pounds) = 1
-                THEN NULL
-            WHEN i2b2ClinDataIntegration.dbo.isNullOrEmpty(stones) = 0
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(pounds) = 1
-                THEN 'Weight in pounds not entered'
-            WHEN i2b2ClinDataIntegration.dbo.IsReallyNumeric(stones) = 0
-                AND i2b2ClinDataIntegration.dbo.isNullOrEmpty(stones) = 0
-                THEN 'Weight in stones not a number'
-            WHEN i2b2ClinDataIntegration.dbo.IsReallyNumeric(pounds) = 0
-                THEN 'Weight in pounds not a number'
-            WHEN i2b2ClinDataIntegration.dbo.isInvalidWeightInStonesAndPounds(stones,pounds) = 1
-                THEN 'Invalid values for Weight in stones and pounds'
-        END [error_message]
-    FROM    weights
-) x
-WHERE x.error_message IS NOT NULL
-;
 
-                '''.format(
-                redcap_instance()['staging_database']
-            ),
+
+                ''',
             parameters=(project_id, stones_field, pounds_field)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+        error = self.get_error_message(row['stones'], row['pounds'])
+
+        if error:
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                error
+            )
+
+    def get_error_message(self, stones, pounds):
+        if self.is_na(stones) or self.is_na(pounds):
+            return
+        if stones is None and pounds is None:
+            return
+
+        if stones is not None and pounds is None:
+            return 'Weight in pounds not entered'
+        if not (stones or '0').replace('.', '', 1).isdigit():
+            return 'Weight in stones is not numeric'
+        if not pounds.replace('.', '', 1).isdigit():
+            return 'Weight in pounds is not numeric'
+
+        calculated_kg = ((float(stones or 0) * 14) + float(pounds)) * 0.453592
+
+        if not 20.0 < calculated_kg < 200.0:
+            return 'Invalid weight'
+
+        return
+
+    def is_na(self, value):
+        return (value or '').strip().replace('/', '') == 'na'
 
 
 class RedcapInvalidBmi(SqlReport):
@@ -1017,36 +995,40 @@ class RedcapInvalidBmi(SqlReport):
                           "BMI in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     e.project_id,
     e.record,
+    e.value,
     md.element_label
-FROM {0}.dbo.redcap_data e
-JOIN {0}.dbo.redcap_metadata md
+FROM redcap_data e
+JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
-    AND e.field_name IN ({1})
-    AND i2b2ClinDataIntegration.dbo.IsNa(e.value) = 0
-    AND (i2b2ClinDataIntegration.dbo.IsReallyNumeric(e.value) = 0
-        OR i2b2ClinDataIntegration.dbo.isInvalidBmi(e.value) = 1
-        )
+    AND e.field_name IN ({})
 
-                '''.format(
-                redcap_instance()['staging_database'],
-                ', '.join(['\'{}\''.format(f) for f in fields])
-            ),
+                '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.is_invalid(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
+
+    def is_invalid(self, value):
+        if (value or '').strip().replace('/', '') == 'na':
+            return False
+        if not value.replace('.', '', 1).isdigit():
+            return True
+        if not 17.0 <= float(value) <= 80.0:
+            return True
 
 
 class RedcapOutsideAgeRange(SqlReport):
@@ -1068,6 +1050,7 @@ class RedcapOutsideAgeRange(SqlReport):
                           "outside the specified age range witin REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
@@ -1076,8 +1059,8 @@ SELECT
     [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         CONVERT(DATE, dob.value),
         CONVERT(DATE, rec.value)) AgeAtRecruitment
-FROM    {0}.dbo.redcap_data dob
-JOIN    {0}.dbo.redcap_data rec
+FROM    redcap_data dob
+JOIN    redcap_data rec
     ON rec.project_id = dob.project_id
     AND rec.record = dob.record
     AND rec.field_name = %s
@@ -1087,9 +1070,7 @@ WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
     AND dob.field_name = %s
     AND dob.project_id = %s
 
-                '''.format(
-                redcap_instance()['staging_database'],
-            ),
+                ''',
             parameters=(
                 recruited_date_field,
                 min_age,
@@ -1134,26 +1115,26 @@ class RedcapImpliesCheck(SqlReport):
                           "invalid data in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance()['connection'],
             sql='''
 
 SELECT
     a.record,
     a.project_id
-FROM    {0}.dbo.redcap_data a
+FROM    redcap_data a
 WHERE a.project_id = %s
-    AND a.field_name IN ({1})
-    AND a.value IN ({2})
-    AND {5} (
+    AND a.field_name IN ({0})
+    AND a.value IN ({1})
+    AND {4} (
         SELECT 1
-        FROM    {0}.dbo.redcap_data b
+        FROM    redcap_data b
         WHERE b.project_id = a.project_id
             AND b.record = a.record
-            AND b.field_name IN ({3})
-            AND b.value IN ({4})
+            AND b.field_name IN ({2})
+            AND b.value IN ({3})
     )
 
                 '''.format(
-                redcap_instance()['staging_database'],
                 ', '.join(['%s'] * len(indicator_fields)),
                 ', '.join(['%s'] * len(indicator_values)),
                 ', '.join(['%s'] * len(consequence_fields)),
@@ -1194,6 +1175,7 @@ class RedcapXrefMismatch(SqlReport):
                           "in REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=redcap_instance_a()['connection'],
             sql='''
 
 DECLARE @project_id_a INT,
@@ -1214,12 +1196,12 @@ SELECT
     @project_id_b [project_id_b],
     pa.app_title [project_title_a],
     pb.app_title [project_title_b]
-FROM    {0}.dbo.redcap_data a
-JOIN    {0}.dbo.redcap_projects pa
+FROM    {0}.redcap_data a
+JOIN    {0}.redcap_projects pa
     ON pa.project_id = @project_id_a
-JOIN    {1}.dbo.redcap_projects pb
+JOIN    {1}.redcap_projects pb
     ON pb.project_id = @project_id_b
-LEFT JOIN {1}.dbo.redcap_data b
+LEFT JOIN {1}.redcap_data b
     ON b.project_id = @project_id_b
         AND b.field_name = @field_name_b
         AND b.record = a.record

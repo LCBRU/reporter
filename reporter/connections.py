@@ -70,7 +70,7 @@ def get_redcap_uol_crf_link(link_text, project_id, record):
 class RedcapInstance(Enum):
     def internal():
         return {
-            'staging_database': REDCAP_INTERNAL_DB,
+            'staging_database': REDCAP_INTERNAL_DB + '.dbo',
             'link_generator': get_redcap_link,
             'base_url': REDCAP_INTERNAL_URL,
             'connection': DatabaseConnection.redcap_internal,
@@ -78,7 +78,7 @@ class RedcapInstance(Enum):
 
     def external():
         return {
-            'staging_database': REDCAP_EXTERNAL_DB,
+            'staging_database': REDCAP_EXTERNAL_DB + '.dbo',
             'link_generator': get_redcap_external_link,
             'base_url': REDCAP_EXTERNAL_URL,
             'connection': DatabaseConnection.redcap_external,
