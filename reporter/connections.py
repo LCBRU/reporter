@@ -66,21 +66,21 @@ def get_redcap_uol_crf_link(link_text, project_id, record):
 
 
 class RedcapInstance(Enum):
-    def internal():
+    def internal(self):
         return {
             'staging_database': 'STG_redcap',
             'link_generator': get_redcap_link,
             'base_url': REDCAP_INTERNAL_URL,
         }
 
-    def external():
+    def external(self):
         return {
             'staging_database': 'STG_redcap_briccsext',
             'link_generator': get_redcap_external_link,
             'base_url': REDCAP_EXTERNAL_URL,
         }
 
-    def uol_lamp():
+    def uol_lamp(self):
         return {
             'staging_database': 'redcap',
             'link_generator': get_redcap_uol_crf_link,
@@ -106,7 +106,7 @@ def get_openspecimen_link(
 
 
 class OpenSpecimenInstance(Enum):
-    def live():
+    def live(self):
         return {
             'link_generator': get_openspecimen_link,
         }
@@ -115,7 +115,7 @@ class OpenSpecimenInstance(Enum):
 class DatabaseConnection(Enum):
 
     @contextmanager
-    def reporting():
+    def reporting(self):
         conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
@@ -132,7 +132,7 @@ class DatabaseConnection(Enum):
             conn.close()
 
     @contextmanager
-    def dwbriccs():
+    def dwbriccs(self):
         conn = pymssql.connect(
             SQL_DWBRICCS_HOST,
             SQL_DWBRICCS_USER,
@@ -149,7 +149,7 @@ class DatabaseConnection(Enum):
             conn.close()
 
     @contextmanager
-    def uol_lamp():
+    def uol_lamp(self):
 
         conn = pymysql.connect(
             host=SQL_REPORTING_HOST,
