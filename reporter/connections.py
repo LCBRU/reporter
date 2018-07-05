@@ -137,10 +137,7 @@ class DatabaseConnection(Enum):
             conn.close()
 
     @contextmanager
-<<<<<<< HEAD
-    def dwbriccs(self):
-=======
-    def redcap_internal():
+    def redcap_internal(self):
         conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
@@ -157,7 +154,7 @@ class DatabaseConnection(Enum):
             conn.close()
 
     @contextmanager
-    def redcap_external():
+    def redcap_external(self):
         conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
@@ -174,8 +171,7 @@ class DatabaseConnection(Enum):
             conn.close()
 
     @contextmanager
-    def dwbriccs():
->>>>>>> 9ea68703e0bbb37f17ff4fbb8a47ce2365dec638
+    def dwbriccs(self):
         conn = pymssql.connect(
             SQL_DWBRICCS_HOST,
             SQL_DWBRICCS_USER,
