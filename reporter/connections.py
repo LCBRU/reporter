@@ -16,6 +16,7 @@ REDCAP_UOL_CRF_URL = 'https://crf.lcbru.le.ac.uk/{}'.format(
     REDCAP_UOL_PATH)
 REDCAP_INTERNAL_DB = 'STG_redcap'
 REDCAP_EXTERNAL_DB = 'STG_redcap_briccsext'
+REDCAP_UOL_DB = 'redcap'
 
 OPENSPECIMEN_URL = 'https://catissue-live.lcbru.le.ac.uk/openspecimen/'
 
@@ -68,7 +69,8 @@ def get_redcap_uol_crf_link(link_text, project_id, record):
 
 
 class RedcapInstance(Enum):
-    def internal(self):
+    @staticmethod
+    def internal():
         return {
             'staging_database': REDCAP_INTERNAL_DB + '.dbo',
             'link_generator': get_redcap_link,
@@ -76,7 +78,8 @@ class RedcapInstance(Enum):
             'connection': DatabaseConnection.redcap_internal,
         }
 
-    def external(self):
+    @staticmethod
+    def external():
         return {
             'staging_database': REDCAP_EXTERNAL_DB + '.dbo',
             'link_generator': get_redcap_external_link,
@@ -84,7 +87,8 @@ class RedcapInstance(Enum):
             'connection': DatabaseConnection.redcap_external,
         }
 
-    def uol_lamp(self):
+    @staticmethod
+    def uol_lamp():
         return {
             'staging_database': 'redcap',
             'link_generator': get_redcap_uol_crf_link,
@@ -111,7 +115,8 @@ def get_openspecimen_link(
 
 
 class OpenSpecimenInstance(Enum):
-    def live(self):
+    @staticmethod
+    def live():
         return {
             'link_generator': get_openspecimen_link,
         }
@@ -119,8 +124,9 @@ class OpenSpecimenInstance(Enum):
 
 class DatabaseConnection(Enum):
 
+    @staticmethod
     @contextmanager
-    def reporting(self):
+    def reporting():
         conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
@@ -136,8 +142,9 @@ class DatabaseConnection(Enum):
         finally:
             conn.close()
 
+    @staticmethod
     @contextmanager
-    def redcap_internal(self):
+    def redcap_internal():
         conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
@@ -153,8 +160,9 @@ class DatabaseConnection(Enum):
         finally:
             conn.close()
 
+    @staticmethod
     @contextmanager
-    def redcap_external(self):
+    def redcap_external():
         conn = pymssql.connect(
             SQL_REPORTING_HOST,
             SQL_REPORTING_USER,
@@ -170,8 +178,9 @@ class DatabaseConnection(Enum):
         finally:
             conn.close()
 
+    @staticmethod
     @contextmanager
-    def dwbriccs(self):
+    def dwbriccs():
         conn = pymssql.connect(
             SQL_DWBRICCS_HOST,
             SQL_DWBRICCS_USER,
@@ -187,13 +196,15 @@ class DatabaseConnection(Enum):
         finally:
             conn.close()
 
+    @staticmethod
     @contextmanager
-    def uol_lamp(self):
+    def uol_lamp():
 
         conn = pymysql.connect(
             host=SQL_REPORTING_HOST,
             port=int(SQL_REPORTING_PORT),
             user=SQL_REPORTING_USER,
+            database=REDCAP_UOL_DB,
             password=SQL_REPORTING_PASSWORD,
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor,
