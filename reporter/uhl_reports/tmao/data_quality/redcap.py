@@ -9,8 +9,8 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapMissingData,
     RedcapMissingDataWhen,
-    RedcapInvalidStudyNumber,
-    RedcapInvalidDate
+    RedcapInvalidDate,
+    RedcapFieldMatchesRegularExpression,
 )
 from reporter.application_abstract_reports.redcap.percentage_complete import (
     RedcapPercentageCompleteReport,
@@ -93,12 +93,13 @@ class TmaoRedcapMissingDataWhenEggEater(
 
 
 class TmaoRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_PROJECT_ID,
             ['record_id'],
+            'TMAO\d{4}',
             [RECIPIENT_ADMIN]
         )
 

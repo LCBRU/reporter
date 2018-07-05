@@ -57,7 +57,7 @@ class FastRedcapMissingData(SqlReport):
 
 WITH recruited AS (
     SELECT  DISTINCT record, project_id
-    FROM    {1}.dbo.redcap_data
+    FROM    {1}.redcap_data
     WHERE project_id = %s
 ), potential_errors AS (
     SELECT
@@ -66,7 +66,7 @@ WITH recruited AS (
         md.field_name,
         'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
     FROM recruited r
-    JOIN STG_redcap.dbo.redcap_metadata md
+    JOIN {1}.redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
 )
@@ -77,7 +77,7 @@ SELECT
 FROM potential_errors pe
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {1}.dbo.redcap_data e
+    FROM {1}.redcap_data e
     WHERE e.project_id = pe.project_id
         AND e.record = pe.record
         AND e.field_name = pe.field_name

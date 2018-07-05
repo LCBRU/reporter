@@ -110,11 +110,15 @@ class SqlReport(Report):
 
     def get_report_lines(self, cursor):
         markdown = ''
+        rows = 0
 
         for row in cursor:
-            markdown += self.get_report_line(row)
+            line = self.get_report_line(row)
+            if line:
+                rows += 1
+                markdown += line
 
-        return markdown, cursor.rowcount + 1
+        return markdown, rows
 
     def get_report_line(self, row):
         return '- {}\r\n'.format(row)

@@ -81,8 +81,10 @@ WHERE e.project_id = %s
 
         checkcalc = lambda sum: 11 - (sum % 11)
 
-        l = sum([int(j) * (11 - (i+1)) for i, j in enumerate(nhs_number[:-1])])
-        checksum = checkcalc(l) if checkcalc(l) != 11 else 0
+        char_total = sum(
+            [int(j) * (11 - (i + 1)) for i, j in enumerate(nhs_number[:-1])]
+        )
+        checksum = checkcalc(char_total) if checkcalc(char_total) != 11 else 0
 
         return checksum != int(nhs_number[9])
 
@@ -95,5 +97,3 @@ class FoamiRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             fields=['nhs_num'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
-
-

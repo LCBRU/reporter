@@ -18,8 +18,6 @@ from reporter.application_abstract_reports.redcap.web_data_quality import (
 from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidNhsNumber,
     RedcapInvalidDate,
-    RedcapInvalidStudyNumber,
-    RedcapRecordInvalidStudyNumber,
     RedcapInvalidBloodPressure,
     RedcapInvalidPulse,
     RedcapInvalidHeightInCm,
@@ -28,6 +26,7 @@ from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidUhlSystemNumber,
     RedcapInvalidPostCode,
     RedcapInvalidEmailAddress,
+    RedcapFieldMatchesRegularExpression,
 )
 
 REDCAP_LEICESTER_PROJECT_ID = 24
@@ -105,12 +104,13 @@ class BriccsLeicesterRedcapInvalidDate(
 
 
 class BriccsLeicesterRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.internal,
             project_id=REDCAP_LEICESTER_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -136,16 +136,6 @@ class BriccsLeicesterRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsLeicesterRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.internal,
-            project_id=REDCAP_LEICESTER_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -291,12 +281,13 @@ class BriccsDoncasterRedcapInvalidDate(
 
 
 class BriccsDoncasterRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_DONCASTER_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -322,16 +313,6 @@ class BriccsDoncasterRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsDoncasterRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_DONCASTER_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -477,12 +458,13 @@ class BriccsSheffieldRedcapInvalidDate(
 
 
 class BriccsSheffieldRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_SHEFFIELD_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -508,16 +490,6 @@ class BriccsSheffieldRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsSheffieldRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_SHEFFIELD_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -663,12 +635,13 @@ class BriccsKetteringRedcapInvalidDate(
 
 
 class BriccsKetteringRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_KETTERING_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -694,16 +667,6 @@ class BriccsKetteringRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsKetteringRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_KETTERING_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -849,12 +812,13 @@ class BriccsChesterfieldRedcapInvalidDate(
 
 
 class BriccsChesterfieldRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_CHESTERFIELD_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -880,16 +844,6 @@ class BriccsChesterfieldRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsChesterfieldRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_CHESTERFIELD_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1035,12 +989,13 @@ class BriccsGranthamRedcapInvalidDate(
 
 
 class BriccsGranthamRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_GRANTHAM_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1066,16 +1021,6 @@ class BriccsGranthamRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsGranthamRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_GRANTHAM_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1221,12 +1166,13 @@ class BriccsLincolnRedcapInvalidDate(
 
 
 class BriccsLincolnRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_LINCOLN_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1252,16 +1198,6 @@ class BriccsLincolnRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsLincolnRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_LINCOLN_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1407,12 +1343,13 @@ class BriccsNorthamptonRedcapInvalidDate(
 
 
 class BriccsNorthamptonRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_NORTHAMPTON_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1438,16 +1375,6 @@ class BriccsNorthamptonRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsNorthamptonRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_NORTHAMPTON_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1593,12 +1520,13 @@ class BriccsDerbyRedcapInvalidDate(
 
 
 class BriccsDerbyRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_DERBY_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1624,16 +1552,6 @@ class BriccsDerbyRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsDerbyRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_DERBY_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1779,12 +1697,13 @@ class BriccsBostonRedcapInvalidDate(
 
 
 class BriccsBostonRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_BOSTON_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1810,16 +1729,6 @@ class BriccsBostonRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsBostonRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_BOSTON_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1965,12 +1874,13 @@ class BriccsNottinghamRedcapInvalidDate(
 
 
 class BriccsNottinghamRedcapInvalidStudyNumber(
-        RedcapInvalidStudyNumber):
+        RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
             fields=['record_id'],
+            regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1996,16 +1906,6 @@ class BriccsNottinghamRedcapInvalidEmailAddress(
                 'pat_email1',
                 'pat_email2',
             ],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsNottinghamRedcapRecordInvalidStudyNumber(
-        RedcapRecordInvalidStudyNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 

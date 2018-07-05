@@ -24,9 +24,9 @@ from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidHeightInCm,
     RedcapInvalidWeightInKg,
     RedcapInvalidBmi,
-    RedcapInvalidUhlSystemNumber,
     RedcapInvalidPostCode,
     RedcapInvalidEmailAddress,
+    RedcapInvalidUhlSystemNumber,
 )
 
 REDCAP_LEICESTER_PROJECT_ID = 25
