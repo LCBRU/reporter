@@ -91,3 +91,4 @@ ENV/
 # Environment
 reports.env
 screenshot.png
+.vscode
