@@ -9,6 +9,8 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapFieldMatchesRegularExpression,
     RedcapInvalidDate,
+    RedcapInvalidWeightInKg,
+    RedcapInvalidBmi,
 )
 
 REDCAP_PROJECT_ID = 17
@@ -30,5 +32,25 @@ class FoamiRedcapInvalidDate(RedcapInvalidDate):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FoamiRedcapInvalidWeightInKg(RedcapInvalidWeightInKg):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['weight'],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FoamiRedcapInvalidBmi(RedcapInvalidBmi):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['bmi'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
