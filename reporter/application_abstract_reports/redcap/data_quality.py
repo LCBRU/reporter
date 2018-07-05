@@ -736,13 +736,12 @@ JOIN redcap_metadata md
     AND md.element_type = 'text'
     AND md.element_validation_type LIKE 'date_%%'
 WHERE e.project_id = %s
-	AND e.value IS NOT NULL
+    AND e.value IS NOT NULL
     AND REPLACE(e.value, ' ', '') <> ''
 
                 ''',
             parameters=(project_id)
         )
-
 
     def get_report_line(self, row):
         if self.is_invalid(row['value']):
