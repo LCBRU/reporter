@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import datetime
 from reporter.core import SqlReport
 
 # Abstract Reports
@@ -726,42 +727,37 @@ class RedcapInvalidDate(SqlReport):
 SELECT
     e.project_id,
     e.record,
+    e.value,
     md.element_label
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
     AND md.element_type = 'text'
-    AND md.element_validation_type LIKE 'date_%'
+    AND md.element_validation_type LIKE 'date_%%'
 WHERE e.project_id = %s
-    AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-    AND ISDATE(e.value) = 0
-UNION
-SELECT
-    e.project_id,
-    e.record,
-    md.element_label
-FROM redcap_data e
-JOIN redcap_metadata md
-    ON md.project_id = e.project_id
-    AND md.field_name = e.field_name
-    AND md.element_type = 'text'
-    AND md.element_validation_type LIKE 'date_%'
-WHERE  e.project_id = %s
-    AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-    AND ISDATE(e.value) = 1
-    AND YEAR(e.value) < 1900
+	AND e.value IS NOT NULL
+    AND REPLACE(e.value, ' ', '') <> ''
 
                 ''',
-            parameters=(project_id, project_id)
+            parameters=(project_id)
         )
 
+
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if self.is_invalid(row['value']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
+
+    def is_invalid(self, value):
+        try:
+            datetime.datetime.strptime(value, '%Y-%m-%d')
+            return 0
+        except ValueError:
+            return 1
 
 
 class RedcapInvalidHeightInFeetAndInches(SqlReport):
