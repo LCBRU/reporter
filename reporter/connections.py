@@ -128,10 +128,10 @@ class DatabaseConnection(Enum):
     @contextmanager
     def reporting():
         conn = pymssql.connect(
-            SQL_REPORTING_HOST,
-            SQL_REPORTING_USER,
-            SQL_REPORTING_PASSWORD,
-            SQL_REPORTING_DATABASE,
+            host=SQL_REPORTING_HOST,
+            user=SQL_REPORTING_USER,
+            password=SQL_REPORTING_PASSWORD,
+            database=SQL_REPORTING_DATABASE,
         )
 
         try:
@@ -146,10 +146,10 @@ class DatabaseConnection(Enum):
     @contextmanager
     def redcap_internal():
         conn = pymssql.connect(
-            SQL_REPORTING_HOST,
-            SQL_REPORTING_USER,
-            SQL_REPORTING_PASSWORD,
-            REDCAP_INTERNAL_DB,
+            host=SQL_REPORTING_HOST,
+            user=SQL_REPORTING_USER,
+            password=SQL_REPORTING_PASSWORD,
+            database=REDCAP_INTERNAL_DB,
         )
 
         try:
@@ -164,10 +164,10 @@ class DatabaseConnection(Enum):
     @contextmanager
     def redcap_external():
         conn = pymssql.connect(
-            SQL_REPORTING_HOST,
-            SQL_REPORTING_USER,
-            SQL_REPORTING_PASSWORD,
-            REDCAP_EXTERNAL_DB,
+            host=SQL_REPORTING_HOST,
+            user=SQL_REPORTING_USER,
+            password=SQL_REPORTING_PASSWORD,
+            database=REDCAP_EXTERNAL_DB,
         )
 
         try:
@@ -182,10 +182,10 @@ class DatabaseConnection(Enum):
     @contextmanager
     def dwbriccs():
         conn = pymssql.connect(
-            SQL_DWBRICCS_HOST,
-            SQL_DWBRICCS_USER,
-            SQL_DWBRICCS_PASSWORD,
-            SQL_DWBRICCS_DATABASE
+            host=SQL_DWBRICCS_HOST,
+            user=SQL_DWBRICCS_USER,
+            password=SQL_DWBRICCS_PASSWORD,
+            database=SQL_DWBRICCS_DATABASE,
         )
 
         try:
