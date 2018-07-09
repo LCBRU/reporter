@@ -14,9 +14,12 @@ REDCAP_EXTERNAL_URL = 'https://uhlbriccsext01.xuhl-tr.nhs.uk/{}'.format(
     REDCAP_PATH)
 REDCAP_UOL_CRF_URL = 'https://crf.lcbru.le.ac.uk/{}'.format(
     REDCAP_UOL_PATH)
+REDCAP_UOL_SURVEY_URL = 'https://redcap.lcbru.le.ac.uk/{}'.format(
+    REDCAP_UOL_PATH)
 REDCAP_INTERNAL_DB = 'STG_redcap'
 REDCAP_EXTERNAL_DB = 'STG_redcap_briccsext'
 REDCAP_UOL_DB = 'redcap'
+REDCAP_UOL_SURVEY_DB = 'redcap6170'
 
 OPENSPECIMEN_URL = 'https://catissue-live.lcbru.le.ac.uk/openspecimen/'
 
@@ -68,6 +71,18 @@ def get_redcap_uol_crf_link(link_text, project_id, record):
         record))
 
 
+def get_redcap_uol_survey_link(link_text, project_id, record):
+    REDCAP_RECORD_URL = (
+        '[{}]({}/DataEntry/record_home.php'
+        '?pid={}&id={})')
+
+    return (REDCAP_RECORD_URL.format(
+        link_text,
+        REDCAP_UOL_SURVEY_URL,
+        project_id,
+        record))
+
+
 class RedcapInstance(Enum):
     @staticmethod
     def internal():
@@ -94,6 +109,15 @@ class RedcapInstance(Enum):
             'link_generator': get_redcap_uol_crf_link,
             'base_url': REDCAP_INTERNAL_URL,
             'connection': DatabaseConnection.uol_lamp,
+        }
+
+    @staticmethod
+    def uol_survey():
+        return {
+            'staging_database': 'redcap',
+            'link_generator': get_redcap_uol_survey_link,
+            'base_url': REDCAP_INTERNAL_URL,
+            'connection': DatabaseConnection.uol_survey,
         }
 
 
@@ -205,6 +229,28 @@ class DatabaseConnection(Enum):
             port=int(SQL_REPORTING_PORT),
             user=SQL_REPORTING_USER,
             database=REDCAP_UOL_DB,
+            password=SQL_REPORTING_PASSWORD,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+        )
+
+        try:
+
+            with conn.cursor() as cursor:
+                yield cursor
+
+        finally:
+            conn.close()
+
+    @staticmethod
+    @contextmanager
+    def uol_survey():
+
+        conn = pymysql.connect(
+            host=SQL_REPORTING_HOST,
+            port=int(SQL_REPORTING_PORT),
+            user=SQL_REPORTING_USER,
+            database=REDCAP_UOL_SURVEY_DB,
             password=SQL_REPORTING_PASSWORD,
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor,
