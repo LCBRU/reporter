@@ -9,14 +9,16 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapFieldMatchesRegularExpression,
     RedcapInvalidDate,
-    RedcapInvalidWeightInKg,
-    RedcapInvalidBmi,
+    RedcapInvalidNhsNumber,
+    RedcapInvalidUhlSystemNumber,
+    RedcapInvalidPostCode,
+    RedcapInvalidEmailAddress,
 )
 
-REDCAP_PROJECT_ID = 17
+REDCAP_PROJECT_ID = 25
 
 
-class FoamiRedcapStudyNumber(RedcapFieldMatchesRegularExpression):
+class FoamiDemographicsRedcapStudyNumber(RedcapFieldMatchesRegularExpression):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
@@ -27,7 +29,7 @@ class FoamiRedcapStudyNumber(RedcapFieldMatchesRegularExpression):
         )
 
 
-class FoamiRedcapInvalidDate(RedcapInvalidDate):
+class FoamiDemographicsRedcapInvalidDate(RedcapInvalidDate):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
@@ -36,21 +38,41 @@ class FoamiRedcapInvalidDate(RedcapInvalidDate):
         )
 
 
-class FoamiRedcapInvalidWeightInKg(RedcapInvalidWeightInKg):
+class FoamiDemographicsRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
-            fields=['weight'],
+            fields=['nhs_no'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
-class FoamiRedcapInvalidBmi(RedcapInvalidBmi):
+class FoamiDemographicsRedcapInvalidUhlSystemNumber(RedcapInvalidUhlSystemNumber):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
-            fields=['bmi'],
+            fields=['s_no'],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FoamiDemographicsRedcapInvalidPostCode(RedcapInvalidPostCode):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['postcode', 'gp_postcode'],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FoamiDemographicsRedcapInvalidEmailAddress(RedcapInvalidEmailAddress):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['email_add'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )

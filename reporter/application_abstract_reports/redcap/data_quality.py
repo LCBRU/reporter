@@ -485,8 +485,8 @@ class RedcapInvalidBloodPressure(SqlReport):
 SELECT
     p.project_id,
     p.record,
-    sbp.value [sbp],
-    dbp.value [dbp]
+    sbp.value AS sbp,
+    dbp.value AS dbp
 FROM (
     SELECT DISTINCT
         project_id,
