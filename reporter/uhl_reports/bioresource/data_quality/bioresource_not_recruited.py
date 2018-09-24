@@ -14,10 +14,10 @@ class BioresourceConsentedNotRecruited(SqlReport):
             recipients=[RECIPIENT_BIORESOURCE_ADMIN],
             sql='''
 
-SELECT  CONVERT(VARCHAR(100), a.bioresource_id) as bioresource_id
+SELECT  CONVERT(VARCHAR(100), a.StudyNumber) as bioresource_id
     , a.consent_date
 FROM    (
-    SELECT  bioresource_id, consent_date
+    SELECT  StudyNumber, consent_date
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
     WHERE   full_consent = 1
     UNION
@@ -25,8 +25,8 @@ FROM    (
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_Bioresource
     WHERE   full_consent = 1
 ) a
-WHERE   a.bioresource_id NOT IN (
-    SELECT  bioresource_id
+WHERE   a.StudyNumber NOT IN (
+    SELECT  StudyNumber
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
     WHERE   (is_recruited = 1
                 OR is_excluded = 1
@@ -35,7 +35,7 @@ WHERE   a.bioresource_id NOT IN (
                 OR is_duplicate = 1
             )
     UNION
-    SELECT  bioresource_id
+    SELECT  StudyNumber
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
     WHERE   (is_recruited = 1
                 OR is_excluded = 1

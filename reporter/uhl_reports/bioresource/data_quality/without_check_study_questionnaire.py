@@ -18,7 +18,7 @@ class BioresourceWithoutCheckStudyQuestionnaire(SqlReport):
             sql='''
 
 SELECT
-    rc. bioresource_id,
+    rc.bioresource_id,
     CONVERT(DATE, REPLACE(rc.consent_date, '-', ''), 112) consent_date,
     civicrm_case_id,
     civicrm_contact_id
