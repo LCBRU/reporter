@@ -259,17 +259,6 @@ class BriccsDoncasterRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BriccsDoncasterRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_DONCASTER_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BriccsDoncasterRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -432,17 +421,6 @@ class BriccsSheffieldRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_SHEFFIELD_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsSheffieldRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_SHEFFIELD_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -613,17 +591,6 @@ class BriccsKetteringRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BriccsKetteringRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_KETTERING_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BriccsKetteringRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -786,17 +753,6 @@ class BriccsChesterfieldRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_CHESTERFIELD_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsChesterfieldRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_CHESTERFIELD_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -967,17 +923,6 @@ class BriccsGranthamRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BriccsGranthamRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_GRANTHAM_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BriccsGranthamRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -1140,17 +1085,6 @@ class BriccsLincolnRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_LINCOLN_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsLincolnRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_LINCOLN_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1321,17 +1255,6 @@ class BriccsNorthamptonRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BriccsNorthamptonRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_NORTHAMPTON_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BriccsNorthamptonRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -1494,17 +1417,6 @@ class BriccsDerbyRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_DERBY_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsDerbyRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_DERBY_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1675,17 +1587,6 @@ class BriccsBostonRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BriccsBostonRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_BOSTON_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BriccsBostonRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -1848,17 +1749,6 @@ class BriccsNottinghamRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BriccsNottinghamRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
