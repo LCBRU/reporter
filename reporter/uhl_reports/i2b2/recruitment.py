@@ -25,6 +25,7 @@ FROM (
             DATEDIFF(month, 0, [ConsentDate]),
             0) AS ConsentDate
     FROM {}.[dbo].[PatientSummary]
+    WHERE ConsentDate IS NOT NULL
 ) x
 GROUP BY ConsentDate
 ORDER BY ConsentDate
