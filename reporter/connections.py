@@ -23,17 +23,6 @@ REDCAP_UOL_SURVEY_DB = 'redcap6170'
 
 OPENSPECIMEN_URL = 'https://catissue-live.lcbru.le.ac.uk/openspecimen/'
 
-SQL_REPORTING_HOST = os.environ.get("SQL_REPORTING_HOST", '')
-SQL_REPORTING_PORT = os.environ.get("SQL_REPORTING_PORT", '3306')
-SQL_REPORTING_USER = os.environ.get("SQL_REPORTING_USER", '')
-SQL_REPORTING_PASSWORD = os.environ.get("SQL_REPORTING_PASSWORD", '')
-SQL_REPORTING_DATABASE = os.environ.get("SQL_REPORTING_DATABASE", '')
-
-SQL_DWBRICCS_HOST = os.environ.get("SQL_DWBRICCS_HOST", '')
-SQL_DWBRICCS_USER = os.environ.get("SQL_DWBRICCS_USER", '')
-SQL_DWBRICCS_PASSWORD = os.environ.get("SQL_DWBRICCS_PASSWORD", '')
-SQL_DWBRICCS_DATABASE = os.environ.get("SQL_DWBRICCS_DATABASE", '')
-
 
 def get_redcap_link(link_text, project_id, record):
     REDCAP_RECORD_URL = (
@@ -152,10 +141,10 @@ class DatabaseConnection(Enum):
     @contextmanager
     def reporting():
         conn = pymssql.connect(
-            host=SQL_REPORTING_HOST,
-            user=SQL_REPORTING_USER,
-            password=SQL_REPORTING_PASSWORD,
-            database=SQL_REPORTING_DATABASE,
+            host=os.environ["SQL_REPORTING_HOST"],
+            user=os.environ["SQL_REPORTING_USER"],
+            password=os.environ["SQL_REPORTING_PASSWORD"],
+            database=os.environ["SQL_REPORTING_DATABASE"],
         )
 
         try:
@@ -170,9 +159,9 @@ class DatabaseConnection(Enum):
     @contextmanager
     def redcap_internal():
         conn = pymssql.connect(
-            host=SQL_REPORTING_HOST,
-            user=SQL_REPORTING_USER,
-            password=SQL_REPORTING_PASSWORD,
+            host=os.environ["SQL_REPORTING_HOST"],
+            user=os.environ["SQL_REPORTING_USER"],
+            password=os.environ["SQL_REPORTING_PASSWORD"],
             database=REDCAP_INTERNAL_DB,
         )
 
@@ -188,9 +177,9 @@ class DatabaseConnection(Enum):
     @contextmanager
     def redcap_external():
         conn = pymssql.connect(
-            host=SQL_REPORTING_HOST,
-            user=SQL_REPORTING_USER,
-            password=SQL_REPORTING_PASSWORD,
+            host=os.environ["SQL_REPORTING_HOST"],
+            user=os.environ["SQL_REPORTING_USER"],
+            password=os.environ["SQL_REPORTING_PASSWORD"],
             database=REDCAP_EXTERNAL_DB,
         )
 
@@ -206,10 +195,10 @@ class DatabaseConnection(Enum):
     @contextmanager
     def dwbriccs():
         conn = pymssql.connect(
-            host=SQL_DWBRICCS_HOST,
-            user=SQL_DWBRICCS_USER,
-            password=SQL_DWBRICCS_PASSWORD,
-            database=SQL_DWBRICCS_DATABASE,
+            host=os.environ["SQL_DWBRICCS_HOST"],
+            user=os.environ["SQL_DWBRICCS_USER"],
+            password=os.environ["SQL_DWBRICCS_PASSWORD"],
+            database=os.environ["SQL_DWBRICCS_DATABASE"],
         )
 
         try:
@@ -225,11 +214,11 @@ class DatabaseConnection(Enum):
     def uol_lamp():
 
         conn = pymysql.connect(
-            host=SQL_REPORTING_HOST,
-            port=int(SQL_REPORTING_PORT),
-            user=SQL_REPORTING_USER,
+            host=os.environ["SQL_REPORTING_HOST"],
+            port=int(os.environ.get("SQL_REPORTING_PORT", '3306')),
+            user=os.environ["SQL_REPORTING_USER"],
             database=REDCAP_UOL_DB,
-            password=SQL_REPORTING_PASSWORD,
+            password=os.environ["SQL_REPORTING_PASSWORD"],
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor,
         )
@@ -247,11 +236,11 @@ class DatabaseConnection(Enum):
     def uol_survey():
 
         conn = pymysql.connect(
-            host=SQL_REPORTING_HOST,
-            port=int(SQL_REPORTING_PORT),
-            user=SQL_REPORTING_USER,
+            host=os.environ["SQL_REPORTING_HOST"],
+            port=int(os.environ.get("SQL_REPORTING_PORT", '3306')),
+            user=os.environ["SQL_REPORTING_USER"],
             database=REDCAP_UOL_SURVEY_DB,
-            password=SQL_REPORTING_PASSWORD,
+            password=os.environ["SQL_REPORTING_PASSWORD"],
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor,
         )

@@ -8,3 +8,4 @@ weasyprint
 Jinja2
 selenium
 PyMySQL
+python-dotenv

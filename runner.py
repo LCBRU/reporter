@@ -3,11 +3,14 @@
 import logging
 import argparse
 from reporter.core import run_all, schedule_reports, run_reports
+from dotenv import load_dotenv
+
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+
 
 def get_parameters():
     parser = argparse.ArgumentParser(description='Run specific reports.')
@@ -37,6 +40,8 @@ def get_parameters():
 
 
 def run():
+    load_dotenv()
+
     args = get_parameters()
 
     exclude = [x.lower() for x in args.exclude]

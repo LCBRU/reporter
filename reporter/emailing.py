@@ -11,11 +11,6 @@ from email.encoders import encode_base64
 from email.mime.text import MIMEText
 
 
-EMAIL_FROM_ADDRESS = os.environ["EMAIL_FROM_ADDRESS"]
-EMAIL_SMTP_SERVER = os.environ["EMAIL_SMTP_SERVER"]
-
-DEFAULT_RECIPIENT = os.environ["DEFAULT_RECIPIENT"]
-
 RECIPIENT_IT_DWH = 'RECIPIENT_IT_DWH'
 RECIPIENT_IT_DQ = 'RECIPIENT_IT_DQ'
 RECIPIENT_LAB_MANAGER = 'RECIPIENT_LAB_MANAGER'
@@ -103,7 +98,7 @@ def send_markdown_email(
     msg = MIMEMultipart()
     msg['Subject'] = report_name
     msg['To'] = ','.join(to_recipients)
-    msg['From'] = EMAIL_FROM_ADDRESS
+    msg['From'] = os.environ["EMAIL_FROM_ADDRESS"]
 
     html = DEFAULT_CSS
     html += markdown.markdown(mkdn, extensions=['markdown.extensions.tables'])
@@ -126,7 +121,7 @@ def send_markdown_email(
 
         msg.attach(part)
 
-    s = smtplib.SMTP(EMAIL_SMTP_SERVER)
+    s = smtplib.SMTP(os.environ["EMAIL_SMTP_SERVER"])
     s.send_message(msg)
     s.quit()
 
@@ -136,10 +131,10 @@ def send_markdown_email(
 def email_error(report_name, error_text):
     msg = MIMEText(error_text)
     msg['Subject'] = 'Reporter: Error in ' + report_name
-    msg['To'] = DEFAULT_RECIPIENT
-    msg['From'] = EMAIL_FROM_ADDRESS
+    msg['To'] = os.environ["DEFAULT_RECIPIENT"]
+    msg['From'] = os.environ["EMAIL_FROM_ADDRESS"]
 
-    s = smtplib.SMTP(EMAIL_SMTP_SERVER)
+    s = smtplib.SMTP(os.environ["EMAIL_SMTP_SERVER"])
     s.send_message(msg)
     s.quit()
 
@@ -156,6 +151,6 @@ def get_recipients(recipients):
             result |= set(lr.split(','))
 
     if len(result) == 0:
-        result = set([DEFAULT_RECIPIENT])
+        result = set([os.environ["DEFAULT_RECIPIENT"]])
 
     return result
