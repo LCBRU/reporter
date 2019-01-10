@@ -2,7 +2,7 @@
 
 import logging
 import argparse
-from reporter.core import run_all, schedule_reports, run_reports
+from reporter.core import run_all, schedule_reports, run_reports, list_all
 from dotenv import load_dotenv
 
 
@@ -33,6 +33,12 @@ def get_parameters():
         help="Run all reports",
         action="store_true",
     )
+    parser.add_argument(
+        "-l",
+        "--list",
+        help="list all reports",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
@@ -50,6 +56,9 @@ def run():
         run_all(exclude)
 
         logging.info("---- All reports run ----")
+    elif args.list:
+        list_all()
+
     elif not args.report_names:
         schedule_reports()
     else:

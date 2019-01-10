@@ -81,6 +81,13 @@ class Report:
     def get_report(self):
         return None, 0, None
 
+    def get_details(self):
+        return '"{}", "{}", "{}"'.format(
+            self._name,
+            self._schedule.__name__,
+            "; ".join(self._recipients),
+        )
+
 
 class SqlReport(Report):
     def __init__(self, sql, conn=None, parameters=None, **kwargs):
@@ -222,6 +229,11 @@ def run_all(exclude):
             continue
 
         r.run()
+
+
+def list_all():
+    for r in get_concrete_reports():
+        print(r.get_details())
 
 
 def get_sub_modules(path, prefix):
