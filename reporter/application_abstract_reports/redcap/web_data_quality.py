@@ -13,8 +13,6 @@ from reporter.selenium import SeleniumGrid
 class RedcapWebDataQuality(Report):
 
     PAGE_URL = 'DataQuality/index.php?pid={}'
-    REDCAP_USERNAME = os.environ.get("REDCAP_USERNAME", '')
-    REDCAP_PASSWORD = os.environ.get("REDCAP_PASSWORD", '')
 
     def __init__(
         self,
@@ -117,8 +115,11 @@ class RedcapWebDataQuality(Report):
 
         password = driver.find_element_by_name('password')
 
-        username.send_keys(self.REDCAP_USERNAME)
-        password.send_keys(self.REDCAP_PASSWORD + Keys.RETURN)
+        REDCAP_USERNAME = os.environ.get("REDCAP_USERNAME", '')
+        REDCAP_PASSWORD = os.environ.get("REDCAP_PASSWORD", '')
+
+        username.send_keys(REDCAP_USERNAME)
+        password.send_keys(REDCAP_PASSWORD + Keys.RETURN)
 
     def get_count(self, driver, identifier):
             driver.find_element_by_xpath(
