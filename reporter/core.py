@@ -14,7 +14,7 @@ from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 from reporter.emailing import send_markdown_email
 from reporter.connections import DatabaseConnection
-from reporter.emailing import email_error
+from reporter.emailing import email_error, get_recipients
 
 
 class Schedule(Enum):
@@ -82,10 +82,11 @@ class Report:
         return None, 0, None
 
     def get_details(self):
-        return '"{}", "{}", "{}"'.format(
+        return '"{}", "{}", "{}", "{}"'.format(
             self._name,
             self._schedule.__name__,
             "; ".join(self._recipients),
+            "; ".join(get_recipients(self._recipients)),
         )
 
 
