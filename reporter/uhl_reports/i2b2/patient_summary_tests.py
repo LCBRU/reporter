@@ -65,6 +65,35 @@ class PatientSummaryMissingData(SqlReport):
         )
 
 
+class PatientSummaryMissingDataWithMissingFlag(SqlReport):
+    def __init__(self, database, field, missing_flag, schedule=None):
+        self.field = field
+        self.missing_flag = missing_flag
+
+        super().__init__(
+            introduction=("The following participants have data "
+                          "missing from the patient_summary view"),
+            recipients=[RECIPIENT_IT_DWH],
+            schedule=schedule,
+            sql='''
+                SELECT
+                    patient_num,
+                    StudyNumber [ID]
+                FROM {0}.dbo.PatientSummary ps
+                WHERE
+                    ({1} IS NULL AND COALESCE({2}, 0) = 0)
+                '''.format(database, self.field, self.missing_flag)
+        )
+
+    def get_report_line(self, row):
+        return '- {} ({}): {} and {} not set\r\n'.format(
+            row['ID'],
+            row['patient_num'],
+            self.field,
+            self.missing_flag,
+        )
+
+
 class PatientSummaryMissingParticipants(SqlReport):
     def __init__(self, database, schedule=None):
         super().__init__(

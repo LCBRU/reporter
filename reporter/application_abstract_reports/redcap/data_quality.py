@@ -340,13 +340,15 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    e.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
+ORDER BY e.record
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
@@ -432,12 +434,12 @@ class RedcapInvalidPostCode(RedcapFieldMatchesRegularExpression):
             redcap_instance=redcap_instance,
             project_id=project_id,
             fields=fields,
-            regular_expression='([A-Z][0-9] [0-9][A-Z][A-Z])'
+            regular_expression='(?i)([A-Z][0-9] [0-9][A-Z][A-Z])'
             '|([A-Z][0-9][0-9] [0-9][A-Z][A-Z])'
             '|([A-Z][A-Z][0-9] [0-9][A-Z][A-Z])'
             '|([A-Z][A-Z][0-9][0-9] [0-9][A-Z][A-Z])'
             '|([A-Z][0-9][A-Z] [0-9][A-Z][A-Z])'
-            '|([A-Z][A-Z][0-9][A-Z] [0-9][A-Z][A-Z])',
+            '|([A-Z][A-Z][0-9][A-Z] [0-9][A-Z][A-Z])|(^$)',
             recipients=recipients,
             schedule=schedule,
         )
@@ -456,7 +458,7 @@ class RedcapInvalidEmailAddress(RedcapFieldMatchesRegularExpression):
             redcap_instance=redcap_instance,
             project_id=project_id,
             fields=fields,
-            regular_expression=r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
+            regular_expression=r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)|(^[nN]o email$)",
             recipients=recipients,
             schedule=schedule,
         )
@@ -728,7 +730,8 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    md.element_validation_type
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
@@ -744,16 +747,23 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value']):
+        invalid = 1
+
+        if row['element_validation_type'][:5] == 'date_':
+            invalid = self.is_invalid(row['value'], '%Y-%m-%d')
+        elif row['element_validation_type'][:9] == 'datetime_':
+            invalid = self.is_invalid(row['value'], '%Y-%m-%d %H:%M')
+
+        if invalid:
             return '- {}: {}\r\n'.format(
                 self._redcap_instance()['link_generator'](
                     row['record'], row['project_id'], row['record']),
                 row['element_label']
             )
 
-    def is_invalid(self, value):
+    def is_invalid(self, value, format_string):
         try:
-            datetime.datetime.strptime(value, '%Y-%m-%d')
+            datetime.datetime.strptime(value, format_string)
             return 0
         except ValueError:
             return 1
@@ -1018,7 +1028,7 @@ WHERE e.project_id = %s
             )
 
     def is_invalid(self, value):
-        if (value or '').strip().replace('/', '') == 'na':
+        if (value or '').strip().replace('/', '') in ('na', ''):
             return False
         if not value.replace('.', '', 1).isdigit():
             return True

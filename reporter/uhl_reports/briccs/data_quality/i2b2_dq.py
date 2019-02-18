@@ -10,6 +10,7 @@ from reporter.uhl_reports.i2b2.patient_summary_tests import (
     PatientSummaryDuplicatesReport,
     PatientSummaryMissingData,
     PatientSummaryMissingParticipants,
+    PatientSummaryMissingDataWithMissingFlag,
 )
 from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsStudyIdDuplicates,
@@ -25,10 +26,11 @@ from reporter.emailing import (
 I2B2_DB = "i2b2_app03_b1_Data"
 
 
-class BriccsPatientMappingDuplicatesReport(
-        PatientMappingDuplicatesReport):
-    def __init__(self):
-        super().__init__(I2B2_DB)
+# Duplicates are allowed - Emma Beeston
+# class BriccsPatientMappingDuplicatesReport(
+#         PatientMappingDuplicatesReport):
+#     def __init__(self):
+#         super().__init__(I2B2_DB)
 
 
 class BriccsPatientMappingMultiplesIdsReport(
@@ -55,9 +57,27 @@ class BriccsPatientSummaryMissingData(
                 'InterviewDate',
                 'Gender',
                 'DateOfBirth',
-                'HeightAtInterview',
-                'WeightAtInterview',
             ]
+        )
+
+
+class BriccsPatientSummaryMissingHeight(
+        PatientSummaryMissingDataWithMissingFlag):
+    def __init__(self):
+        super().__init__(
+            database=I2B2_DB,
+            field='HeightAtInterview',
+            missing_flag='height_not_recorded',
+        )
+
+
+class BriccsPatientSummaryMissingWeight(
+        PatientSummaryMissingDataWithMissingFlag):
+    def __init__(self):
+        super().__init__(
+            database=I2B2_DB,
+            field='WeightAtInterview',
+            missing_flag='weight_not_recorded',
         )
 
 
@@ -66,14 +86,14 @@ class BriccsPatientSummaryMissingParticipants(
     def __init__(self):
         super().__init__(I2B2_DB)
 
-
-class BriccsValidEnrolmentsStudyIdDuplicates(
-        ValidEnrolmentsStudyIdDuplicates):
-    def __init__(self):
-        super().__init__(
-            I2B2_DB,
-            [RECIPIENT_ADMIN]
-        )
+# Duplicates are allowed - Emma Beeston
+# class BriccsValidEnrolmentsStudyIdDuplicates(
+#         ValidEnrolmentsStudyIdDuplicates):
+#     def __init__(self):
+#         super().__init__(
+#             I2B2_DB,
+#             [RECIPIENT_ADMIN]
+#         )
 
 
 class BriccsValidEnrolmentsContactMultipleRecruitments(

@@ -126,6 +126,9 @@ class RedcapWebDataQuality(Report):
                 "//div[@id='{}']/button".format(identifier)
             ).click()
 
-            return driver.find_element_by_xpath(
-                "//div[@id='{}']/div[1]".format(identifier)
-            ).text
+            counter = WebDriverWait(driver, 30).until(
+                expected_conditions.presence_of_element_located((
+                    By.XPATH, "//div[@id='{}']/div[1]".format(identifier)))
+            )
+
+            return counter.text

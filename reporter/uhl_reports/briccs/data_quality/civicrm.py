@@ -23,11 +23,12 @@ class BriccsCiviCrmMissingStudyNumber(MissingStudyNumber):
             recipients=[RECIPIENT_BRICCS_ADMIN])
 
 
-class BriccsCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
-    def __init__(self):
-        super().__init__(
-            6,
-            recipients=[RECIPIENT_BRICCS_ADMIN])
+# Duplicates are allowed - Emma Beeston
+# class BriccsCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
+#     def __init__(self):
+#         super().__init__(
+#             6,
+#             recipients=[RECIPIENT_BRICCS_ADMIN])
 
 
 class BriccsCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
