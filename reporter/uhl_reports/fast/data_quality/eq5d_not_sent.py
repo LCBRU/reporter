@@ -36,6 +36,18 @@ LEFT JOIN STG_redcap.dbo.redcap_data sent
     AND sent.record = d.record
     AND sent.field_name = 'eq5d_6mth_sent_yn'
 WHERE COALESCE(sent.value, '0') = '0'
+	AND NOT EXISTS (
+		SELECT 1
+		FROM STG_redcap.dbo.redcap_data w
+		WHERE w.project_id = d.project_id
+			AND w.record = d.record
+			AND ((	w.field_name IN ('non_complete_rsn', 'wthdrwl_date')
+					AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(w.value) = 0
+				) OR (
+					w.field_name = 'study_status_comp_yn'
+						AND COALESCE(value, 1) = 0
+				))
+	)
 ;
 
                 '''
