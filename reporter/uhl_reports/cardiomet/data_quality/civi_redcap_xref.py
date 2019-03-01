@@ -6,14 +6,14 @@ from reporter.uhl_reports.civicrm.civicrm_redcap_xref import (
 )
 
 CASE_TYPE_ID = 24
-PROJECT_ID = 67
+CARDIOMET_REDCAP_PROJECT_ID = 67
 
 
 class CardiometCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            redcap_project_id=CARDIOMET_REDCAP_PROJECT_ID
         )
 
 
@@ -21,5 +21,5 @@ class CardiometRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            project_id=CARDIOMET_REDCAP_PROJECT_ID
         )

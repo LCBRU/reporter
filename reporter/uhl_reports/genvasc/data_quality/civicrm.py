@@ -46,6 +46,7 @@ class GenvascCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Available for cohort',
                 'Recruited',
                 'Excluded',
-                'Withdrawn'
+                'Withdrawn',
+                'Duplicate',
             ],
             [RECIPIENT_GENVASC_ADMIN])

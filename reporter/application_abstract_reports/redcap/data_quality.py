@@ -289,7 +289,7 @@ class RedcapInvalidStudyNumber(SqlReport):
             conn=redcap_instance()['connection'],
             sql='''
 
-SELECT
+SELECT DISTINCT
     e.project_id,
     e.record,
     md.element_label
@@ -415,7 +415,7 @@ class RedcapInvalidUhlSystemNumber(RedcapFieldMatchesRegularExpression):
             redcap_instance=redcap_instance,
             project_id=project_id,
             fields=fields,
-            regular_expression='[A-Z]\d{7}',
+            regular_expression='[A-Za-z]\d{7}',
             recipients=recipients,
             schedule=schedule,
         )
@@ -458,7 +458,7 @@ class RedcapInvalidEmailAddress(RedcapFieldMatchesRegularExpression):
             redcap_instance=redcap_instance,
             project_id=project_id,
             fields=fields,
-            regular_expression=r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)|(^[nN]o email$)",
+            regular_expression=r"(^[a-zA-Z0-9'_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)|(^[nN]o email$)",
             recipients=recipients,
             schedule=schedule,
         )
@@ -543,7 +543,7 @@ LEFT JOIN redcap_data dbp
         return
 
     def is_na(self, value):
-        return (value or '').strip().replace('/', '') == 'na'
+        return (value or '').strip().replace('/', '').lower() == 'na'
 
 
 class RedcapInvalidPulse(SqlReport):
@@ -592,7 +592,7 @@ WHERE e.project_id = %s
             )
 
     def is_invalid(self, value):
-        if (value or '').strip().replace('/', '') == 'na':
+        if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
@@ -646,7 +646,7 @@ WHERE e.project_id = %s
             )
 
     def is_invalid(self, value):
-        if (value or '').strip().replace('/', '') == 'na':
+        if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
@@ -700,7 +700,7 @@ WHERE e.project_id = %s
             )
 
     def is_invalid(self, value):
-        if (value or '').strip().replace('/', '') == 'na':
+        if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
@@ -849,7 +849,7 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         return
 
     def is_na(self, value):
-        return (value or '').strip().replace('/', '') == 'na'
+        return (value or '').strip().replace('/', '').lower() == 'na'
 
 
 class RedcapInvalidWeightInKg(SqlReport):
@@ -896,7 +896,7 @@ WHERE e.project_id = %s
             )
 
     def is_invalid(self, value):
-        if (value or '').strip().replace('/', '') == 'na':
+        if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
@@ -981,7 +981,7 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         return
 
     def is_na(self, value):
-        return (value or '').strip().replace('/', '') == 'na'
+        return (value or '').strip().replace('/', '').lower() == 'na'
 
 
 class RedcapInvalidBmi(SqlReport):
@@ -1028,7 +1028,7 @@ WHERE e.project_id = %s
             )
 
     def is_invalid(self, value):
-        if (value or '').strip().replace('/', '') in ('na', ''):
+        if (value or '').strip().replace('/', '').lower() in ('na', ''):
             return False
         if not value.replace('.', '', 1).isdigit():
             return True

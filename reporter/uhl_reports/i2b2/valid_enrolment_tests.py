@@ -48,6 +48,7 @@ class ValidEnrolmentsContactMultipleRecruitments(SqlReport):
             sql='''
             SELECT civicrm_contact_id
             FROM {}.dbo.LOAD_ValidEnrollments
+            WHERE civicrm_contact_id IS NOT NULL
             GROUP BY civicrm_contact_id
             HAVING COUNT(*) > 1
                 '''.format(database)

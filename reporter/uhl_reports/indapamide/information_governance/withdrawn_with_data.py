@@ -7,7 +7,7 @@ from reporter.emailing import (
 )
 
 
-class CardiometWithdrawnWithDataReport(SqlReport):
+class IndapamideWithdrawnWithDataReport(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("Withdrawn participants with data "
@@ -20,7 +20,7 @@ class CardiometWithdrawnWithDataReport(SqlReport):
 
 SELECT record [StudyNumber]
 FROM    [STG_redcap].dbo.redcap_data rd_wd
-WHERE   rd_wd.project_id = 67 -- Cardiomet
+WHERE   rd_wd.project_id = 50 -- Indapamide
     AND rd_wd.field_name = 'non_complete_rsn'
     AND rd_wd.value = '5' -- Withdrawal of consent
     AND EXISTS (

@@ -38,7 +38,7 @@ class CivicrmNotInRedcap(SqlReport):
     def __init__(
             self,
             case_type_id,
-            project_id,
+            redcap_project_id,
             recipients=[RECIPIENT_IT_DWH],
             schedule=None
     ):
@@ -58,7 +58,7 @@ class CivicrmNotInRedcap(SqlReport):
                     FROM r
                 )
                 ''',
-            parameters=(case_type_id, project_id)
+            parameters=(case_type_id, redcap_project_id)
         )
 
     def get_report_line(self, row):

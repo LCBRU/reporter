@@ -29,7 +29,7 @@ from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidUhlSystemNumber,
 )
 
-REDCAP_LEICESTER_PROJECT_ID = 25
+REDCAP_LEICESTER_PROJECT_ID = 26
 REDCAP_KETTERING_PROJECT_ID = 28
 REDCAP_LINCOLN_PROJECT_ID = 37
 REDCAP_SHEFFIELD_PROJECT_ID = 54

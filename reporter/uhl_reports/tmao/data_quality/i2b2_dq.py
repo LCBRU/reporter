@@ -47,12 +47,10 @@ class TmaoPatientSummaryMissingData(
             [
                 'CiviCrmId',
                 'CiviCrmCaseId',
-                'NhsNumber',
                 'UhlSystemNumber',
                 'StudyNumber',
                 'Gender',
                 'DateOfBirth',
-                'Ethnicity',
             ]
         )
 

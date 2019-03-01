@@ -6,14 +6,14 @@ from reporter.uhl_reports.civicrm.civicrm_redcap_xref import (
 )
 
 CASE_TYPE_ID = 23
-PROJECT_ID = 62
+PREDICT_REDCAP_PROJECT_ID = 62
 
 
 class PredictCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            redcap_project_id=PREDICT_REDCAP_PROJECT_ID,
         )
 
 
@@ -21,5 +21,5 @@ class PredictRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            project_id=PREDICT_REDCAP_PROJECT_ID
         )

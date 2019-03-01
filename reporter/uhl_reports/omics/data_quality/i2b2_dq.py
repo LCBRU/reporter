@@ -10,17 +10,17 @@ from reporter.uhl_reports.i2b2.patient_summary_tests import (
     PatientSummaryMissingParticipants,
 )
 
-
-class OmicsPatientMappingDuplicatesReport(
-        PatientMappingDuplicatesReport):
-    def __init__(self):
-        super().__init__('i2b2_app03_omics_Data')
-
-
-class OmicsPatientMappingMultiplesIdsReport(
-        PatientMappingMultiplesIdsReport):
-    def __init__(self):
-        super().__init__('i2b2_app03_omics_Data')
+# Duplicates are fine
+# class OmicsPatientMappingDuplicatesReport(
+#         PatientMappingDuplicatesReport):
+#     def __init__(self):
+#         super().__init__('i2b2_app03_omics_Data')
+#
+#
+# class OmicsPatientMappingMultiplesIdsReport(
+#         PatientMappingMultiplesIdsReport):
+#     def __init__(self):
+#         super().__init__('i2b2_app03_omics_Data')
 
 
 class OmicsPatientSummaryDuplicatesReport(
@@ -35,10 +35,10 @@ class OmicsPatientSummaryMissingData(
     def __init__(self):
         super().__init__(
             'i2b2_app03_omics_Data',
-            ['CiviCrmId', 'NhsNumber', 'UhlSystemNumber',
-             'StudyNumber', 'RecruitmentDateToSourceStudy',
+            ['CiviCrmId',
+             'StudyNumber',
              'Gender', 'DateOfBirth',
-             'OmicsType', 'SourceStudy', 'Ethnicity']
+             'OmicsType', 'SourceStudy']
         )
 
 

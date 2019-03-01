@@ -33,7 +33,7 @@ class BravePatientSummaryMissingData(
                 'NhsNumber',
                 'UhlSystemNumber',
                 'StudyNumber',
-                'Gender',
+                'Sex',
                 'DateOfBirth',
             ]
         )

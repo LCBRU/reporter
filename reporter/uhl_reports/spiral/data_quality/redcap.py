@@ -219,7 +219,7 @@ class SpiralRedcapXrefMismatchDob(
         )
 
 
-class PredictRedcapXrefMismatchGender(
+class SpiralRedcapXrefMismatchGender(
         RedcapXrefMismatch):
     def __init__(self):
         super().__init__(
@@ -233,7 +233,7 @@ class PredictRedcapXrefMismatchGender(
         )
 
 
-class PredictRedcapXrefMismatchEthnicity(
+class SpiralRedcapXrefMismatchEthnicity(
         RedcapXrefMismatch):
     def __init__(self):
         super().__init__(
