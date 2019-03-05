@@ -11,7 +11,7 @@ from reporter.emailing import (
 I2B2_DB = "i2b2_app03_genvasc_Data"
 
 
-class BriccsCumulativeRecruitment(
+class GenvascCumulativeRecruitment(
         CumulativeRecruitment):
     def __init__(self):
         super().__init__(
