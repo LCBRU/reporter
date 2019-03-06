@@ -259,17 +259,6 @@ class BraveKetteringRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BraveKetteringRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_KETTERING_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BraveKetteringRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -440,17 +429,6 @@ class BraveLincolnRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_LINCOLN_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BraveLincolnRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_LINCOLN_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -629,17 +607,6 @@ class BraveSheffieldRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BraveSheffieldRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_SHEFFIELD_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BraveSheffieldRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -810,17 +777,6 @@ class BraveImperialRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_IMPERIAL_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BraveImperialRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_IMPERIAL_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -999,17 +955,6 @@ class BraveGranthamRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
         )
 
 
-class BraveGranthamRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_GRANTHAM_PROJECT_ID,
-            fields=['s_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
 class BraveGranthamRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
@@ -1180,17 +1125,6 @@ class BraveWestSuffolkRedcapInvalidNhsNumber(RedcapInvalidNhsNumber):
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_WEST_SUFFOLK_PROJECT_ID,
             fields=['nhs_number'],
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
-
-
-class BraveWestSuffolkRedcapInvalidUhlSystemNumber(
-        RedcapInvalidUhlSystemNumber):
-    def __init__(self):
-        super().__init__(
-            redcap_instance=RedcapInstance.external,
-            project_id=REDCAP_WEST_SUFFOLK_PROJECT_ID,
-            fields=['s_number'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 

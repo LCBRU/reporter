@@ -57,9 +57,6 @@ class GenvascPatientSummaryMissingData(
                 'StudyNumber',
                 'RecruitmentDate',
                 'Gender',
-                'HeightAtRecruitment',
-                'WeightAtRecruitment',
-                'Ethnicity',
                 'ConsentDate',
             ]
         )

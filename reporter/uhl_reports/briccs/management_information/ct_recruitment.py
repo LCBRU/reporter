@@ -3,7 +3,7 @@
 import pandas as pd
 import datetime
 from reporter.core import SqlReport, Schedule
-from reporter.emailing import RECIPIENT_IT_DWH
+from reporter.emailing import RECIPIENT_BRICCSCT_ANALYSERS, RECIPIENT_BRICCSCT_MI
 from reporter.connections import RedcapInstance
 
 
@@ -12,7 +12,7 @@ class BriccsCtRecruitment(SqlReport):
         super().__init__(
             introduction=("The following Glenfield participants are "
                           "in Onyx, but are not in CiviCrm"),
-            recipients=[RECIPIENT_IT_DWH],
+            recipients=[RECIPIENT_BRICCSCT_ANALYSERS, RECIPIENT_BRICCSCT_MI],
             sql='''
 
 SELECT
@@ -168,7 +168,7 @@ class BriccsCtOutstandingAnalysis(SqlReport):
         super().__init__(
             introduction=("The following recruits have CT scans available that have not been analysed"),
             schedule=Schedule.daily,
-            recipients=[RECIPIENT_IT_DWH],
+            recipients=[RECIPIENT_BRICCSCT_ANALYSERS],
             sql='''
 
 SELECT
