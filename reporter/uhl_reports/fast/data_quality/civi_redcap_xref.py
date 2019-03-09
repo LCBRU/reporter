@@ -1,10 +1,27 @@
 #!/usr/bin/env python3
 
+from reporter.uhl_reports.civicrm.civicrm_redcap_xref import (
+    CivicrmNotInRedcap,
+    RedcapNotInCiviCrm,
+)
 from reporter.core import SqlReport, Schedule
 from reporter.emailing import (
     RECIPIENT_IT_DWH,
 )
 from reporter.connections import get_redcap_link
+
+
+CASE_TYPE_ID = 18
+FAST_SCREENING_REDCAP_PROJECT_ID = 48
+FAST_CLINICAL_REDCAP_PROJECT_ID = 43
+
+
+class FastScreeningCivicrmNotInRedcap(CivicrmNotInRedcap):
+    def __init__(self):
+        super().__init__(
+            case_type_id=CASE_TYPE_ID,
+            redcap_project_id=FAST_SCREENING_REDCAP_PROJECT_ID,
+        )
 
 
 class FastRedcapNotCivicrmReport(SqlReport):

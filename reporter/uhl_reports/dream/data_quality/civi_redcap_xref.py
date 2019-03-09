@@ -36,6 +36,12 @@ class DreamCivicrmNotInRedcap(SqlReport):
                     FROM    STG_redcap.dbo.redcap_data
                     WHERE project_id IN (8, 22)
                         AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
+                ), r_ext (StudyNumber) AS (
+                    SELECT  DISTINCT
+                        record AS StudyNumber
+                    FROM    STG_redcap_briccsext.dbo.redcap_data
+                    WHERE project_id IN (20, 21, 24)
+                        AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
                 )
 
                 SELECT
@@ -46,6 +52,15 @@ class DreamCivicrmNotInRedcap(SqlReport):
                 WHERE c.StudyNumber NOT IN (
                     SELECT StudyNumber
                     FROM r_int
+                    UNION
+                    SELECT StudyNumber
+                    FROM r_ext
+                ) AND REPLACE(c.StudyNumber, 'K', '') NOT IN (
+                    SELECT StudyNumber
+                    FROM r_int
+                    UNION
+                    SELECT StudyNumber
+                    FROM r_ext
                 )
                 '''
         )
@@ -84,7 +99,7 @@ class DreamRedcapNotInCiviCrm(SqlReport):
                         record AS StudyNumber,
                         project_id
                     FROM    STG_redcap.dbo.redcap_data
-                    WHERE project_id IN (8, 22)
+                    WHERE project_id IN (8)
                         AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
                 )
 
