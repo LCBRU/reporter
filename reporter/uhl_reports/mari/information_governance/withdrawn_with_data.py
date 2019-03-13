@@ -15,7 +15,7 @@ class MariWithdrawnWithDataReport(SqlReport):
             recipients=[
                 RECIPIENT_MARI_MANAGER,
                 RECIPIENT_MARI_ADMIN],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 
 SELECT record [StudyNumber]

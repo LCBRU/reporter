@@ -5,14 +5,14 @@ from reporter.core import SqlReport, Schedule
 
 
 class RedcapWithdrawnOrExcludedWithDataReport(SqlReport):
-    def __init__(self, study_name, recipients):
+    def __init__(self, study_name, recipients, schedule=Schedule.weekly):
         super().__init__(
             name="Withdrawn or Excluded with Data Report ({})".format(
                 study_name),
             introduction=("Withdrawn or excluded participants with date"
                           "in REDCap for {} study".format(study_name)),
             recipients=recipients,
-            schedule=Schedule.weekly,
+            schedule=schedule,
             sql='''
 
 SELECT

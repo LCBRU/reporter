@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from reporter.core import Schedule
 from reporter.connections import RedcapInstance
 from reporter.application_abstract_reports.redcap.percentage_complete import (
     RedcapPercentageCompleteReport,
@@ -34,6 +35,7 @@ class MariRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         super().__init__(
             'Mari',
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -42,7 +44,9 @@ class MariRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'Mari',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
+        )
 
 
 class MariRedcapNorthMidsWebDataQuality(RedcapWebDataQuality):
@@ -50,7 +54,8 @@ class MariRedcapNorthMidsWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_NORTH_MIDS_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -59,7 +64,8 @@ class MariRedcapCoventryWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_COV_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -68,7 +74,8 @@ class MariRedcapQueenElizabethWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_QUEEN_ELIZABETH_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -77,7 +84,8 @@ class MariRedcapDudleyWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_DUDLEY_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -86,7 +94,8 @@ class MariRedcapWorchesterWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_WORCHESTER_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -95,7 +104,8 @@ class MariRedcapCambridgeWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_CAMBRIDGE_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -104,7 +114,8 @@ class MariRedcapHeartOfEnglandWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_HEART_OF_ENGLAND_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -113,7 +124,8 @@ class MariRedcapHullWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_HULL_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -122,7 +134,8 @@ class MariRedcapGwentWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_GWENT_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -131,5 +144,6 @@ class MariRedcapNorfolkWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_NORFOLK_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
