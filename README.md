@@ -125,3 +125,25 @@ See the `LCBRU/selenium_grid` repository on GitHub or the SeleniumGrid SOPs for 
 
 The `SeleniumGrid` class in the `report\selenium.py` file wraps access to the
 Selenium Grid in a context manager for convenience.
+
+## DQ Log Database
+
+The database upgrades are handled by SQLAlchemy-migrate and are run using the `manage.py` program
+once the configuration has been copied into place and the database created.
+
+### Installation
+
+To initialise the database run the commands:
+
+```bash
+manage.py version_control
+manage.py upgrade
+```
+
+### Upgrade
+
+To upgrade the database to the current version, run the command:
+
+```bash
+manage.py upgrade
+```

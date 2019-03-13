@@ -8,13 +8,15 @@ import traceback
 import importlib
 import pkgutil
 import inspect
-from datetime import date
+import reporter.dq_log
+from datetime import date, datetime
 from enum import Enum
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 from reporter.emailing import send_markdown_email
 from reporter.connections import DatabaseConnection
 from reporter.emailing import email_error, get_recipients
+from reporter.dq_log import log_report_run
 
 
 class Schedule(Enum):
@@ -100,15 +102,25 @@ class SqlReport(Report):
 
     def get_report(self):
         attachments = None
+        start_datetime = datetime.utcnow()
 
         with self._conn() as conn:
 
             conn.execute(self._sql, self._parameters)
 
+            report, rows = self.get_report_lines(conn)
+
+            log_report_run(
+                name=self._name,
+                start_datetime=start_datetime,
+                end_datetime=datetime.utcnow(),
+                recipients=self._recipients,
+                report=report,
+                error_count=rows,
+            )
+
             if conn.rowcount == 0:
                 return None, 0, attachments
-
-            report, rows = self.get_report_lines(conn)
 
         markdown = self.get_introduction()
         markdown += report

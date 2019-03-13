@@ -9,3 +9,5 @@ Jinja2
 selenium
 PyMySQL
 python-dotenv
+sqlalchemy
+sqlalchemy-migrate
