@@ -45,7 +45,7 @@ class CvlpritRedcapLocalSitePatientId(RedcapFieldMatchesRegularExpression):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
-            fields=['patient_id'],
+            fields=['local_id'],
             regular_expression='^C\d{3}$',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )

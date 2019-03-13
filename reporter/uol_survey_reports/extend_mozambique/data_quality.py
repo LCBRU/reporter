@@ -8,7 +8,7 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapFieldMatchesRegularExpression,
     RedcapInvalidDate,
-    RedcapInvalidHeightInM,
+    RedcapInvalidHeightInCm,
     RedcapInvalidWeightInKg,
     RedcapInvalidBmi,
     RedcapInvalidBloodPressure,
@@ -25,7 +25,7 @@ class ExtendMozambiqueRedcapRecordId(RedcapFieldMatchesRegularExpression):
             redcap_instance=RedcapInstance.uol_survey,
             project_id=REDCAP_PROJECT_ID,
             fields=['record_id'],
-            regular_expression='^\d{1,4}$',
+            regular_expression='^EXT\d{4}--[12]$',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -50,13 +50,13 @@ class ExtendMozambiqueRedcapInvalidDate(RedcapInvalidDate):
         )
 
 
-class ExtendMozambiqueRedcapInvalidHeightInM(RedcapInvalidHeightInM):
+class ExtendMozambiqueRedcapInvalidHeightInCm(RedcapInvalidHeightInCm):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.uol_survey,
             project_id=REDCAP_PROJECT_ID,
             fields=[
-                'base_height',
+                'base_height_2',
                 'follow_up_height',
             ],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
