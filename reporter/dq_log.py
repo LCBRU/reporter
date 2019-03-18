@@ -42,17 +42,21 @@ class DqReportRun(Base):
 
 
 def log_report_run(name, start_datetime, end_datetime, recipients, report, error_count):
-    dq_report = get_or_create_report(name)
-    dq_run = DqReportRun(
-        start_datetime = start_datetime,
-        end_datetime = end_datetime,
-        dq_report = dq_report,
-        report=report,
-        error_count = error_count,
-        recipients = '; '.join(get_recipients(recipients)),
-    )
-    session.add(dq_run)
-    session.commit()
+    try:
+        dq_report = get_or_create_report(name)
+        dq_run = DqReportRun(
+            start_datetime = start_datetime,
+            end_datetime = end_datetime,
+            dq_report = dq_report,
+            report=report,
+            error_count = error_count,
+            recipients = '; '.join(get_recipients(recipients)),
+        )
+        session.add(dq_run)
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 def get_or_create_report(name):
