@@ -40,6 +40,20 @@ WITH recruited AS (
     JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
+	LEFT JOIN redcap_data_quality_status dqs
+		ON dqs.project_id = r.project_id
+		AND dqs.record = r.record
+		AND dqs.field_name = md.field_name
+	LEFT JOIN redcap_data_quality_resolutions dqr
+		ON dqr.status_id = dqs.status_id
+		AND (
+                dqr.comment LIKE 'valid'
+            OR  dqr.comment LIKE '% valid'
+            OR  dqr.comment LIKE '% valid %'
+            OR	dqr.comment LIKE 'validated'
+            OR  dqr.comment LIKE '% validated'
+            OR  dqr.comment LIKE '% validated %'
+        )
 )
 SELECT
     pe.project_id,
@@ -107,6 +121,21 @@ WITH recruited AS (
     JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
+	LEFT JOIN redcap_data_quality_status dqs
+		ON dqs.project_id = r.project_id
+		AND dqs.record = r.record
+		AND dqs.field_name = md.field_name
+	LEFT JOIN redcap_data_quality_resolutions dqr
+		ON dqr.status_id = dqs.status_id
+		AND (
+                dqr.comment LIKE 'valid'
+            OR  dqr.comment LIKE '% valid'
+            OR  dqr.comment LIKE '% valid %'
+            OR	dqr.comment LIKE 'validated'
+            OR  dqr.comment LIKE '% validated'
+            OR  dqr.comment LIKE '% validated %'
+        )
+	WHERE dqr.res_id IS NULL
 )
 SELECT
     pe.project_id,
@@ -179,10 +208,25 @@ FROM recruited r
 WHERE NOT EXISTS (
     SELECT 1
     FROM redcap_data e
+	LEFT JOIN redcap_data_quality_status dqs
+		ON dqs.project_id = e.project_id
+		AND dqs.record = e.record
+		AND dqs.field_name = e.field_name
+	LEFT JOIN redcap_data_quality_resolutions dqr
+		ON dqr.status_id = dqs.status_id
+		AND (
+                dqr.comment LIKE 'valid'
+            OR  dqr.comment LIKE '% valid'
+            OR  dqr.comment LIKE '% valid %'
+            OR	dqr.comment LIKE 'validated'
+            OR  dqr.comment LIKE '% validated'
+            OR  dqr.comment LIKE '% validated %'
+        )
     WHERE e.project_id = r.project_id
         AND e.record = r.record
         AND e.field_name IN ({0})
         AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+        AND dqr.res_id IS NULL
 ) AND EXISTS (
     SELECT 1
     FROM redcap_data e
@@ -230,11 +274,26 @@ SELECT
     e.value,
     md.element_label
 FROM redcap_data e
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
+    AND dqr.res_id IS NULL
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
@@ -294,12 +353,27 @@ SELECT DISTINCT
     e.record,
     md.element_label
 FROM redcap_data e
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.value) = 1
+    AND dqr.res_id IS NULL
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -343,11 +417,26 @@ SELECT
     md.element_label,
     e.field_name
 FROM redcap_data e
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
+    AND dqr.res_id IS NULL
 ORDER BY e.record
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
@@ -385,12 +474,26 @@ SELECT
     e.project_id,
     e.record
 FROM redcap_data e
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE e.project_id = %s
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.record) = 1
+    AND dqr.res_id IS NULL
 GROUP BY
     e.project_id,
     e.record
-
                 ''',
             parameters=(project_id)
         )
@@ -488,7 +591,9 @@ SELECT
     p.project_id,
     p.record,
     sbp.value AS sbp,
-    dbp.value AS dbp
+    dbp.value AS dbp,
+    CASE WHEN sbp_dqr.res_id IS NULL THEN 0 ELSE 1 END sbp_validated,
+    CASE WHEN dbp_dqr.res_id IS NULL THEN 0 ELSE 1 END dbp_validated
 FROM (
     SELECT DISTINCT
         project_id,
@@ -504,13 +609,41 @@ LEFT JOIN redcap_data dbp
     ON dbp.project_id = p.project_id
     AND dbp.record = p.record
     AND dbp.field_name = %s
+LEFT JOIN redcap_data_quality_status sbp_dqs
+    ON sbp_dqs.project_id = sbp.project_id
+    AND sbp_dqs.record = sbp.record
+    AND sbp_dqs.field_name = sbp.field_name
+LEFT JOIN redcap_data_quality_resolutions sbp_dqr
+    ON sbp_dqr.status_id = sbp_dqs.status_id
+    AND (
+            sbp_dqr.comment LIKE 'valid'
+        OR  sbp_dqr.comment LIKE '% valid'
+        OR  sbp_dqr.comment LIKE '% valid %'
+        OR	sbp_dqr.comment LIKE 'validated'
+        OR  sbp_dqr.comment LIKE '% validated'
+        OR  sbp_dqr.comment LIKE '% validated %'
+    )
+LEFT JOIN redcap_data_quality_status dbp_dqs
+    ON dbp_dqs.project_id = sbp.project_id
+    AND dbp_dqs.record = sbp.record
+    AND dbp_dqs.field_name = sbp.field_name
+LEFT JOIN redcap_data_quality_resolutions dbp_dqr
+    ON dbp_dqr.status_id = dbp_dqs.status_id
+    AND (
+            dbp_dqr.comment LIKE 'valid'
+        OR  dbp_dqr.comment LIKE '% valid'
+        OR  dbp_dqr.comment LIKE '% valid %'
+        OR	dbp_dqr.comment LIKE 'validated'
+        OR  dbp_dqr.comment LIKE '% validated'
+        OR  dbp_dqr.comment LIKE '% validated %'
+    )
 
                 ''',
             parameters=(project_id, systolic_field_name, diastolic_field_name)
         )
 
     def get_report_line(self, row):
-        error = self.get_error_message(row['sbp'], row['dbp'])
+        error = self.get_error_message(row['sbp'], row['dbp'], row['sbp_validated'], row['dbp_validated'])
 
         if error:
             return '- {}: {}\r\n'.format(
@@ -519,7 +652,7 @@ LEFT JOIN redcap_data dbp
                 error
             )
 
-    def get_error_message(self, sbp, dbp):
+    def get_error_message(self, sbp, dbp, sbp_validated, dbp_validated):
         if self.is_na(sbp) and self.is_na(dbp):
             return
         if sbp is None and dbp is None:
@@ -533,9 +666,9 @@ LEFT JOIN redcap_data dbp
             return 'Systolic BP is not numeric'
         if not dbp.replace('.', '', 1).isdigit():
             return 'Diastolic BP is not numeric'
-        if float(sbp) > 200:
+        if float(sbp) > 200 and sbp_validated == 0:
             return 'Systolic BP is too high'
-        if float(dbp) < 35:
+        if float(dbp) < 35 and dbp_validated == 0:
             return 'Diastolic BP is too low'
         if float(dbp) >= float(sbp):
             return 'Diastolic BP is above Systolic BP'
@@ -574,8 +707,23 @@ FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
+    AND dqr.res_id IS NULL
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -628,8 +776,23 @@ FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
+    AND dqr.res_id IS NULL
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -682,8 +845,23 @@ FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
+    AND dqr.res_id IS NULL
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -793,7 +971,8 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         p.project_id,
         p.record,
         feet.value [feet],
-        inches.value [inches]
+        inches.value [inches],
+        CASE WHEN feet_dqr.res_id IS NULL THEN 0 ELSE 1 END feet_validated
     FROM (
         SELECT DISTINCT
             project_id,
@@ -809,14 +988,26 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         ON inches.project_id = p.project_id
         AND inches.record = p.record
         AND inches.field_name = %s
-
-
+    LEFT JOIN redcap_data_quality_status feet_dqs
+        ON feet_dqs.project_id = feet.project_id
+        AND feet_dqs.record = feet.record
+        AND feet_dqs.field_name = feet.field_name
+    LEFT JOIN redcap_data_quality_resolutions feet_dqr
+        ON feet_dqr.status_id = feet_dqs.status_id
+        AND (
+                feet_dqr.comment LIKE 'valid'
+            OR  feet_dqr.comment LIKE '% valid'
+            OR  feet_dqr.comment LIKE '% valid %'
+            OR	feet_dqr.comment LIKE 'validated'
+            OR  feet_dqr.comment LIKE '% validated'
+            OR  feet_dqr.comment LIKE '% validated %'
+        )
                 ''',
             parameters=(project_id, feet_field, inches_field)
         )
 
     def get_report_line(self, row):
-        error = self.get_error_message(row['feet'], row['inches'])
+        error = self.get_error_message(row['feet'], row['inches'], row['feet_validated'])
 
         if error:
             return '- {}: {}\r\n'.format(
@@ -825,7 +1016,7 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
                 error
             )
 
-    def get_error_message(self, feet, inches):
+    def get_error_message(self, feet, inches, feet_validated):
         if self.is_na(feet) or self.is_na(inches):
             return
         if feet is None and inches is None:
@@ -839,9 +1030,9 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
             return 'Height in feet is not numeric'
         if not inches.replace('.', '', 1).isdigit():
             return 'Height in inches is not numeric'
-        if float(feet) < 3:
+        if float(feet) < 3 and feet_validated == 0:
             return 'Height in feet too low'
-        if float(feet) > 7:
+        if float(feet) > 7 and feet_validated == 0:
             return 'Height in feet too high'
         if not 0 <= float(inches) < 12:
             return 'Height in inches is incorrect'
@@ -875,11 +1066,26 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    CASE WHEN dqr.res_id IS NULL THEN 0 ELSE 1 END validated
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
 
@@ -888,19 +1094,19 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value']):
+        if self.is_invalid(row['value'], row['validated']):
             return '- {}: {}\r\n'.format(
                 self._redcap_instance()['link_generator'](
                     row['record'], row['project_id'], row['record']),
                 row['element_label']
             )
 
-    def is_invalid(self, value):
+    def is_invalid(self, value, validated):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
-        if not 20.0 < float(value) < 200.0:
+        if not 20.0 < float(value) < 200.0 and validated == 0:
             return True
 
 
@@ -928,7 +1134,8 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         p.project_id,
         p.record,
         stones.value [stones],
-        pounds.value [pounds]
+        pounds.value [pounds],
+        CASE WHEN stones_dqr.res_id IS NULL THEN 0 ELSE 1 END stones_validated
     FROM (
         SELECT DISTINCT
             project_id,
@@ -944,14 +1151,27 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         ON pounds.project_id = p.project_id
         AND pounds.record = p.record
         AND pounds.field_name = %s
-
+    LEFT JOIN redcap_data_quality_status stones_dqs
+        ON stones_dqs.project_id = stones.project_id
+        AND stones_dqs.record = stones.record
+        AND stones_dqs.field_name = stones.field_name
+    LEFT JOIN redcap_data_quality_resolutions stones_dqr
+        ON stones_dqr.status_id = stones_dqs.status_id
+        AND (
+                stones_dqr.comment LIKE 'valid'
+            OR  stones_dqr.comment LIKE '% valid'
+            OR  stones_dqr.comment LIKE '% valid %'
+            OR	stones_dqr.comment LIKE 'validated'
+            OR  stones_dqr.comment LIKE '% validated'
+            OR  stones_dqr.comment LIKE '% validated %'
+        )
 
                 ''',
             parameters=(project_id, stones_field, pounds_field)
         )
 
     def get_report_line(self, row):
-        error = self.get_error_message(row['stones'], row['pounds'])
+        error = self.get_error_message(row['stones'], row['pounds'], row['stones_validated'])
 
         if error:
             return '- {}: {}\r\n'.format(
@@ -960,7 +1180,7 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
                 error
             )
 
-    def get_error_message(self, stones, pounds):
+    def get_error_message(self, stones, pounds, stones_validated):
         if self.is_na(stones) or self.is_na(pounds):
             return
         if stones is None and pounds is None:
@@ -975,7 +1195,7 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
 
         calculated_kg = ((float(stones or 0) * 14) + float(pounds)) * 0.453592
 
-        if not 20.0 < calculated_kg < 200.0:
+        if not 20.0 < calculated_kg < 200.0 and stones_validated == 0:
             return 'Invalid weight'
 
         return
@@ -1007,11 +1227,26 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    CASE WHEN dqr.res_id IS NULL THEN 0 ELSE 1 END validated
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = e.project_id
+    AND dqs.record = e.record
+    AND dqs.field_name = e.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
 
@@ -1020,19 +1255,19 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value']):
+        if self.is_invalid(row['value'], row['validated']):
             return '- {}: {}\r\n'.format(
                 self._redcap_instance()['link_generator'](
                     row['record'], row['project_id'], row['record']),
                 row['element_label']
             )
 
-    def is_invalid(self, value):
+    def is_invalid(self, value, validated):
         if (value or '').strip().replace('/', '').lower() in ('na', ''):
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
-        if not 17.0 <= float(value) <= 80.0:
+        if not 17.0 <= float(value) <= 80.0 and validated == 0:
             return True
 
 
@@ -1069,11 +1304,26 @@ JOIN    redcap_data rec
     ON rec.project_id = dob.project_id
     AND rec.record = dob.record
     AND rec.field_name = %s
+LEFT JOIN redcap_data_quality_status dqs
+    ON dqs.project_id = rec.project_id
+    AND dqs.record = rec.record
+    AND dqs.field_name = rec.field_name
+LEFT JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '% valid'
+        OR  dqr.comment LIKE '% valid %'
+        OR	dqr.comment LIKE 'validated'
+        OR  dqr.comment LIKE '% validated'
+        OR  dqr.comment LIKE '% validated %'
+    )
 WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         CONVERT(DATE, dob.value),
         CONVERT(DATE, rec.value)) NOT BETWEEN %s AND %s
     AND dob.field_name = %s
     AND dob.project_id = %s
+    AND dqr.res_id IS NULL
 
                 ''',
             parameters=(
