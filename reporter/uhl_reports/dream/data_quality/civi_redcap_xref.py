@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import SqlReport, Schedule
 from reporter.connections import get_redcap_link
 from reporter.uhl_reports.civicrm import get_case_link
 from reporter.emailing import (
@@ -15,6 +15,7 @@ class DreamCivicrmNotInRedcap(SqlReport):
                           "are recruited in CiviCrm, but do not have "
                           "a record in REDCap or Onyx"),
             recipients=[RECIPIENT_IT_DWH],
+            schedule=Schedule.never,
             sql='''
                 WITH c (StudyNumber, civicrm_case_id, civicrm_contact_id) AS (
                     SELECT  DISTINCT
@@ -81,6 +82,7 @@ class DreamRedcapNotInCiviCrm(SqlReport):
                           "are recruited in REDCap, but do not have "
                           "a record in CiviCRM"),
             recipients=[RECIPIENT_IT_DWH],
+            schedule=Schedule.never,
             sql='''
                 WITH c (StudyNumber) AS (
                     SELECT  DISTINCT

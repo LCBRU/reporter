@@ -27,4 +27,6 @@ class DreamRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'DREAM',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
+        )
