@@ -15,6 +15,7 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 REDCAP_PROJECT_ID = 25
 REDCAP_INSTANCE = RedcapInstance.internal
@@ -33,7 +34,9 @@ class LentenRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'Lenten',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
+        )
 
 
 class LentenRedcapWebDataQuality(RedcapWebDataQuality):

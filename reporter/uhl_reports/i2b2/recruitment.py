@@ -52,8 +52,14 @@ ORDER BY ConsentDate
 
             ax.plot(df, label='Cumulative')
 
-            datemin = datetime.date(int(df.index.year.min()), 1, 1)
-            datemax = datetime.date(int(df.index.year.max()) + 1, 1, 1)
+            if df.empty:
+                datemin = datetime.date(datetime.datetime.now().year, 1, 1)
+                datemax = datemin
+                total_recruited = 0
+            else:
+                datemin = datetime.date(int(df.index.year.min()), 1, 1)
+                datemax = datetime.date(int(df.index.year.max()) + 1, 1, 1)
+                total_recruited = df.ct[-1]
 
             ax.set_xlim(datemin, datemax)
             ax.xaxis.set_major_locator(mdates.YearLocator())
@@ -65,8 +71,8 @@ ORDER BY ConsentDate
             fig.autofmt_xdate()
 
             ax.annotate(
-                'Total Recruitment*: {}'.format(df.ct[-1]),
-                xy=(df.index.max(), df.ct[-1]),
+                'Total Recruitment*: {}'.format(total_recruited),
+                xy=(df.index.max(), total_recruited),
                 bbox=dict(boxstyle="square, pad=0.6", alpha=0.2),
                 xytext=(0.1, 0.7),
                 textcoords='axes fraction',

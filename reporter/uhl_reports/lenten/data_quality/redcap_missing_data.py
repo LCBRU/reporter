@@ -26,7 +26,8 @@ class LentenRedcapMissingData(
                 'v1_visit_date',
                 'age',
                 'ethnicity',
-                'gender'
+                'gender',
+                'consent_signed',
             ],
             [RECIPIENT_LENTEN_ADMIN]
         )

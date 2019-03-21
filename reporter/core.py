@@ -161,7 +161,7 @@ class PdfReport(SqlReport):
 
             template_vars = {
                 "rows": conn.fetchall(),
-                "now": datetime.datetime.utcnow()
+                "now": datetime.utcnow()
             }
 
             html = template.render(template_vars)

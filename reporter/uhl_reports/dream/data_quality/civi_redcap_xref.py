@@ -101,6 +101,8 @@ class DreamRedcapNotInCiviCrm(SqlReport):
                     FROM    STG_redcap.dbo.redcap_data
                     WHERE project_id IN (8)
                         AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
+                        AND field_name = 'recruited_to_study'
+                        AND value = '1'
                 )
 
                 SELECT

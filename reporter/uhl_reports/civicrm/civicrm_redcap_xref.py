@@ -11,7 +11,7 @@ from reporter.emailing import (
 STUDY_NUMBERS_SQL = '''
     WITH c (StudyNumber, civicrm_case_id, civicrm_contact_id) AS (
         SELECT  DISTINCT
-            StudyNumber,
+            SUBSTRING(StudyNumber, PATINDEX('%[^0]%', StudyNumber + '.'), LEN(StudyNumber)) StudyNumber,
             civicrm_case_id,
             civicrm_contact_id
         FROM    STG_CiviCRM.dbo.LCBRU_CaseDetails
@@ -25,7 +25,7 @@ STUDY_NUMBERS_SQL = '''
             AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(StudyNumber) = 0
     ), r (StudyNumber, project_id) AS (
         SELECT  DISTINCT
-            record AS StudyNumber,
+            SUBSTRING(record, PATINDEX('%[^0]%', record + '.'), LEN(record)) StudyNumber,
             project_id
         FROM    STG_redcap.dbo.redcap_data
         WHERE project_id = %s
