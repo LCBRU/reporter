@@ -8,7 +8,6 @@ from reporter.emailing import get_recipients
 Base = declarative_base()
 engine = create_engine(SQL_DQLOG_URI, echo=False)
 Session = sessionmaker(bind=engine)
-session = Session()
 
 
 class DqReport(Base):
@@ -42,8 +41,9 @@ class DqReportRun(Base):
 
 
 def log_report_run(name, start_datetime, end_datetime, recipients, report, error_count):
+    session = Session()
     try:
-        dq_report = get_or_create_report(name)
+        dq_report = get_or_create_report(session, name)
         dq_run = DqReportRun(
             start_datetime = start_datetime,
             end_datetime = end_datetime,
@@ -57,9 +57,11 @@ def log_report_run(name, start_datetime, end_datetime, recipients, report, error
     except:
         session.rollback()
         raise
+    finally:
+        session.close()
 
 
-def get_or_create_report(name):
+def get_or_create_report(session, name):
     dq_report = session.query(DqReport).filter_by(name=name).first()
     if dq_report:
         return dq_report
