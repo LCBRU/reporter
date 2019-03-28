@@ -6,7 +6,7 @@ from reporter.environment import SQL_DQLOG_URI
 from reporter.emailing import get_recipients
 
 Base = declarative_base()
-engine = create_engine(SQL_DQLOG_URI, echo=False)
+engine = create_engine(SQL_DQLOG_URI, echo=False, pool_recycle=3600)
 Session = sessionmaker(bind=engine)
 
 
