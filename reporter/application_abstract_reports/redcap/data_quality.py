@@ -172,6 +172,95 @@ ORDER BY pe.record
         )
 
 
+class RedcapMissingDataWhenNot(SqlReport):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        fields,
+        indicator_field,
+        indicator_value,
+        recipients,
+        schedule=None
+    ):
+        self._redcap_instance = redcap_instance
+
+        super().__init__(
+            introduction=("The following participants have data "
+                          "missing from REDCap when {} not = '{}'". format(
+                              indicator_field,
+                              indicator_value
+                          )),
+            recipients=recipients,
+            schedule=schedule,
+            conn=redcap_instance()['connection'],
+            sql='''
+
+WITH recruited AS (
+    SELECT  DISTINCT record, project_id
+    FROM    redcap_data
+    WHERE project_id = %s
+), potential_errors AS (
+    SELECT
+        r.record,
+        r.project_id,
+        md.field_name,
+        'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
+    FROM recruited r
+    JOIN redcap_metadata md
+        ON md.project_id = r.project_id
+        AND md.field_name IN ({0})
+	LEFT JOIN redcap_data_quality_status dqs
+		ON dqs.project_id = r.project_id
+		AND dqs.record = r.record
+		AND dqs.field_name = md.field_name
+	LEFT JOIN redcap_data_quality_resolutions dqr
+		ON dqr.status_id = dqs.status_id
+		AND (
+                dqr.comment LIKE 'valid'
+            OR  dqr.comment LIKE '% valid'
+            OR  dqr.comment LIKE '% valid %'
+            OR	dqr.comment LIKE 'validated'
+            OR  dqr.comment LIKE '% validated'
+            OR  dqr.comment LIKE '% validated %'
+        )
+	WHERE dqr.res_id IS NULL
+)
+SELECT
+    pe.project_id,
+    pe.record,
+    pe.error AS [error_message]
+FROM potential_errors pe
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM redcap_data e
+    WHERE e.project_id = pe.project_id
+        AND e.record = pe.record
+        AND e.field_name = pe.field_name
+        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+) AND EXISTS (
+    SELECT 1
+    FROM redcap_data e
+    WHERE e.project_id = pe.project_id
+        AND e.record = pe.record
+        AND e.field_name = %s
+        AND e.value <> %s
+)
+ORDER BY pe.record
+
+                '''.format(
+                ', '.join(['\'{}\''.format(f) for f in fields])),
+            parameters=(project_id, indicator_field, indicator_value)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            row['error_message']
+        )
+
+
 class RedcapMissingAllWhen(SqlReport):
     def __init__(
         self,

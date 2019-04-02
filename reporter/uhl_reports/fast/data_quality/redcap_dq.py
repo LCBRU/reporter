@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import SqlReport, Schedule
 from reporter.connections import RedcapInstance
 from reporter.emailing import (
     RECIPIENT_FAST_ADMIN as RECIPIENT_ADMIN,
@@ -24,6 +24,9 @@ from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidBmi,
     RedcapImpliesCheck,
     RedcapOutsideAgeRange,
+    RedcapMissingData,
+    RedcapMissingDataWhen,
+    RedcapMissingDataWhenNot,
 )
 from reporter.application_abstract_reports.redcap.percentage_complete import (
     RedcapPercentageCompleteReport,
@@ -37,9 +40,9 @@ REDCAP_SCREENING_PROJECT_ID = 48
 REDCAP_INSTANCE = RedcapInstance.internal
 
 
-class FastRedcapMissingData(SqlReport):
+class FastClinicalRedcapMissingData(SqlReport):
     def __init__(self):
-        self._redcap_instance = RedcapInstance.internal
+        self._redcap_instance = REDCAP_INSTANCE
         project_id = REDCAP_CRF_PROJECT_ID
         fields = ['nhs_number', 'gender', 'ethnicity', 'dob',
                   'date', 'practice_location', 'invitation_grp',
@@ -104,14 +107,14 @@ ORDER BY pe.record
         )
 
 
-class FastRedcapInvalidNhsNumber(
+class FastClinicalRedcapInvalidNhsNumber(
         RedcapInvalidNhsNumber):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['nhs_number'],
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=['nhs_number'],
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -119,10 +122,10 @@ class FastRedcapInvalidStudyNumber(
         RedcapInvalidStudyNumber):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_SCREENING_PROJECT_ID,
-            ['fst_label', 'record_id'],
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=['fst_label', 'record_id'],
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -130,9 +133,9 @@ class FastRedcapRecordInvalidStudyNumber(
         RedcapRecordInvalidStudyNumber):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_SCREENING_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -140,11 +143,11 @@ class FastRedcapInvalidBloodPressure(
         RedcapInvalidBloodPressure):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            'sys_bp',
-            'dias_bp',
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            systolic_field_name='sys_bp',
+            diastolic_field_name='dias_bp',
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -152,10 +155,10 @@ class FastRedcapInvalidPulse(
         RedcapInvalidPulse):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['pulse'],
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=['pulse'],
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -163,10 +166,10 @@ class FastRedcapInvalidHeightInCm(
         RedcapInvalidHeightInCm):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['height_cms'],
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=['height_cms'],
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -174,11 +177,11 @@ class FastRedcapInvalidHeightInFeetAndInches(
         RedcapInvalidHeightInFeetAndInches):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            'height_ft',
-            'height_inches',
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            feet_field='height_ft',
+            inches_field='height_inches',
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -186,10 +189,10 @@ class FastRedcapInvalidWeightInKg(
         RedcapInvalidWeightInKg):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['weight_kgs'],
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=['weight_kgs'],
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -197,11 +200,11 @@ class FastRedcapInvalidWeightInStonesAndPounds(
         RedcapInvalidWeightInStonesAndPounds):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            'weight_stones',
-            'weight_pounds',
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            stones_field='weight_stones',
+            pounds_field='weight_pounds',
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -209,10 +212,10 @@ class FastRedcapInvalidBmi(
         RedcapInvalidBmi):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['bmi'],
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=['bmi'],
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -220,24 +223,24 @@ class FastRedcapInvalidDate(
         RedcapInvalidDate):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            recipients=[RECIPIENT_ADMIN],
         )
-
 
 class FastCurrentSmokerGroupButNotCurrentSmoker(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['0'],
-            ['curr_smoke'],
-            ['1'],
-            'Participant in current smoker group, but is not a current smoker',
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['0'],
+            consequence_fields=['curr_smoke'],
+            consequence_values=['1'],
+            error_message='Participant in current smoker group, but is not a current smoker',
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -245,14 +248,15 @@ class FastExSmokerGroupButNotExSmoker(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['1'],
-            ['ex_smoker'],
-            ['1'],
-            'Participant in Ex-smoker group, but is not an ex-smoker',
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['1'],
+            consequence_fields=['ex_smoker'],
+            consequence_values=['1'],
+            error_message='Participant in Ex-smoker group, but is not an ex-smoker',
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -260,17 +264,18 @@ class FastRiskFactorGroupButNoRiskFactors(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['2'],
-            ['diabetes', 'stroke', 'diag_mi', 'cabg', 'coronary_angio',
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['2'],
+            consequence_fields=['diabetes', 'stroke', 'diag_mi', 'cabg', 'coronary_angio',
              'stents_balloons', 'narrow_arteries', 'diag_hypertension',
              'hypertension_med', 'diag_high_cholesterol', 'fam_hist_aaa',
              'reg_meds'],
-            ['1', '2', '3', '4'],
-            'Participant in risk factor group, but is has no risk factors',
-            [RECIPIENT_ADMIN]
+            consequence_values=['1', '2', '3', '4'],
+            error_message='Participant in risk factor group, but is has no risk factors',
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -278,18 +283,19 @@ class FastNoRiskFactorGroupButHasRiskFactors(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['3'],
-            ['diabetes', 'stroke', 'diag_mi', 'cabg', 'coronary_angio',
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['3'],
+            consequence_fields=['diabetes', 'stroke', 'diag_mi', 'cabg', 'coronary_angio',
              'stents_balloons', 'narrow_arteries', 'diag_hypertension',
              'hypertension_med', 'diag_high_cholesterol',
              'reg_meds', 'curr_smoke', 'ex_smoker'],
-            ['1', '2', '3', '4'],
-            'Participant in no risk factors group, but is has risk factors',
-            [RECIPIENT_ADMIN],
-            True
+            consequence_values=['1', '2', '3', '4'],
+            error_message='Participant in no risk factors group, but is has risk factors',
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+            reverse=True,
         )
 
 
@@ -297,15 +303,16 @@ class FastEthnicMinorityGroupButNotInEthnicMinority(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['4'],
-            ['ethnicity'],
-            ['D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S'],
-            'Participant in ethinic minority group, '
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['4'],
+            consequence_fields=['ethnicity'],
+            consequence_values=['D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S'],
+            error_message='Participant in ethinic minority group, '
             'but is not in an ethnic minority',
-            [RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -313,14 +320,15 @@ class FastSiblingsGroupButNoFamilyHistory(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['5'],
-            ['fam_hist_aaa'],
-            ['1'],
-            'Participant in siblings group, but has no family history of AAA',
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['5'],
+            consequence_fields=['fam_hist_aaa'],
+            consequence_values=['1'],
+            error_message='Participant in siblings group, but has no family history of AAA',
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -328,15 +336,16 @@ class FastWhiteEthnicGroupButInEthinicMinority(
         RedcapImpliesCheck):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            ['invitation_grp'],
-            ['0', '1', '2', '3'],
-            ['ethnicity'],
-            ['D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S'],
-            'Participant in white ethnic group, but in ethnic minority',
-            [RECIPIENT_ADMIN],
-            True
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            indicator_fields=['invitation_grp'],
+            indicator_values=['0', '1', '2', '3'],
+            consequence_fields=['ethnicity'],
+            consequence_values=['D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S'],
+            error_message='Participant in white ethnic group, but in ethnic minority',
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+            reverse=True,
         )
 
 
@@ -344,13 +353,13 @@ class FastRedcapOutsideAgeRange(
         RedcapOutsideAgeRange):
     def __init__(self):
         super().__init__(
-            RedcapInstance.internal,
-            REDCAP_CRF_PROJECT_ID,
-            'dob',
-            'date',
-            65,
-            74,
-            [RECIPIENT_ADMIN]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            dob_field='dob',
+            recruited_date_field='date',
+            min_age=65,
+            max_age=74,
+            recipients=[RECIPIENT_ADMIN],
         )
 
 
@@ -366,23 +375,78 @@ class FastRedcapWithdrawnOrExcludedWithDataReport(
         RedcapWithdrawnOrExcludedWithDataReport):
     def __init__(self):
         super().__init__(
-            'FAST',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            study_name='FAST',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
 
 
 class FastRedcapCrfWebDataQuality(RedcapWebDataQuality):
     def __init__(self):
         super().__init__(
-            REDCAP_INSTANCE,
-            REDCAP_CRF_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            recipients=[RECIPIENT_IT_DQ],
         )
 
 
 class FastRedcapScreeningWebDataQuality(RedcapWebDataQuality):
     def __init__(self):
         super().__init__(
-            REDCAP_INSTANCE,
-            REDCAP_SCREENING_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_SCREENING_PROJECT_ID,
+            recipients=[RECIPIENT_IT_DQ],
+        )
+
+
+class FastRedcapMissingConsent(RedcapMissingData):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=[
+                'res_consent_2',
+                'res_consent_3',
+                'res_consent_4',
+                'res_consent_5',
+                'res_consent_6',
+                'res_consent_7',
+                'opt_consent_8',
+                'opt_consent_9',
+                'opt_consent_10',
+                'opt_consent_11',
+                'opt_consent_12',
+                'opt_consent_13',
+                'opt_consent_14',
+                'consent_ext_dta_coll',
+                'consent_hscic',
+            ],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FastRedcapMissingPisConsent(RedcapMissingDataWhenNot):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_SCREENING_PROJECT_ID,
+            fields=[
+                'res_consent_1a',
+            ],
+            indicator_field='invitation_grp',
+            indicator_value='5',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FastRedcapMissingSiblingPisConsent(RedcapMissingDataWhen):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_SCREENING_PROJECT_ID,
+            fields=[
+                'res_consent_1',
+            ],
+            indicator_field='invitation_grp',
+            indicator_value='5',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
