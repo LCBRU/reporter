@@ -186,7 +186,7 @@ WHERE cd.case_status_id IN (
 
 
 class CivicrmInvalidCaseStatus(SqlReport):
-    def __init__(self, case_type_id, valid_statuses, recipients):
+    def __init__(self, case_type_id, valid_statuses, recipients, schedule=Schedule.daily):
         super().__init__(
             introduction=("The following cases have "
                           "invalid statuses:"),
@@ -204,7 +204,7 @@ WHERE cd.case_type_id = %s
 
                 '''.format(','.join(['%s'] * len(valid_statuses))),
                 parameters=tuple([case_type_id]) + tuple(valid_statuses),
-                schedule=Schedule.daily
+                schedule=schedule,
         )
 
     def get_report_line(self, row):

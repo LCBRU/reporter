@@ -13,7 +13,7 @@ class LentenWithdrawnWithDataReport(SqlReport):
             introduction=("Withdrawn participants with data "
                           "in REDCap for LENTEN study"),
             recipients=[RECIPIENT_LENTEN_MANAGER, RECIPIENT_LENTEN_ADMIN],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 
 SELECT record [StudyNumber]

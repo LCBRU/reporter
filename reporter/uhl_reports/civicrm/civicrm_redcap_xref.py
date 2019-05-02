@@ -79,9 +79,9 @@ class RedcapNotInCiviCrm(SqlReport):
             schedule=None
     ):
         super().__init__(
-            introduction=("The following participants have "
-                          "are recruited in CiviCrm, but do not have "
-                          "a record in REDCap"),
+            introduction=("The following participants "
+                          "are recruited in REDCap, but do not have "
+                          "a record in CiviCRM"),
             recipients=recipients,
             sql=STUDY_NUMBERS_SQL + '''
                 SELECT

@@ -358,7 +358,7 @@ class FastRedcapOutsideAgeRange(
             dob_field='dob',
             recruited_date_field='date',
             min_age=65,
-            max_age=74,
+            max_age=75,
             recipients=[RECIPIENT_ADMIN],
         )
 
@@ -377,6 +377,7 @@ class FastRedcapWithdrawnOrExcludedWithDataReport(
         super().__init__(
             study_name='FAST',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 

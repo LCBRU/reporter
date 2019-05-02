@@ -8,6 +8,8 @@ from reporter.uhl_reports.civicrm.enrolment_dq import (
     MissingUhlSystemNumberAndNhsNumberReport,
     CivicrmInvalidCaseStatus
 )
+from reporter.core import Schedule
+
 
 CASE_TYPE_ID = 12
 
@@ -16,21 +18,27 @@ class TmaoCiviCrmMissingStudyNumber(MissingStudyNumber):
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_TMAO_ADMIN])
+            recipients=[RECIPIENT_TMAO_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class TmaoCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_TMAO_ADMIN])
+            recipients=[RECIPIENT_TMAO_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class TmaoCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_TMAO_ADMIN])
+            recipients=[RECIPIENT_TMAO_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class TmaoCiviCrmMissingUhlNumberAndNhsNumber(
@@ -38,7 +46,9 @@ class TmaoCiviCrmMissingUhlNumberAndNhsNumber(
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_TMAO_ADMIN])
+            recipients=[RECIPIENT_TMAO_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class TmaoCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
@@ -54,4 +64,6 @@ class TmaoCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Duplicate',
                 'Withdrawn'
             ],
-            [RECIPIENT_TMAO_ADMIN])
+            [RECIPIENT_TMAO_ADMIN],
+            schedule=Schedule.never,
+        )

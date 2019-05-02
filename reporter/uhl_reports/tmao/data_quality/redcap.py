@@ -21,6 +21,7 @@ from reporter.application_abstract_reports.redcap.withdrawn_or_excluded_with_dat
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 REDCAP_PROJECT_ID = 25
 REDCAP_INSTANCE = RedcapInstance.internal
@@ -40,7 +41,8 @@ class TmaoRedcapMissingData(
                 'do_you_take_nutritional_su',
                 'how_many_per_times_week_do'
             ],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -57,7 +59,8 @@ class TmaoRedcapMissingDataWhenEatRedMeat(
             ],
             'do_you_eat_red_meat',
             '1',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -73,7 +76,8 @@ class TmaoRedcapMissingDataWhenNotVegan(
             ],
             'are_you_a_vegan',
             '0',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -88,7 +92,8 @@ class TmaoRedcapMissingDataWhenEggEater(
             ],
             'do_you_eat_eggs',
             '1',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -100,7 +105,8 @@ class TmaoRedcapInvalidStudyNumber(
             REDCAP_PROJECT_ID,
             ['record_id'],
             'TMAO\d{4}',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -110,7 +116,8 @@ class TmaoRedcapInvalidDate(
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -118,7 +125,9 @@ class TmaoRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
     def __init__(self):
         super().__init__(
             'TMAO',
-            [RECIPIENT_MANAGER, RECIPIENT_ADMIN])
+            [RECIPIENT_MANAGER, RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class TmaoRedcapWithdrawnOrExcludedWithDataReport(
@@ -126,7 +135,9 @@ class TmaoRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'TMAO',
-            [RECIPIENT_MANAGER, RECIPIENT_ADMIN])
+            [RECIPIENT_MANAGER, RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class TmaoRedcapWebDataQuality(RedcapWebDataQuality):
@@ -134,5 +145,6 @@ class TmaoRedcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
