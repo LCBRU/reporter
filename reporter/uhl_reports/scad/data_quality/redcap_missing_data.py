@@ -43,7 +43,7 @@ class ScadClinicalRedcapMissingData(
                 'part_bp_dias',
                 'study_status'
             ],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -53,7 +53,7 @@ class ScadRedcapRecordInvalidStudyNumber(
         super().__init__(
             RedcapInstance.internal,
             28,
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -65,7 +65,7 @@ class ScadClinicalRedcapInvalidBloodPressure(
             28,
             'part_bp1_sys',
             'part_bp_dias',
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -76,7 +76,7 @@ class ScadClinicalRedcapInvalidPulse(
             RedcapInstance.internal,
             28,
             ['part_pulse1'],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -87,7 +87,7 @@ class ScadClinicalRedcapInvalidHeightInCm(
             RedcapInstance.internal,
             28,
             ['part_height'],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -98,7 +98,7 @@ class ScadClinicalRedcapInvalidWeightInKg(
             RedcapInstance.internal,
             28,
             ['part_weight'],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -109,7 +109,7 @@ class ScadClinicalRedcapInvalidBmi(
             RedcapInstance.internal,
             28,
             ['part_bmi'],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -119,7 +119,7 @@ class ScadClinicalRedcapInvalidDate(
         super().__init__(
             RedcapInstance.internal,
             28,
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -144,7 +144,7 @@ class ScadRegistryRedcapMissingData(
                 'consent_version',
                 'nhs_no'
             ],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -155,7 +155,7 @@ class ScadRegistryInvalidNhsNumber(
             RedcapInstance.internal,
             31,
             ['nhs_no'],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )
 
 
@@ -166,5 +166,5 @@ class ScadRegistryInvalidUhlSystemNumber(
             RedcapInstance.internal,
             31,
             ['s_number'],
-            [RECIPIENT_SCAD_ADMIN]
+            [RECIPIENT_SCAD_ADMIN],
         )

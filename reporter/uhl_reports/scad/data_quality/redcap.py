@@ -15,6 +15,7 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 REDCAP_CLINICAL_VISIT_PROJECT_ID = 28
 REDCAP_REGISTRY_PROJECT_ID = 31
@@ -34,7 +35,9 @@ class ScadRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'SCAD',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            Schedule.never,
+        )
 
 
 class ScadRedcapClinicalVisitWebDataQuality(RedcapWebDataQuality):
@@ -42,7 +45,7 @@ class ScadRedcapClinicalVisitWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_CLINICAL_VISIT_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
         )
 
 
@@ -51,5 +54,5 @@ class ScadRedcapRegistryWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_REGISTRY_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
         )

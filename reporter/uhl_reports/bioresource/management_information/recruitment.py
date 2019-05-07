@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from reporter.core import Schedule
 from reporter.uhl_reports.i2b2.recruitment import (
     CumulativeRecruitment,
 )
@@ -15,6 +16,7 @@ class BioresourceCumulativeRecruitment(
         CumulativeRecruitment):
     def __init__(self):
         super().__init__(
-            I2B2_DB,
-            [RECIPIENT_MANAGER]
+            database=I2B2_DB,
+            recipients=[RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
