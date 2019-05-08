@@ -22,5 +22,5 @@ class ScadRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
             case_type_ids=[CASE_TYPE_ID],
-            redcap_project_ids=[SCAD_REDCAP_PROJECT_ID],
+            redcap_project_ids=[SCAD_REDCAP_PROJECT_ID, SCAD_REDCAP_PROJECT_ID_V2],
         )

@@ -51,7 +51,7 @@ WHERE a.project_id = 43
     )
 UNION
 SELECT
-	'Participant in risk factor group, but is has no risk factors' [error],
+	'Participant in risk factor group, but has no risk factors' [error],
 	COUNT(*) [count]
 FROM    STG_redcap.dbo.redcap_data a
 WHERE a.project_id = 43
