@@ -19,8 +19,8 @@ FAST_CLINICAL_REDCAP_PROJECT_ID = 43
 class FastScreeningCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            redcap_project_id=FAST_SCREENING_REDCAP_PROJECT_ID,
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[FAST_SCREENING_REDCAP_PROJECT_ID],
         )
 
 

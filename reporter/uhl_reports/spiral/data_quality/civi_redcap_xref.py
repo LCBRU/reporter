@@ -12,14 +12,14 @@ SPIRAL_REDCAP_PROJECT_ID = 69
 class SpiralCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            redcap_project_id=SPIRAL_REDCAP_PROJECT_ID,
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[SPIRAL_REDCAP_PROJECT_ID],
         )
 
 
 class SpiralRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            project_id=SPIRAL_REDCAP_PROJECT_ID
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[SPIRAL_REDCAP_PROJECT_ID],
         )

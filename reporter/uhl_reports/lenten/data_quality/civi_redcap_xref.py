@@ -12,14 +12,14 @@ LENTEN_REDCAP_PROJECT_ID = 56
 class LentenCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            redcap_project_id=LENTEN_REDCAP_PROJECT_ID,
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[LENTEN_REDCAP_PROJECT_ID],
         )
 
 
 class LentenRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            project_id=LENTEN_REDCAP_PROJECT_ID
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[LENTEN_REDCAP_PROJECT_ID],
         )

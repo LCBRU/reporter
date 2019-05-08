@@ -12,14 +12,14 @@ INDAPAMIDE_REDCAP_PROJECT_ID = 50
 class IndapamideCivicrmNotInRedcap(CivicrmNotInRedcap):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            redcap_project_id=INDAPAMIDE_REDCAP_PROJECT_ID,
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[INDAPAMIDE_REDCAP_PROJECT_ID],
         )
 
 
 class IndapamideRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            project_id=INDAPAMIDE_REDCAP_PROJECT_ID,
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[INDAPAMIDE_REDCAP_PROJECT_ID],
         )

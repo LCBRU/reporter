@@ -15,7 +15,7 @@ STUDY_NUMBERS_SQL = '''
             civicrm_case_id,
             civicrm_contact_id
         FROM    STG_CiviCRM.dbo.LCBRU_CaseDetails
-        WHERE   case_type_id = %s
+        WHERE   case_type_id IN ({0})
             AND case_status_id IN (
                 5, -- Recruited
                 8, -- Withdrawn
@@ -28,7 +28,7 @@ STUDY_NUMBERS_SQL = '''
             SUBSTRING(record, PATINDEX('%[^0]%', record + '.'), LEN(record)) StudyNumber,
             project_id
         FROM    STG_redcap.dbo.redcap_data
-        WHERE project_id = %s
+        WHERE project_id IN ({1})
             AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
     )
 '''
@@ -37,8 +37,8 @@ STUDY_NUMBERS_SQL = '''
 class CivicrmNotInRedcap(SqlReport):
     def __init__(
             self,
-            case_type_id,
-            redcap_project_id,
+            case_type_ids,
+            redcap_project_ids,
             recipients=[RECIPIENT_IT_DWH],
             schedule=None
     ):
@@ -47,7 +47,10 @@ class CivicrmNotInRedcap(SqlReport):
                           "are recruited in CiviCrm, but do not have "
                           "a record in REDCap"),
             recipients=recipients,
-            sql=STUDY_NUMBERS_SQL + '''
+            sql=STUDY_NUMBERS_SQL.format(
+                    ', '.join(['%s'] * len(case_type_ids)),
+                    ', '.join(['%s'] * len(redcap_project_ids)),
+                ) + '''
                 SELECT
                     StudyNumber,
                     civicrm_case_id,
@@ -58,7 +61,7 @@ class CivicrmNotInRedcap(SqlReport):
                     FROM r
                 )
                 ''',
-            parameters=(case_type_id, redcap_project_id)
+            parameters=(*case_type_ids, *redcap_project_ids)
         )
 
     def get_report_line(self, row):
@@ -73,8 +76,8 @@ class CivicrmNotInRedcap(SqlReport):
 class RedcapNotInCiviCrm(SqlReport):
     def __init__(
             self,
-            case_type_id,
-            project_id,
+            case_type_ids,
+            redcap_project_ids,
             recipients=[RECIPIENT_IT_DWH],
             schedule=None
     ):
@@ -83,7 +86,10 @@ class RedcapNotInCiviCrm(SqlReport):
                           "are recruited in REDCap, but do not have "
                           "a record in CiviCRM"),
             recipients=recipients,
-            sql=STUDY_NUMBERS_SQL + '''
+            sql=STUDY_NUMBERS_SQL.format(
+                    ', '.join(['%s'] * len(case_type_ids)),
+                    ', '.join(['%s'] * len(redcap_project_ids)),
+                ) + '''
                 SELECT
                     StudyNumber,
                     project_id
@@ -93,7 +99,7 @@ class RedcapNotInCiviCrm(SqlReport):
                     FROM c
                 )
                 ''',
-            parameters=(case_type_id, project_id)
+            parameters=(*case_type_ids, *redcap_project_ids)
         )
 
     def get_report_line(self, row):

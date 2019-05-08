@@ -11,6 +11,6 @@ PROJECT_ID = 53
 class MinervaRedcapNotInCiviCrm(RedcapNotInCiviCrm):
     def __init__(self):
         super().__init__(
-            case_type_id=CASE_TYPE_ID,
-            project_id=PROJECT_ID
+            case_type_ids=[CASE_TYPE_ID],
+            redcap_project_ids=[PROJECT_ID],
         )

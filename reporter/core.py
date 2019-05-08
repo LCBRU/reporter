@@ -104,23 +104,27 @@ class SqlReport(Report):
         attachments = None
         start_datetime = datetime.utcnow()
 
-        with self._conn() as conn:
+        try:
+            with self._conn() as conn:
 
-            conn.execute(self._sql, self._parameters)
+                conn.execute(self._sql, self._parameters)
 
-            report, rows = self.get_report_lines(conn)
+                report, rows = self.get_report_lines(conn)
 
-            log_report_run(
-                name=self._name,
-                start_datetime=start_datetime,
-                end_datetime=datetime.utcnow(),
-                recipients=self._recipients,
-                report=report,
-                error_count=rows,
-            )
+                log_report_run(
+                    name=self._name,
+                    start_datetime=start_datetime,
+                    end_datetime=datetime.utcnow(),
+                    recipients=self._recipients,
+                    report=report,
+                    error_count=rows,
+                )
 
-            if conn.rowcount == 0:
-                return None, 0, attachments
+                if conn.rowcount == 0:
+                    return None, 0, attachments
+        except Exception as e:
+            print(self._sql)
+            raise e
 
         markdown = self.get_introduction()
         markdown += report
