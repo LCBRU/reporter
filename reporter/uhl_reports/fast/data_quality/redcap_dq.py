@@ -42,12 +42,18 @@ REDCAP_INSTANCE = RedcapInstance.internal
 
 class FastClinicalRedcapMissingData(SqlReport):
     def __init__(self):
-        self._redcap_instance = REDCAP_INSTANCE
-        project_id = REDCAP_CRF_PROJECT_ID
-        fields = ['nhs_number', 'gender', 'ethnicity', 'dob',
-                  'date', 'practice_location', 'invitation_grp',
-                  'invitation_type', 'iti_max_ap', 'iti_max_trnsvrs',
-                  'sys_bp', 'dias_bp', 'pulse']
+        fields = [
+            'nhs_number',
+            'gender',
+            'ethnicity',
+            'dob',
+            'date',
+            'practice_location',
+            'invitation_grp',
+            'invitation_type',
+            'iti_max_ap',
+            'iti_max_trnsvrs',
+        ]
         recipients = [RECIPIENT_ADMIN]
         schedule = None
 
@@ -56,11 +62,12 @@ class FastClinicalRedcapMissingData(SqlReport):
                           "missing from REDCap"),
             recipients=recipients,
             schedule=schedule,
+            conn=REDCAP_INSTANCE()['connection'],
             sql='''
 
 WITH recruited AS (
     SELECT  DISTINCT record, project_id
-    FROM    {1}.redcap_data
+    FROM    redcap_data
     WHERE project_id = %s
 ), potential_errors AS (
     SELECT
@@ -69,7 +76,7 @@ WITH recruited AS (
         md.field_name,
         'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
     FROM recruited r
-    JOIN {1}.redcap_metadata md
+    JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
 )
@@ -80,7 +87,7 @@ SELECT
 FROM potential_errors pe
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {1}.redcap_data e
+    FROM redcap_data e
     WHERE e.project_id = pe.project_id
         AND e.record = pe.record
         AND e.field_name = pe.field_name
@@ -94,15 +101,96 @@ AND EXISTS (
 ORDER BY pe.record
 
                 '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields]),
-                self._redcap_instance()['staging_database']),
-            parameters=(project_id)
+                    ', '.join(['\'{}\''.format(f) for f in fields])
+                ),
+            parameters=(REDCAP_CRF_PROJECT_ID)
         )
 
     def get_report_line(self, row):
         return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
+            REDCAP_INSTANCE()['link_generator'](
+                row['record'],
+                row['project_id'],
+                row['record'],
+            ),
+            row['error_message']
+        )
+
+
+class FastClinicalRedcapMissingMeasurements(SqlReport):
+    def __init__(self):
+        fields = [
+            'sys_bp',
+            'dias_bp',
+            'pulse'
+        ]
+        recipients = [RECIPIENT_ADMIN]
+        schedule = None
+
+        super().__init__(
+            introduction=("The following participants have measurements "
+                          "missing from REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            conn=REDCAP_INSTANCE()['connection'],
+            sql='''
+
+WITH recruited AS (
+    SELECT  DISTINCT record, project_id
+    FROM    redcap_data
+    WHERE project_id = %s
+), potential_errors AS (
+    SELECT
+        r.record,
+        r.project_id,
+        md.field_name,
+        'Missing ' + REPLACE(md.element_label, '\r\n', ' ') [error]
+    FROM recruited r
+    JOIN redcap_metadata md
+        ON md.project_id = r.project_id
+        AND md.field_name IN ({0})
+)
+SELECT
+    pe.project_id,
+    pe.record,
+    pe.error AS [error_message]
+FROM potential_errors pe
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM redcap_data e
+    WHERE e.project_id = pe.project_id
+        AND e.record = pe.record
+        AND e.field_name = pe.field_name
+        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM    [i2b2_app03_fast_Data].[dbo].[LOAD_FullyConsented] fc
+    WHERE fc.StudyNumber = pe.record
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM redcap_data dt
+	WHERE dt.project_id = pe.project_id
+        AND dt.record = pe.record
+		AND dt.field_name = 'date'
+		AND dt.value >= '2018-02-05'
+)
+ORDER BY pe.record
+
+                '''.format(
+                    ', '.join(['\'{}\''.format(f) for f in fields])
+                ),
+            parameters=(REDCAP_CRF_PROJECT_ID)
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            REDCAP_INSTANCE()['link_generator'](
+                row['record'],
+                row['project_id'],
+                row['record'],
+            ),
             row['error_message']
         )
 
