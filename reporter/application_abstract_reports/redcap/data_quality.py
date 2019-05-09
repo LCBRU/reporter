@@ -27,9 +27,17 @@ class RedcapMissingData(SqlReport):
             sql='''
 
 WITH recruited AS (
-    SELECT  DISTINCT record, project_id
-    FROM    redcap_data
+    SELECT  DISTINCT rd.record, rd.project_id
+    FROM    redcap_data rd
     WHERE project_id = %s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM redcap_data stat
+			WHERE stat.project_id = rd.project_id
+				AND stat.record = rd.record
+				AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+				AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+			)
 ), potential_errors AS (
     SELECT
         r.record,
@@ -108,9 +116,17 @@ class RedcapMissingDataWhen(SqlReport):
             sql='''
 
 WITH recruited AS (
-    SELECT  DISTINCT record, project_id
-    FROM    redcap_data
+    SELECT  DISTINCT rd.record, rd.project_id
+    FROM    redcap_data rd
     WHERE project_id = %s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM redcap_data stat
+			WHERE stat.project_id = rd.project_id
+				AND stat.record = rd.record
+				AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+				AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+			)
 ), potential_errors AS (
     SELECT
         r.record,
@@ -197,9 +213,17 @@ class RedcapMissingDataWhenNot(SqlReport):
             sql='''
 
 WITH recruited AS (
-    SELECT  DISTINCT record, project_id
-    FROM    redcap_data
+    SELECT  DISTINCT rd.record, rd.project_id
+    FROM    redcap_data rd
     WHERE project_id = %s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM redcap_data stat
+			WHERE stat.project_id = rd.project_id
+				AND stat.record = rd.record
+				AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+				AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+			)
 ), potential_errors AS (
     SELECT
         r.record,
@@ -286,9 +310,17 @@ class RedcapMissingAllWhen(SqlReport):
             sql='''
 
 WITH recruited AS (
-    SELECT  DISTINCT record, project_id
-    FROM    redcap_data
+    SELECT  DISTINCT rd.record, rd.project_id
+    FROM    redcap_data rd
     WHERE project_id = %s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM redcap_data stat
+			WHERE stat.project_id = rd.project_id
+				AND stat.record = rd.record
+				AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+				AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+			)
 )
 SELECT
     r.project_id,
@@ -383,6 +415,14 @@ JOIN redcap_metadata md
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
@@ -463,6 +503,14 @@ WHERE e.project_id = %s
     AND e.field_name IN ({0})
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.value) = 1
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -526,6 +574,14 @@ JOIN redcap_metadata md
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 ORDER BY e.record
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
@@ -580,6 +636,14 @@ LEFT JOIN redcap_data_quality_resolutions dqr
 WHERE e.project_id = %s
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.record) = 1
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 GROUP BY
     e.project_id,
     e.record
@@ -687,8 +751,16 @@ FROM (
     SELECT DISTINCT
         project_id,
         record
-    FROM redcap_data
+    FROM redcap_data e
     WHERE project_id = %s
+        AND NOT EXISTS (
+            SELECT 1
+            FROM redcap_data stat
+            WHERE stat.project_id = e.project_id
+                AND stat.record = e.record
+                AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+                AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+            )
 ) p
 LEFT JOIN redcap_data sbp
     ON sbp.project_id = p.project_id
@@ -813,6 +885,14 @@ LEFT JOIN redcap_data_quality_resolutions dqr
 WHERE e.project_id = %s
     AND e.field_name IN ({})
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -882,6 +962,14 @@ LEFT JOIN redcap_data_quality_resolutions dqr
 WHERE e.project_id = %s
     AND e.field_name IN ({})
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -951,6 +1039,14 @@ LEFT JOIN redcap_data_quality_resolutions dqr
 WHERE e.project_id = %s
     AND e.field_name IN ({})
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(
                 ', '.join(['\'{}\''.format(f) for f in fields])
@@ -1008,6 +1104,14 @@ JOIN redcap_metadata md
 WHERE e.project_id = %s
     AND e.value IS NOT NULL
     AND REPLACE(e.value, ' ', '') <> ''
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 ''',
             parameters=(project_id)
@@ -1066,8 +1170,16 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         SELECT DISTINCT
             project_id,
             record
-        FROM    redcap_data
+        FROM    redcap_data e
         WHERE project_id = %s
+            AND NOT EXISTS (
+                SELECT 1
+                FROM redcap_data stat
+                WHERE stat.project_id = e.project_id
+                    AND stat.record = e.record
+                    AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+                    AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+                )
     ) p
     LEFT JOIN redcap_data feet
         ON feet.project_id = p.project_id
@@ -1177,6 +1289,14 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
@@ -1229,8 +1349,16 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         SELECT DISTINCT
             project_id,
             record
-        FROM    redcap_data
+        FROM    redcap_data e
         WHERE project_id = %s
+            AND NOT EXISTS (
+                SELECT 1
+                FROM redcap_data stat
+                WHERE stat.project_id = e.project_id
+                    AND stat.record = e.record
+                    AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+                    AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+                )
     ) p
     LEFT JOIN redcap_data stones
         ON stones.project_id = p.project_id
@@ -1338,6 +1466,14 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = e.project_id
+            AND stat.record = e.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(', '.join(['\'{}\''.format(f) for f in fields])),
             parameters=(project_id)
@@ -1413,6 +1549,14 @@ WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
     AND dob.field_name = %s
     AND dob.project_id = %s
     AND dqr.res_id IS NULL
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = dob.project_id
+            AND stat.record = dob.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 ''',
             parameters=(
@@ -1477,6 +1621,14 @@ WHERE a.project_id = %s
             AND b.field_name IN ({2})
             AND b.value IN ({3})
     )
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = a.project_id
+            AND stat.record = a.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
                 '''.format(
                 ', '.join(['%s'] * len(indicator_fields)),
@@ -1552,6 +1704,14 @@ LEFT JOIN {1}.redcap_data b
 WHERE a.project_id = @project_id_a
     AND a.field_name = @field_name_a
     AND COALESCE(a.value, '') <> COALESCE(b.value, '')
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = a.project_id
+            AND stat.record = a.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
 
 
                 '''.format(
