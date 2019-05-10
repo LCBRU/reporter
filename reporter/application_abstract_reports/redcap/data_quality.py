@@ -1674,44 +1674,96 @@ class RedcapXrefMismatch(SqlReport):
             conn=redcap_instance_a()['connection'],
             sql='''
 
-DECLARE @project_id_a INT,
-        @project_id_b INT,
-        @field_name_a VARCHAR(100),
-        @field_name_b VARCHAR(100)
+WITH meta (project_id_a, project_title_a, field_name_a, field_label_a, project_id_b, project_title_b, field_name_b, field_label_b) AS (
+	SELECT
+		a.project_id,
+		a.app_title,
+		a.field_name,
+		a.element_label,
+		b.project_id,
+		b.app_title,
+		b.field_name,
+		b.element_label
+	FROM (
+		SELECT
+			rm.project_id,
+			rp.app_title,
+			rm.field_name,
+			rm.element_label
+		FROM {0}.redcap_metadata rm
+		JOIN {0}.redcap_projects rp
+			ON rp.project_id = rm.project_id
+		WHERE rm.project_id = %s
+			AND rm.field_name = %s
+	) a
+	CROSS JOIN (
+		SELECT
+			rm.project_id,
+			rp.app_title,
+			rm.field_name,
+			rm.element_label
+		FROM {1}.redcap_metadata rm
+		JOIN {1}.redcap_projects rp
+			ON rp.project_id = rm.project_id
+		WHERE rm.project_id = %s
+			AND rm.field_name = %s
+	) b
+), a (record, value) AS (
+	SELECT
+		rd.record,
+		rd.value
+	FROM {0}.redcap_data rd
+	JOIN meta
+		ON meta.project_id_a = rd.project_id
+		AND meta.field_name_a = rd.field_name
+),  b (record, value) AS (
+	SELECT
+		rd.record,
+		rd.value
+	FROM {1}.redcap_data rd
+	JOIN meta
+		ON meta.project_id_b = rd.project_id
+		AND meta.field_name_b = rd.field_name
+), p (record) AS (
+	SELECT DISTINCT a.record
+	FROM meta
+	JOIN {0}.redcap_data a
+		ON a.project_id = meta.project_id_a
+    JOIN {1}.redcap_data b
+		ON b.project_id = meta.project_id_b
+        AND b.record = a.record
+), s (record) AS (
+    SELECT record
+    FROM {0}.redcap_data
+    WHERE project_id IN (SELECT project_id_a FROM meta)
+		AND field_name IN ('study_status_comp_yn', 'study_status')
+        AND RTRIM(LTRIM(COALESCE(value, ''))) = '0'
 
-SELECT  @project_id_a = %s,
-        @project_id_b = %s,
-        @field_name_a = %s,
-        @field_name_b = %s
+    UNION
+
+    SELECT record
+    FROM {1}.redcap_data
+    WHERE project_id IN (SELECT project_id_b FROM meta)
+		AND field_name IN ('study_status_comp_yn', 'study_status')
+        AND RTRIM(LTRIM(COALESCE(value, ''))) = '0'
+)
 
 SELECT
-    a.record,
-    @field_name_a [field_name_a],
-    @field_name_b [field_name_b],
-    @project_id_a [project_id_a],
-    @project_id_b [project_id_b],
-    pa.app_title [project_title_a],
-    pb.app_title [project_title_b]
-FROM    {0}.redcap_data a
-JOIN    {0}.redcap_projects pa
-    ON pa.project_id = @project_id_a
-JOIN    {1}.redcap_projects pb
-    ON pb.project_id = @project_id_b
-LEFT JOIN {1}.redcap_data b
-    ON b.project_id = @project_id_b
-        AND b.field_name = @field_name_b
-        AND b.record = a.record
-WHERE a.project_id = @project_id_a
-    AND a.field_name = @field_name_a
-    AND COALESCE(a.value, '') <> COALESCE(b.value, '')
-    AND NOT EXISTS (
-        SELECT 1
-        FROM redcap_data stat
-        WHERE stat.project_id = a.project_id
-            AND stat.record = a.record
-            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
-            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
-        )
+	p.record,
+    meta.field_label_a [field_name_a],
+    meta.field_label_b [field_name_b],
+    meta.project_id_a [project_id_a],
+    meta.project_id_b [project_id_b],
+    meta.project_title_a [project_title_a],
+    meta.project_title_b [project_title_b]
+FROM p
+CROSS JOIN meta
+LEFT JOIN a ON a.record = p.record
+LEFT JOIN b ON b.record = p.record
+WHERE p.record NOT IN (
+	SELECT record
+	FROM s
+) AND COALESCE(a.value, '') <> COALESCE(b.value, '')
 
 
                 '''.format(
@@ -1720,8 +1772,8 @@ WHERE a.project_id = @project_id_a
             ),
             parameters=(
                 project_id_a,
-                project_id_b,
                 field_name_a,
+                project_id_b,
                 field_name_b,
             )
         )
