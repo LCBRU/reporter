@@ -25,44 +25,43 @@ FROM    (
     FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Redcap_Bioresource
     WHERE   full_consent = 1
 ) a
-WHERE   a.StudyNumber NOT IN (
-    SELECT  StudyNumber
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
-    WHERE   (is_recruited = 1
-                OR is_excluded = 1
-                OR is_failed_to_respond = 1
-                OR is_declined = 1
-                OR is_duplicate = 1
-            )
-    UNION
-    SELECT  StudyNumber
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
-    WHERE   (is_recruited = 1
-                OR is_excluded = 1
-                OR is_failed_to_respond = 1
-                OR is_declined = 1
-                OR is_duplicate = 1
-            )
-    UNION
-    SELECT  legacy_bioresource_id
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Bioresource
-    WHERE   (is_recruited = 1
-                OR is_excluded = 1
-                OR is_failed_to_respond = 1
-                OR is_declined = 1
-                OR is_duplicate = 1
-            )
-        AND LEN(RTRIM(LTRIM(ISNULL(legacy_bioresource_id, '')))) > 0
-    UNION
-    SELECT  legacy_bioresource_id
-    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval
-    WHERE   (is_recruited = 1
-                OR is_excluded = 1
-                OR is_failed_to_respond = 1
-                OR is_declined = 1
-                OR is_duplicate = 1
-            ) AND LEN(RTRIM(LTRIM(ISNULL(legacy_bioresource_id, '')))) > 0
-)
+WHERE NOT EXISTS (
+    SELECT  1
+    FROM    i2b2_app03_bioresource_Data.dbo.LOAD_Civicrm_Interval i
+    WHERE   (
+					i.is_recruited = 1
+                OR	i.is_excluded = 1
+                OR	i.is_failed_to_respond = 1
+                OR	i.is_declined = 1
+                OR	i.is_duplicate = 1
+				OR	i.is_withdrawn = 1
+            ) AND (
+				i.StudyNumber = a.StudyNumber
+				OR (
+					i.Legacy_Bioresource_ID = a.StudyNumber
+					AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(i.Legacy_Bioresource_ID) = 0
+				)
+			)
+		) AND NOT EXISTS (
+			SELECT  1
+			FROM [STG_CiviCRM].[dbo].[LCBRU_CaseDetails] d
+			WHERE case_type_id = 7
+			AND (
+					d.is_recruited = 1
+				OR	d.is_excluded = 1
+				OR	d.is_failed_to_respond = 1
+				OR	d.is_declined = 1
+				OR	d.is_duplicate = 1
+				OR	d.is_withdrawn = 1
+			) AND (
+					d.StudyNumber = a.StudyNumber
+				OR (
+						d.StudyNumber2 = a.StudyNumber
+					AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(d.StudyNumber2) = 0
+				)
+			)
+		)
+
 
                 '''
         )

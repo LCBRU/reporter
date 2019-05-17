@@ -15,6 +15,7 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 REDCAP_PROJECT_ID = 20
 REDCAP_INSTANCE = RedcapInstance.internal
@@ -24,7 +25,7 @@ class Graphic2RedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
     def __init__(self):
         super().__init__(
             'Graphic2',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER], schedule=Schedule.never)
 
 
 class Graphic2RedcapWithdrawnOrExcludedWithDataReport(
@@ -32,7 +33,7 @@ class Graphic2RedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'Graphic2',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER], schedule=Schedule.never)
 
 
 class Graphic2RedcapWebDataQuality(RedcapWebDataQuality):
@@ -40,5 +41,5 @@ class Graphic2RedcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ], schedule=Schedule.never
         )

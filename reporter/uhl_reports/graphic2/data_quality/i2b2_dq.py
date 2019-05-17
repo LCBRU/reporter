@@ -16,6 +16,7 @@ from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
 from reporter.emailing import (
     RECIPIENT_GRAPHIC2_ADMIN as RECIPIENT_ADMIN,
 )
+from reporter.core import Schedule
 
 
 I2B2_DB = "i2b2_app03_graphic2_Data"
@@ -24,19 +25,19 @@ I2B2_DB = "i2b2_app03_graphic2_Data"
 class Graphic2PatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class Graphic2PatientMappingMultiplesIdsReport(
         PatientMappingMultiplesIdsReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class Graphic2PatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class Graphic2PatientSummaryMissingData(
@@ -55,14 +56,14 @@ class Graphic2PatientSummaryMissingData(
                 'Height',
                 'Weight',
                 'Ethnicity',
-            ]
+            ], schedule=Schedule.never
         )
 
 
 class Graphic2PatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class Graphic2ValidEnrolmentsStudyIdDuplicates(
@@ -70,7 +71,7 @@ class Graphic2ValidEnrolmentsStudyIdDuplicates(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN], schedule=Schedule.never
         )
 
 
@@ -79,5 +80,5 @@ class Graphic2ValidEnrolmentsContactMultipleRecruitments(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN], schedule=Schedule.never
         )
