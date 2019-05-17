@@ -26,6 +26,7 @@ from reporter.application_abstract_reports.redcap.data_quality import (
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 CRF_PROJECT_ID = 50
 SCREENING_PROJECT_ID = 54
@@ -45,7 +46,9 @@ class IndapamideRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             'Indapamide',
-            [RECIPIENT_ADMIN, RECIPIENT_MANAGER])
+            [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
+        )
 
 
 class IndapamideRedcapMissingData(
