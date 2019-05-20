@@ -12,7 +12,7 @@ class RedcapWithdrawnOrExcludedWithDataReport(SqlReport):
             introduction=("Withdrawn or excluded participants with date"
                           "in REDCap for {} study".format(study_name)),
             recipients=recipients,
-            schedule=schedule,
+            schedule=Schedule.never,
             sql='''
 
 SELECT
