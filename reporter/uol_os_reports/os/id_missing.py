@@ -22,7 +22,7 @@ class OpenSpecimenIdsMissing(SqlReport):
                           "all required identifiers in OpenSpecimen"),
             recipients=recipients,
             schedule=schedule,
-            conn=DatabaseConnection.uol_lamp,
+            conn=DatabaseConnection.uol_os,
             sql='''
 
 SELECT

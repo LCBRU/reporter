@@ -22,7 +22,7 @@ class OpenSpecimenPatientIdentifiableInformation(SqlReport):
                           "identifiable data in Open Specimen"),
             recipients=recipients,
             schedule=schedule,
-            conn=DatabaseConnection.uol_lamp,
+            conn=DatabaseConnection.uol_os,
             sql='''
 
 SELECT

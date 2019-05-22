@@ -20,6 +20,7 @@ REDCAP_INTERNAL_DB = 'STG_redcap'
 REDCAP_EXTERNAL_DB = 'STG_redcap_briccsext'
 REDCAP_UOL_DB = 'redcap'
 REDCAP_UOL_SURVEY_DB = 'redcap6170'
+OS_UOL_DB = 'catissueplus30'
 
 OPENSPECIMEN_URL = 'https://catissue-live.lcbru.le.ac.uk/openspecimen/'
 
@@ -132,6 +133,7 @@ class OpenSpecimenInstance(Enum):
     def live():
         return {
             'link_generator': get_openspecimen_link,
+            'connection': DatabaseConnection.uol_os,
         }
 
 
@@ -240,6 +242,29 @@ class DatabaseConnection(Enum):
             port=int(os.environ.get("SQL_REPORTING_PORT", '3306')),
             user=os.environ["SQL_REPORTING_USER"],
             database=REDCAP_UOL_SURVEY_DB,
+            password=os.environ["SQL_REPORTING_PASSWORD"],
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+        )
+
+        try:
+
+            with conn.cursor() as cursor:
+                yield cursor
+
+        finally:
+            conn.close()
+
+
+    @staticmethod
+    @contextmanager
+    def uol_os():
+
+        conn = pymysql.connect(
+            host=os.environ["SQL_REPORTING_HOST"],
+            port=int(os.environ.get("SQL_REPORTING_PORT", '3306')),
+            user=os.environ["SQL_REPORTING_USER"],
+            database=OS_UOL_DB,
             password=os.environ["SQL_REPORTING_PASSWORD"],
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor,
