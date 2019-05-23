@@ -56,11 +56,11 @@ WITH recruited AS (
 		ON dqr.status_id = dqs.status_id
 		AND (
                 dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE '% valid'
-            OR  dqr.comment LIKE '% valid %'
+            OR  dqr.comment LIKE '%% valid'
+            OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
-            OR  dqr.comment LIKE '% validated'
-            OR  dqr.comment LIKE '% validated %'
+            OR  dqr.comment LIKE '%% validated'
+            OR  dqr.comment LIKE '%% validated %%'
         )
 )
 SELECT
@@ -145,11 +145,11 @@ WITH recruited AS (
 		ON dqr.status_id = dqs.status_id
 		AND (
                 dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE '% valid'
-            OR  dqr.comment LIKE '% valid %'
+            OR  dqr.comment LIKE '%% valid'
+            OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
-            OR  dqr.comment LIKE '% validated'
-            OR  dqr.comment LIKE '% validated %'
+            OR  dqr.comment LIKE '%% validated'
+            OR  dqr.comment LIKE '%% validated %%'
         )
 	WHERE dqr.res_id IS NULL
 )
@@ -242,11 +242,11 @@ WITH recruited AS (
 		ON dqr.status_id = dqs.status_id
 		AND (
                 dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE '% valid'
-            OR  dqr.comment LIKE '% valid %'
+            OR  dqr.comment LIKE '%% valid'
+            OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
-            OR  dqr.comment LIKE '% validated'
-            OR  dqr.comment LIKE '% validated %'
+            OR  dqr.comment LIKE '%% validated'
+            OR  dqr.comment LIKE '%% validated %%'
         )
 	WHERE dqr.res_id IS NULL
 )
@@ -337,11 +337,11 @@ WHERE NOT EXISTS (
 		ON dqr.status_id = dqs.status_id
 		AND (
                 dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE '% valid'
-            OR  dqr.comment LIKE '% valid %'
+            OR  dqr.comment LIKE '%% valid'
+            OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
-            OR  dqr.comment LIKE '% validated'
-            OR  dqr.comment LIKE '% validated %'
+            OR  dqr.comment LIKE '%% validated'
+            OR  dqr.comment LIKE '%% validated %%'
         )
     WHERE e.project_id = r.project_id
         AND e.record = r.record
@@ -403,11 +403,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
@@ -490,11 +490,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
@@ -562,11 +562,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
@@ -627,11 +627,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE e.project_id = %s
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.record) = 1
@@ -778,11 +778,11 @@ LEFT JOIN redcap_data_quality_resolutions sbp_dqr
     ON sbp_dqr.status_id = sbp_dqs.status_id
     AND (
             sbp_dqr.comment LIKE 'valid'
-        OR  sbp_dqr.comment LIKE '% valid'
-        OR  sbp_dqr.comment LIKE '% valid %'
+        OR  sbp_dqr.comment LIKE '%% valid'
+        OR  sbp_dqr.comment LIKE '%% valid %%'
         OR	sbp_dqr.comment LIKE 'validated'
-        OR  sbp_dqr.comment LIKE '% validated'
-        OR  sbp_dqr.comment LIKE '% validated %'
+        OR  sbp_dqr.comment LIKE '%% validated'
+        OR  sbp_dqr.comment LIKE '%% validated %%'
     )
 LEFT JOIN redcap_data_quality_status dbp_dqs
     ON dbp_dqs.project_id = sbp.project_id
@@ -792,11 +792,11 @@ LEFT JOIN redcap_data_quality_resolutions dbp_dqr
     ON dbp_dqr.status_id = dbp_dqs.status_id
     AND (
             dbp_dqr.comment LIKE 'valid'
-        OR  dbp_dqr.comment LIKE '% valid'
-        OR  dbp_dqr.comment LIKE '% valid %'
+        OR  dbp_dqr.comment LIKE '%% valid'
+        OR  dbp_dqr.comment LIKE '%% valid %%'
         OR	dbp_dqr.comment LIKE 'validated'
-        OR  dbp_dqr.comment LIKE '% validated'
-        OR  dbp_dqr.comment LIKE '% validated %'
+        OR  dbp_dqr.comment LIKE '%% validated'
+        OR  dbp_dqr.comment LIKE '%% validated %%'
     )
 
                 ''',
@@ -876,11 +876,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
@@ -953,11 +953,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
@@ -1030,11 +1030,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
@@ -1197,11 +1197,11 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         ON feet_dqr.status_id = feet_dqs.status_id
         AND (
                 feet_dqr.comment LIKE 'valid'
-            OR  feet_dqr.comment LIKE '% valid'
-            OR  feet_dqr.comment LIKE '% valid %'
+            OR  feet_dqr.comment LIKE '%% valid'
+            OR  feet_dqr.comment LIKE '%% valid %%'
             OR	feet_dqr.comment LIKE 'validated'
-            OR  feet_dqr.comment LIKE '% validated'
-            OR  feet_dqr.comment LIKE '% validated %'
+            OR  feet_dqr.comment LIKE '%% validated'
+            OR  feet_dqr.comment LIKE '%% validated %%'
         )
                 ''',
             parameters=(project_id, feet_field, inches_field)
@@ -1281,11 +1281,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
@@ -1376,11 +1376,11 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         ON stones_dqr.status_id = stones_dqs.status_id
         AND (
                 stones_dqr.comment LIKE 'valid'
-            OR  stones_dqr.comment LIKE '% valid'
-            OR  stones_dqr.comment LIKE '% valid %'
+            OR  stones_dqr.comment LIKE '%% valid'
+            OR  stones_dqr.comment LIKE '%% valid %%'
             OR	stones_dqr.comment LIKE 'validated'
-            OR  stones_dqr.comment LIKE '% validated'
-            OR  stones_dqr.comment LIKE '% validated %'
+            OR  stones_dqr.comment LIKE '%% validated'
+            OR  stones_dqr.comment LIKE '%% validated %%'
         )
 
                 ''',
@@ -1458,11 +1458,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
@@ -1537,11 +1537,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '% valid'
-        OR  dqr.comment LIKE '% valid %'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
-        OR  dqr.comment LIKE '% validated'
-        OR  dqr.comment LIKE '% validated %'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
     )
 WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         CONVERT(DATE, dob.value),
