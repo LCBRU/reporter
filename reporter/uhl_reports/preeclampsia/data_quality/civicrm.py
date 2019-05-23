@@ -9,6 +9,7 @@ from reporter.uhl_reports.civicrm.enrolment_dq import (
     MultipleRecruitementsReport,
     CivicrmInvalidCaseStatus
 )
+from reporter.core import Schedule
 
 CASE_TYPE_ID = 26
 
@@ -17,21 +18,27 @@ class PreeclampsiaCiviCrmMissingStudyNumber(MissingStudyNumber):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class PreeclampsiaCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class PreeclampsiaCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
     def __init__(self):
         super().__init__(
             case_type_id=CASE_TYPE_ID,
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class PreeclampsiaCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
@@ -43,4 +50,6 @@ class PreeclampsiaCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Excluded',
                 'Withdrawn'
             ],
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )

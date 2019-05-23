@@ -18,6 +18,7 @@ from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
 from reporter.emailing import (
     RECIPIENT_PREECLAMPSIA_ADMIN as RECIPIENT_ADMIN,
 )
+from reporter.core import Schedule
 
 
 I2B2_DB = "i2b2_app03_preeclampsia_Data"
@@ -26,19 +27,19 @@ I2B2_DB = "i2b2_app03_preeclampsia_Data"
 class PreeclampsiaPatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class PreeclampsiaPatientMappingMultiplesIdsReport(
         PatientMappingMultiplesIdsReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class PreeclampsiaPatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class PreeclampsiaPatientSummaryMissingData(
@@ -55,14 +56,15 @@ class PreeclampsiaPatientSummaryMissingData(
                 'Gender',
                 'DateOfBirth',
                 'Ethnicity',
-            ]
+            ],
+            schedule=Schedule.never,
         )
 
 
 class PreeclampsiaPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(I2B2_DB, schedule=Schedule.never)
 
 
 class PreeclampsiaValidEnrolmentsStudyIdDuplicates(
@@ -70,7 +72,8 @@ class PreeclampsiaValidEnrolmentsStudyIdDuplicates(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -79,7 +82,8 @@ class PreeclampsiaValidEnrolmentsContactMultipleRecruitments(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -88,7 +92,8 @@ class PreeclampsiaRecruitedWithoutFullConsent(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -97,5 +102,6 @@ class PreeclampsiaPatientSummaryMissingRecruited(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )

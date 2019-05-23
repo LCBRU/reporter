@@ -26,6 +26,7 @@ from reporter.application_abstract_reports.redcap.withdrawn_or_excluded_with_dat
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 
 PROJECT_ID = 39
@@ -41,6 +42,7 @@ class PreeclampsiaRedcapPercentageCompleteReport(
         super().__init__(
             study_name='Preeclampsia',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -50,6 +52,7 @@ class PreeclampsiaRedcapWithdrawnOrExcludedWithDataReport(
         super().__init__(
             study_name='Preeclampsia',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -63,6 +66,7 @@ class PreeclampsiaRedcapInvalidPatientId(
             project_id=PROJECT_ID,
             fields=['patient_id'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -73,6 +77,7 @@ class PreeclampsiaRedcapRecordInvalidStudyNumber(
             redcap_instance=REDCAP_INSTANCE,
             project_id=PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -83,6 +88,7 @@ class PreeclampsiaRedcapInvalidDates(
             redcap_instance=REDCAP_INSTANCE,
             project_id=PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -95,6 +101,7 @@ class PreeclampsiaRedcapInvalidBloodPressure1(
             systolic_field_name='systolic',
             diastolic_field_name='diastolic',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -107,6 +114,7 @@ class PreeclampsiaRedcapInvalidBloodPressure2(
             systolic_field_name='nicom_systolic',
             diastolic_field_name='nicom_diastolic',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -118,6 +126,7 @@ class PreeclampsiaRedcapInvalidPulse(
             project_id=PROJECT_ID,
             fields=['nicom_pulse', 'pulse'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -129,6 +138,7 @@ class PreeclampsiaRedcapInvalidHeightInCm(
             project_id=PROJECT_ID,
             fields=['maternal_height'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -140,6 +150,7 @@ class PreeclampsiaRedcapInvalidWeightInKg(
             project_id=PROJECT_ID,
             fields=['maternal_weight'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -151,6 +162,7 @@ class PreeclampsiaRedcapInvalidBmi(
             project_id=PROJECT_ID,
             fields=['bmi'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -162,6 +174,7 @@ class PreeclampsiaRedcapInvalidUhlSystemNumber(
             project_id=PROJECT_ID,
             fields=['s_number'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -170,5 +183,6 @@ class PreeclampsiaRedcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
