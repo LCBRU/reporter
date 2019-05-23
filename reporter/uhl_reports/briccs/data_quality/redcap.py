@@ -115,6 +115,24 @@ class BriccsLeicesterRedcapInvalidStudyNumber(
         )
 
 
+class BriccsLeicesterRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.internal,
+            project_id=REDCAP_LEICESTER_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
 class BriccsLeicesterRedcapInvalidPostCode(
         RedcapInvalidPostCode):
     def __init__(self):
@@ -277,6 +295,24 @@ class BriccsDoncasterRedcapInvalidStudyNumber(
             project_id=REDCAP_DONCASTER_PROJECT_ID,
             fields=['record_id'],
             regular_expression='BPt\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class BriccsDoncasterRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_DONCASTER_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -447,6 +483,24 @@ class BriccsSheffieldRedcapInvalidStudyNumber(
         )
 
 
+class BriccsSheffieldRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_SHEFFIELD_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
 class BriccsSheffieldRedcapInvalidPostCode(
         RedcapInvalidPostCode):
     def __init__(self):
@@ -609,6 +663,24 @@ class BriccsKetteringRedcapInvalidStudyNumber(
             project_id=REDCAP_KETTERING_PROJECT_ID,
             fields=['record_id'],
             regular_expression='BPt\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class BriccsKetteringRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_KETTERING_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -779,6 +851,24 @@ class BriccsChesterfieldRedcapInvalidStudyNumber(
         )
 
 
+class BriccsChesterfieldRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_CHESTERFIELD_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
 class BriccsChesterfieldRedcapInvalidPostCode(
         RedcapInvalidPostCode):
     def __init__(self):
@@ -941,6 +1031,24 @@ class BriccsGranthamRedcapInvalidStudyNumber(
             project_id=REDCAP_GRANTHAM_PROJECT_ID,
             fields=['record_id'],
             regular_expression='BPt\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class BriccsGranthamRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_GRANTHAM_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1111,6 +1219,24 @@ class BriccsLincolnRedcapInvalidStudyNumber(
         )
 
 
+class BriccsLincolnRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_LINCOLN_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
 class BriccsLincolnRedcapInvalidPostCode(
         RedcapInvalidPostCode):
     def __init__(self):
@@ -1273,6 +1399,24 @@ class BriccsNorthamptonRedcapInvalidStudyNumber(
             project_id=REDCAP_NORTHAMPTON_PROJECT_ID,
             fields=['record_id'],
             regular_expression='BPt\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class BriccsNorthamptonRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_NORTHAMPTON_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1443,6 +1587,24 @@ class BriccsDerbyRedcapInvalidStudyNumber(
         )
 
 
+class BriccsDerbyRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_DERBY_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
 class BriccsDerbyRedcapInvalidPostCode(
         RedcapInvalidPostCode):
     def __init__(self):
@@ -1609,6 +1771,24 @@ class BriccsBostonRedcapInvalidStudyNumber(
         )
 
 
+class BriccsBostonRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_BOSTON_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
 class BriccsBostonRedcapInvalidPostCode(
         RedcapInvalidPostCode):
     def __init__(self):
@@ -1771,6 +1951,24 @@ class BriccsNottinghamRedcapInvalidStudyNumber(
             project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
             fields=['record_id'],
             regular_expression='BPt\d{8}',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class BriccsNottinghamRedcapInvalidSampleNumber(
+        RedcapFieldMatchesRegularExpression):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.external,
+            project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
+            fields=[
+                'blood_tube1',
+                'blood_tube2',
+                'blood_tube3',
+                'blood_tube4',
+                'blood_tube5',
+            ],
+            regular_expression='BSa\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 

@@ -1796,3 +1796,76 @@ WHERE p.record NOT IN (
                 row['project_id_b'],
                 row['record']),
         )
+
+
+class RedcapFieldsMustExistWhenOthersExist(SqlReport):
+    def __init__(
+        self,
+        redcap_instance,
+        project_id,
+        indicator_fields,
+        consequence_fields,
+        error_message,
+        recipients,
+        schedule=None
+    ):
+        self._redcap_instance = redcap_instance
+        self._error_message = error_message
+
+        super().__init__(
+            introduction=("The following participants have the following "
+                          "invalid data in REDCap"),
+            recipients=recipients,
+            schedule=schedule,
+            conn=redcap_instance()['connection'],
+            sql='''
+
+SELECT
+    DISTINCT a.record,
+    a.project_id
+FROM    redcap_data a
+WHERE a.project_id = %s
+    AND EXISTS (
+        SELECT 1
+        FROM    redcap_data b
+        WHERE b.project_id = a.project_id
+            AND b.record = a.record
+            AND b.field_name IN ({0})
+            AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(b.value) = 0
+    )
+    AND NOT EXISTS (
+        SELECT 1
+        FROM    redcap_data b
+        WHERE b.project_id = a.project_id
+            AND b.record = a.record
+            AND b.field_name IN ({1})
+            AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(b.value) = 0
+    )
+    AND NOT EXISTS (
+        SELECT 1
+        FROM redcap_data stat
+        WHERE stat.project_id = a.project_id
+            AND stat.record = a.record
+            AND stat.field_name IN ('study_status_comp_yn', 'study_status')
+            AND RTRIM(LTRIM(COALESCE(stat.value, ''))) = '0'
+        )
+
+                '''.format(
+                ', '.join(['%s'] * len(indicator_fields)),
+                ', '.join(['%s'] * len(consequence_fields))
+            ),
+            parameters=(
+                tuple([project_id]) +
+                tuple(indicator_fields) +
+                tuple(consequence_fields)
+            )
+        )
+
+    def get_report_line(self, row):
+        return '- {}: {}\r\n'.format(
+            self._redcap_instance()['link_generator'](
+                row['record'], row['project_id'], row['record']),
+            self._error_message
+        )
+
+
