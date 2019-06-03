@@ -714,7 +714,7 @@ class RedcapInvalidEmailAddress(RedcapFieldMatchesRegularExpression):
             redcap_instance=redcap_instance,
             project_id=project_id,
             fields=fields,
-            regular_expression=r"(^[a-zA-Z0-9'_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)|(^[nN]o email$)",
+            regular_expression=r"(^|[a-zA-Z0-9'_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)|(^[nN]o email$)",
             recipients=recipients,
             schedule=schedule,
         )
