@@ -56,9 +56,11 @@ WITH recruited AS (
 		ON dqr.status_id = dqs.status_id
 		AND (
                 dqr.comment LIKE 'valid'
+            OR  dqr.comment LIKE 'valid %%'
             OR  dqr.comment LIKE '%% valid'
             OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
+            OR	dqr.comment LIKE 'validated %%'
             OR  dqr.comment LIKE '%% validated'
             OR  dqr.comment LIKE '%% validated %%'
         )
@@ -146,8 +148,10 @@ WITH recruited AS (
 		AND (
                 dqr.comment LIKE 'valid'
             OR  dqr.comment LIKE '%% valid'
+            OR  dqr.comment LIKE 'valid %%'
             OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
+            OR	dqr.comment LIKE 'validated %%'
             OR  dqr.comment LIKE '%% validated'
             OR  dqr.comment LIKE '%% validated %%'
         )
@@ -242,9 +246,11 @@ WITH recruited AS (
 		ON dqr.status_id = dqs.status_id
 		AND (
                 dqr.comment LIKE 'valid'
+            OR  dqr.comment LIKE 'valid %%'
             OR  dqr.comment LIKE '%% valid'
             OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
+            OR	dqr.comment LIKE 'validated %%'
             OR  dqr.comment LIKE '%% validated'
             OR  dqr.comment LIKE '%% validated %%'
         )
@@ -338,8 +344,10 @@ WHERE NOT EXISTS (
 		AND (
                 dqr.comment LIKE 'valid'
             OR  dqr.comment LIKE '%% valid'
+            OR  dqr.comment LIKE 'valid %%'
             OR  dqr.comment LIKE '%% valid %%'
             OR	dqr.comment LIKE 'validated'
+            OR	dqr.comment LIKE 'validated %%'
             OR  dqr.comment LIKE '%% validated'
             OR  dqr.comment LIKE '%% validated %%'
         )
@@ -404,8 +412,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -491,8 +501,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -562,9 +574,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -628,8 +642,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -778,9 +794,11 @@ LEFT JOIN redcap_data_quality_resolutions sbp_dqr
     ON sbp_dqr.status_id = sbp_dqs.status_id
     AND (
             sbp_dqr.comment LIKE 'valid'
+        OR  sbp_dqr.comment LIKE 'valid %%'
         OR  sbp_dqr.comment LIKE '%% valid'
         OR  sbp_dqr.comment LIKE '%% valid %%'
         OR	sbp_dqr.comment LIKE 'validated'
+        OR	sbp_dqr.comment LIKE 'validated %%'
         OR  sbp_dqr.comment LIKE '%% validated'
         OR  sbp_dqr.comment LIKE '%% validated %%'
     )
@@ -793,8 +811,10 @@ LEFT JOIN redcap_data_quality_resolutions dbp_dqr
     AND (
             dbp_dqr.comment LIKE 'valid'
         OR  dbp_dqr.comment LIKE '%% valid'
+        OR  dbp_dqr.comment LIKE 'valid %%'
         OR  dbp_dqr.comment LIKE '%% valid %%'
         OR	dbp_dqr.comment LIKE 'validated'
+        OR	dbp_dqr.comment LIKE 'validated %%'
         OR  dbp_dqr.comment LIKE '%% validated'
         OR  dbp_dqr.comment LIKE '%% validated %%'
     )
@@ -877,8 +897,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -954,8 +976,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -1031,8 +1055,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -1197,9 +1223,11 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         ON feet_dqr.status_id = feet_dqs.status_id
         AND (
                 feet_dqr.comment LIKE 'valid'
+            OR  feet_dqr.comment LIKE 'valid %%'
             OR  feet_dqr.comment LIKE '%% valid'
             OR  feet_dqr.comment LIKE '%% valid %%'
             OR	feet_dqr.comment LIKE 'validated'
+            OR	feet_dqr.comment LIKE 'validated %%'
             OR  feet_dqr.comment LIKE '%% validated'
             OR  feet_dqr.comment LIKE '%% validated %%'
         )
@@ -1282,8 +1310,10 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     AND (
             dqr.comment LIKE 'valid'
         OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -1376,9 +1406,11 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         ON stones_dqr.status_id = stones_dqs.status_id
         AND (
                 stones_dqr.comment LIKE 'valid'
+            OR  stones_dqr.comment LIKE 'valid %%'
             OR  stones_dqr.comment LIKE '%% valid'
             OR  stones_dqr.comment LIKE '%% valid %%'
             OR	stones_dqr.comment LIKE 'validated'
+            OR	stones_dqr.comment LIKE 'validated %%'
             OR  stones_dqr.comment LIKE '%% validated'
             OR  stones_dqr.comment LIKE '%% validated %%'
         )
@@ -1458,9 +1490,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
@@ -1537,9 +1571,11 @@ LEFT JOIN redcap_data_quality_resolutions dqr
     ON dqr.status_id = dqs.status_id
     AND (
             dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE 'valid %%'
         OR  dqr.comment LIKE '%% valid'
         OR  dqr.comment LIKE '%% valid %%'
         OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
         OR  dqr.comment LIKE '%% validated'
         OR  dqr.comment LIKE '%% validated %%'
     )
