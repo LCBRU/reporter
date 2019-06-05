@@ -28,7 +28,8 @@ LEFT JOIN [i2b2_app03_bioresource_Data].[dbo].[LOAD_Civicrm_Bioresource] cv
         OR cv.legacy_bioresource_id = rc.bioresource_id)
 JOIN    STG_redcap.dbo.redcap_data rcq
     ON rcq.record = rc.bioresource_id
-    AND rcq.field_name = 'recruitment_questionnaire_complete'
+    AND rcq.field_name = 'invalid_questionnaire_yn'
+    AND rcq.value = 0
   WHERE NOT EXISTS (
         SELECT 1
         FROM STG_CiviCRM.dbo.civicrm_case cas
