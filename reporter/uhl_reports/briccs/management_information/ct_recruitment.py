@@ -10,8 +10,7 @@ from reporter.connections import RedcapInstance
 class BriccsCtRecruitment(SqlReport):
     def __init__(self):
         super().__init__(
-            introduction=("The following Glenfield participants are "
-                          "in Onyx, but are not in CiviCrm"),
+            introduction=("BRICCS CT Recruitment"),
             recipients=[RECIPIENT_BRICCSCT_ANALYSERS, RECIPIENT_BRICCSCT_MI],
             sql='''
 
