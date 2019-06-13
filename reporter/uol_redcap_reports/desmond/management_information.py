@@ -3,7 +3,7 @@
 from reporter.connections import DatabaseConnection
 from reporter.core import SqlReport, Schedule
 from reporter.emailing import (
-    RECIPIENT_IT_DWH,
+    RECIPIENT_DESMOND_MANAGER,
 )
 
 
@@ -11,7 +11,7 @@ class DesmondActivityReport(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The latest information for the DESMOND submissions"),
-            recipients=[RECIPIENT_IT_DWH],
+            recipients=[RECIPIENT_DESMOND_MANAGER],
             schedule=Schedule.weekly,
             conn=DatabaseConnection.uol_lamp,
             sql='''
