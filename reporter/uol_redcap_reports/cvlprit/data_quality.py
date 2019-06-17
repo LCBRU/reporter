@@ -46,7 +46,7 @@ class CvlpritRedcapLocalSitePatientId(RedcapFieldMatchesRegularExpression):
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
             fields=['local_id'],
-            regular_expression='^C\d{3}$',
+            regular_expression='\d{1,3}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 

@@ -9,8 +9,11 @@ from reporter.emailing import (
 from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapFieldMatchesRegularExpression,
     RedcapInvalidDate,
+    RedcapInvalidHeightInM,
     RedcapInvalidWeightInKg,
+    RedcapInvalidPulse,
     RedcapInvalidBmi,
+    RedcapInvalidBloodPressure,
 )
 
 REDCAP_PROJECT_ID = 32
@@ -41,7 +44,17 @@ class LimbRedcapInvalidWeightInKg(RedcapInvalidWeightInKg):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
-            fields=['weight'],
+            fields=['weight_kg', 'pre_interv_weight', 'post_interv_weight'],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidHeightInM(RedcapInvalidHeightInM):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            fields=['height_m', 'pre_interv_height', 'post_interv_height'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -51,6 +64,101 @@ class LimbRedcapInvalidBmi(RedcapInvalidBmi):
         super().__init__(
             redcap_instance=RedcapInstance.uol_lamp,
             project_id=REDCAP_PROJECT_ID,
-            fields=['bmi'],
+            fields=['pre_interv_bmi', 'post_interv_bmi'],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
+
+
+class LimbRedcapInvalidPulse(RedcapInvalidPulse):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            fields=[
+                'hr_bpm',
+                'pre_interv_mri_rest_hr',
+                'pre_interv_mri_stress_hr',
+                'post_interv_mri_rest_hr',
+                'post_interv_mri_stress_hr',
+            ],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_Baseline(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='sbp_mmhg',
+            diastolic_field_name='dbp_mmhg',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_MriRest(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='pre_interv_mri_rest_sbp',
+            diastolic_field_name='pre_interv_mri_rest_dbp',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_MriStress(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='pre_interv_mri_stress_sbp',
+            diastolic_field_name='pre_interv_mri_stress_dbp',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_AoCine(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='pre_interv_mri_syst_bp_ao_cine',
+            diastolic_field_name='pre_interv_mri_diast_bp_ao_cine',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_PostMriRest(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='post_interv_mri_rest_sbp',
+            diastolic_field_name='post_interv_mri_rest_dbp',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_PostMriStress(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='post_interv_mri_stress_sbp',
+            diastolic_field_name='post_interv_mri_stress_dbp',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class LimbRedcapInvalidBloodPressure_PostAoCine(RedcapInvalidBloodPressure):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=RedcapInstance.uol_lamp,
+            project_id=REDCAP_PROJECT_ID,
+            systolic_field_name='post_interv_mri_syst_bp_ao_cine',
+            diastolic_field_name='post_interv_mri_diast_bp_ao_cine',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
