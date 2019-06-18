@@ -12,173 +12,53 @@ class BriccsCtRecruitment(SqlReport):
         super().__init__(
             introduction=("BRICCS CT Recruitment"),
             recipients=[RECIPIENT_BRICCSCT_ANALYSERS, RECIPIENT_BRICCSCT_MI],
-            sql='''
+			sql='''
 
 SELECT
-	'Glenfield' Site,
-	COUNT(StudyNumber)[total_recruited],
-	SUM(lrc.is_withdrawn) [withdrawn],
-	SUM(lrc.is_excluded) [excluded],
-	SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded)  [blood_not_taken],
-	COUNT(StudyNumber) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded) - SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) [for_analysis],
-	0  [ct_requested],
-	COUNT(StudyNumber) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded) - SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) [ct_received_or_at_glenfield],
-	COUNT(ct_analysed.record) [analysed],
-	COUNT(StudyNumber) - COUNT(ct_analysed.record) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded)  - SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) [to_be_analysed]
-FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
-JOIN STG_redcap.dbo.redcap_data studycode
-	ON studycode.project_id = lrc.project_id
-	AND studycode.record = lrc.StudyNumber
-	AND studycode.field_name = 'epi_studycode'
-	AND studycode.value = 8
-LEFT JOIN STG_redcap.dbo.redcap_data blood_taken
-	ON blood_taken.project_id = lrc.project_id
-	AND blood_taken.record = lrc.StudyNumber
-	AND blood_taken.field_name = 'blood_taken'
-	AND COALESCE(blood_taken.value, 0) <> 0
-	-- Only interested in recruited that have not had blood taken
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap.dbo.redcap_data ct_analysed
-	ON ct_analysed.project_id = lrc.project_id
-	AND ct_analysed.record = lrc.StudyNumber
-	AND blood_taken.record IS NOT NULL
-	AND ct_analysed.field_name = 'ct_date_time_start'
-	AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_analysed.value) = 0
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-WHERE lrc.Full_Consent = 1
+	REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
+	COUNT(*) TotalRecruitment,
+	MIN(we.withdrawn) Withdrawn,
+	MIN(we.excluded) Excluded,
+	SUM(ps.withPlasma) WithPlasma,
+	SUM(CASE WHEN [CT requested by UHL team] = 1 AND ps.withPlasma = 1 THEN 1 ELSE 0 END) [CT requested by UHL team],
+	SUM(CASE WHEN [CT received by UHL team] = 1 AND ps.withPlasma = 1 THEN 1 ELSE 0 END) [CT received by UHL team],
+	SUM(completeWithplasma) [completeWithplasma],
+	CASE
+		WHEN ps.RecruitingSite = 'briccs_glenfield_recruitment' THEN SUM(ps.withPlasma)
+		ELSE SUM(CASE WHEN [CT received by UHL team] = 1 AND ps.withPlasma = 1 THEN 1 ELSE 0 END)
+	END - SUM(completeWithplasma) [CT Awaiting Analysis]
+FROM [i2b2_app03_b1_data].dbo.Cache_PatientSummary ps
+LEFT JOIN (
+	SELECT
+		'briccs_glenfield_recruitment' RecruitingSite,
+		SUM(lrc.is_withdrawn) [withdrawn],
+		SUM(lrc.is_excluded) [excluded]
+	FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
+	JOIN STG_redcap.dbo.redcap_data studycode
+		ON studycode.project_id = lrc.project_id
+		AND studycode.record = lrc.StudyNumber
+		AND studycode.field_name = 'epi_studycode'
+		AND studycode.value = 8
 
-UNION
+	UNION
 
-SELECT
-	REPLACE(REPLACE(lrc.project_name, 'briccs_', ''), '_recruitment', '') + ' < 25-Apr-2019' Site,
-	COUNT(StudyNumber)[total_recruited],
-	SUM(lrc.is_withdrawn) [withdrawn],
-	SUM(lrc.is_excluded) [excluded],
-	SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded)  [blood_not_taken],
-	COUNT(StudyNumber) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded) - SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) [for_analysis],
-	COUNT(ct_requested.record) [ct_requested],
-	COUNT(ct_received.record)  [ct_received_or_at_glenfield],
-	COUNT(ct_analysed.record) [analysed],
-	COUNT(ct_received.record) - COUNT(ct_analysed.record) [to_be_analysed]
-FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
-JOIN STG_redcap_briccsext.dbo.redcap_data studycode
-	ON studycode.project_id = lrc.project_id
-	AND studycode.record = lrc.StudyNumber
-	AND studycode.field_name = 'epi_studycode'
-	AND studycode.value = 8
-JOIN STG_redcap_briccsext.dbo.redcap_data int_date
-	ON int_date.project_id = lrc.project_id
-	AND int_date.record = lrc.StudyNumber
-	AND int_date.field_name = 'int_date'
-	AND int_date.value < '2019-04-25'
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data blood_taken
-	ON blood_taken.project_id = lrc.project_id
-	AND blood_taken.record = lrc.StudyNumber
-	AND blood_taken.field_name = 'blood_taken'
-	AND COALESCE(blood_taken.value, 0) <> 0
-	-- Only interested in recruited that have not had blood taken
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data ct_requested
-	ON ct_requested.project_id = lrc.project_id
-	AND ct_requested.record = lrc.StudyNumber
-	AND blood_taken.record IS NOT NULL
-	AND ct_requested.field_name = 'date_ct_reqd_iep'
-	AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_requested.value) = 0
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data ct_received
-	ON ct_received.project_id = lrc.project_id
-	AND ct_received.record = lrc.StudyNumber
-	AND ct_received.field_name = 'iep_receipt_yn'
-	AND ct_received.record = ct_requested.record
-	AND blood_taken.record IS NOT NULL
-	AND COALESCE(ct_received.value, 0) = 1
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data ct_analysed
-	ON ct_analysed.project_id = lrc.project_id
-	AND ct_analysed.record = lrc.StudyNumber
-	AND ct_analysed.record = ct_received.record
-	AND blood_taken.record IS NOT NULL
-	AND ct_analysed.field_name = 'ct_date_time_start'
-	AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_analysed.value) = 0
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-WHERE lrc.Full_Consent = 1
-GROUP BY lrc.project_name
+	SELECT
+		'briccs_kettering_recruitment' RecruitingSite,
+		SUM(lrc.is_withdrawn) [withdrawn],
+		SUM(lrc.is_excluded) [excluded]
+	FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
+	JOIN STG_redcap_briccsext.dbo.redcap_data studycode
+		ON studycode.project_id = lrc.project_id
+		AND studycode.record = lrc.StudyNumber
+		AND studycode.field_name = 'epi_studycode'
+		AND studycode.value = 8
+	) we ON we.RecruitingSite = ps.RecruitingSite
+WHERE
+	In_BRICCS_CT_Study = 1
+GROUP BY ps.RecruitingSite
 
+			'''
 
-UNION
-
-SELECT
-	REPLACE(REPLACE(lrc.project_name, 'briccs_', ''), '_recruitment', '') + ' >= 25-Apr-2019' Site,
-	COUNT(StudyNumber)[total_recruited],
-	SUM(lrc.is_withdrawn) [withdrawn],
-	SUM(lrc.is_excluded) [excluded],
-	SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded)  [blood_not_taken],
-	COUNT(StudyNumber) - SUM(lrc.is_withdrawn) - SUM(lrc.is_excluded) - SUM(CASE WHEN blood_taken.record IS NULL THEN 1 ELSE 0 END) [for_analysis],
-	COUNT(ct_requested.record) [ct_requested],
-	COUNT(ct_received.record)  [ct_received_or_at_glenfield],
-	COUNT(ct_analysed.record) [analysed],
-	COUNT(ct_received.record) - COUNT(ct_analysed.record) [to_be_analysed]
-FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
-JOIN STG_redcap_briccsext.dbo.redcap_data studycode
-	ON studycode.project_id = lrc.project_id
-	AND studycode.record = lrc.StudyNumber
-	AND studycode.field_name = 'epi_studycode'
-	AND studycode.value = 8
-JOIN STG_redcap_briccsext.dbo.redcap_data int_date
-	ON int_date.project_id = lrc.project_id
-	AND int_date.record = lrc.StudyNumber
-	AND int_date.field_name = 'int_date'
-	AND int_date.value >= '2019-04-25'
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data blood_taken
-	ON blood_taken.project_id = lrc.project_id
-	AND blood_taken.record = lrc.StudyNumber
-	AND blood_taken.field_name = 'blood_taken'
-	AND COALESCE(blood_taken.value, 0) <> 0
-	-- Only interested in recruited that have not had blood taken
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data ct_requested
-	ON ct_requested.project_id = lrc.project_id
-	AND ct_requested.record = lrc.StudyNumber
-	AND blood_taken.record IS NOT NULL
-	AND ct_requested.field_name = 'date_ct_reqd_iep'
-	AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_requested.value) = 0
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data ct_received
-	ON ct_received.project_id = lrc.project_id
-	AND ct_received.record = lrc.StudyNumber
-	AND ct_received.field_name = 'iep_receipt_yn'
-	AND ct_received.record = ct_requested.record
-	AND blood_taken.record IS NOT NULL
-	AND COALESCE(ct_received.value, 0) = 1
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-LEFT JOIN STG_redcap_briccsext.dbo.redcap_data ct_analysed
-	ON ct_analysed.project_id = lrc.project_id
-	AND ct_analysed.record = lrc.StudyNumber
-	AND ct_analysed.record = ct_received.record
-	AND blood_taken.record IS NOT NULL
-	AND ct_analysed.field_name = 'ct_date_time_start'
-	AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_analysed.value) = 0
-	-- Only interested in recruited that have been analysed
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-WHERE lrc.Full_Consent = 1
-GROUP BY lrc.project_name
-                '''
         )
 
     def get_report(self):
@@ -192,8 +72,7 @@ GROUP BY lrc.project_name
             'Total Recruited',
             'Withdrawn',
             'Excluded',
-            'Blood not Taken',
-            'For CT Analysis',
+            'With Plasma',
             'CT Requested',
             'CT Received',
             'CT Analysed',
@@ -215,15 +94,14 @@ GROUP BY lrc.project_name
             for index, row in df.iterrows():
                 markdown += ' | '.join([str(v) for v in [
                     index.title(),
-                    row['total_recruited'],
-                    row['withdrawn'],
-                    row['excluded'],
-                    row['blood_not_taken'],
-                    row['for_analysis'],
-                    row['ct_requested'],
-                    row['ct_received_or_at_glenfield'],
-                    row['analysed'],
-                    row['to_be_analysed'], 
+                    row['TotalRecruitment'],
+                    row['Withdrawn'],
+                    row['Excluded'],
+                    row['WithPlasma'],
+                    row['CT requested by UHL team'],
+                    row['CT received by UHL team'],
+                    row['completeWithplasma'],
+                    row['CT Awaiting Analysis'], 
                 ]]) + '\r\n'
 
             return markdown, 1, []

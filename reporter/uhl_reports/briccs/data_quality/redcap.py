@@ -127,6 +127,7 @@ class BriccsLeicesterRedcapInvalidSampleNumber(
                 'blood_tube3',
                 'blood_tube4',
                 'blood_tube5',
+                'urine_sample',
             ],
             regular_expression='BSa\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
