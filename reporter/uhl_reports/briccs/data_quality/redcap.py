@@ -129,7 +129,7 @@ class BriccsLeicesterRedcapInvalidSampleNumber(
                 'blood_tube5',
                 'urine_sample',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -313,7 +313,7 @@ class BriccsDoncasterRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -497,7 +497,7 @@ class BriccsSheffieldRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -681,7 +681,7 @@ class BriccsKetteringRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -865,7 +865,7 @@ class BriccsChesterfieldRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1049,7 +1049,7 @@ class BriccsGranthamRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1233,7 +1233,7 @@ class BriccsLincolnRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1417,7 +1417,7 @@ class BriccsNorthamptonRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1601,7 +1601,7 @@ class BriccsDerbyRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1785,7 +1785,7 @@ class BriccsBostonRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
@@ -1969,7 +1969,7 @@ class BriccsNottinghamRedcapInvalidSampleNumber(
                 'blood_tube4',
                 'blood_tube5',
             ],
-            regular_expression='BSa\d{8}',
+            regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
