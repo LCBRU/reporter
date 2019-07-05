@@ -38,6 +38,7 @@ class IndapamideRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         super().__init__(
             'Indapamide',
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -98,7 +99,8 @@ class IndapamideRedcapMissingData(
                 'v1_weight',
                 'v1_bmi',
             ],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -142,7 +144,8 @@ class IndapamideScreeningRedcapMissingData(
                 'suit_for_hf_study_yn',
                 'randomised_to',
             ],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -152,7 +155,8 @@ class IndapamideRedcapInvalidDate(
         super().__init__(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -162,7 +166,8 @@ class IndapamideScreeningRedcapInvalidDate(
         super().__init__(
             REDCAP_INSTANCE,
             SCREENING_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -173,7 +178,8 @@ class IndapamideRedcapInvalidStudyNumber(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             ['record_id'],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -183,7 +189,8 @@ class IndapamideRedcapRecordInvalidStudyNumber(
         super().__init__(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -195,7 +202,8 @@ class IndapamideRedcapInvalidBloodPressureVisit1(
             CRF_PROJECT_ID,
             'v1_systolic',
             'v1_diastolic',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -207,7 +215,8 @@ class IndapamideRedcapInvalidBloodPressureVisit2(
             CRF_PROJECT_ID,
             'v2_systolic',
             'v2_diastolic',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -219,7 +228,8 @@ class IndapamideRedcapInvalidBloodPressureVisit3(
             CRF_PROJECT_ID,
             'v3_systolic',
             'v3_diastolic',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -231,7 +241,8 @@ class IndapamideRedcapInvalidBloodPressureVisit4(
             CRF_PROJECT_ID,
             'v4_systolic',
             'v4_diastolic',
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -247,7 +258,8 @@ class IndapamideRedcapInvalidPulse(
                 'v3_hr',
                 'v4_hr',
             ],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -258,7 +270,8 @@ class IndapamideRedcapInvalidHeightInCm(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             ['v1_height'],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -274,7 +287,8 @@ class IndapamideRedcapInvalidWeightInKg(
                 'v3_weight',
                 'v4_weight',
             ],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -285,7 +299,8 @@ class IndapamideRedcapInvalidBmi(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
             ['v1_bmi'],
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -294,7 +309,8 @@ class IndapamideRedcapCrfWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -303,5 +319,6 @@ class IndapamideRedcapScreeningcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             SCREENING_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )

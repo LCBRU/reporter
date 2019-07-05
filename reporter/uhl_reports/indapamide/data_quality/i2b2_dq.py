@@ -18,6 +18,7 @@ from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
 from reporter.emailing import (
     RECIPIENT_INDAPAMIDE_ADMIN as RECIPIENT_ADMIN,
 )
+from reporter.core import Schedule
 
 
 I2B2_DB = "i2b2_app03_indapamide_Data"
@@ -26,19 +27,28 @@ I2B2_DB = "i2b2_app03_indapamide_Data"
 class IndapamidePatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class IndapamidePatientMappingMultiplesIdsReport(
         PatientMappingMultiplesIdsReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class IndapamidePatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class IndapamidePatientSummaryMissingData(
@@ -56,14 +66,18 @@ class IndapamidePatientSummaryMissingData(
                 'Gender',
                 'DateOfBirth',
                 'Ethnicity',
-            ]
+            ],
+            schedule=Schedule.never,
         )
 
 
 class IndapamidePatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class IndapamideValidEnrolmentsStudyIdDuplicates(
@@ -71,7 +85,8 @@ class IndapamideValidEnrolmentsStudyIdDuplicates(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -80,7 +95,8 @@ class IndapamideValidEnrolmentsContactMultipleRecruitments(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -89,7 +105,8 @@ class IndapamideRecruitedWithoutFullConsent(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -98,5 +115,6 @@ class IndapamidePatientSummaryMissingRecruited(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )

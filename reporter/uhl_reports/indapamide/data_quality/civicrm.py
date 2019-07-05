@@ -7,27 +7,34 @@ from reporter.uhl_reports.civicrm.enrolment_dq import (
     MultipleRecruitementsReport,
     CivicrmInvalidCaseStatus
 )
+from reporter.core import Schedule
 
 
 class IndapamideCiviCrmMissingStudyNumber(MissingStudyNumber):
     def __init__(self):
         super().__init__(
             19,
-            recipients=[RECIPIENT_INDAPAMIDE_ADMIN])
+            recipients=[RECIPIENT_INDAPAMIDE_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class IndapamideCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
     def __init__(self):
         super().__init__(
             19,
-            recipients=[RECIPIENT_INDAPAMIDE_ADMIN])
+            recipients=[RECIPIENT_INDAPAMIDE_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class IndapamideCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
     def __init__(self):
         super().__init__(
             19,
-            recipients=[RECIPIENT_INDAPAMIDE_ADMIN])
+            recipients=[RECIPIENT_INDAPAMIDE_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class IndapamideCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
@@ -43,4 +50,6 @@ class IndapamideCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Duplicate',
                 'Withdrawn'
             ],
-            [RECIPIENT_INDAPAMIDE_ADMIN])
+            [RECIPIENT_INDAPAMIDE_ADMIN],
+            schedule=Schedule.never,
+        )

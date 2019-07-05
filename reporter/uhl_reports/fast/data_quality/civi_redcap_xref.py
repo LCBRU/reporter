@@ -3,6 +3,7 @@
 from reporter.uhl_reports.civicrm.civicrm_redcap_xref import (
     CivicrmNotInRedcap,
     RedcapNotInCiviCrm,
+    RedcapNotInCiviCrm,
 )
 from reporter.core import SqlReport, Schedule
 from reporter.emailing import (
@@ -57,7 +58,13 @@ WHERE   ri.project_id = 48
             ON fst.entity_id = cas.id
         WHERE cas.case_type_id = 18 -- FAST
             AND cas.is_deleted = 0
-            AND cas.status_id = 5 -- Recruited
+            AND cas.status_id IN (
+                5, -- Recruited
+                8, -- Withdrawn
+                9, -- Excluded
+                10, -- Completed
+                14 -- Duplicate
+            )
             AND fst.fast_id_106 = ri.value
     )
 
