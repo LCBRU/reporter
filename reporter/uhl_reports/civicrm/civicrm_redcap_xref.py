@@ -27,7 +27,7 @@ STUDY_NUMBERS_SQL = '''
         SELECT  DISTINCT
             SUBSTRING(record, PATINDEX('%[^0]%', record + '.'), LEN(record)) StudyNumber,
             project_id
-        FROM    STG_redcap.dbo.redcap_data
+        FROM    {2}.dbo.redcap_data
         WHERE project_id IN ({1})
             AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
     )
@@ -40,7 +40,8 @@ class CivicrmNotInRedcap(SqlReport):
             case_type_ids,
             redcap_project_ids,
             recipients=[RECIPIENT_IT_DWH],
-            schedule=None
+            schedule=None,
+            staging_redcap_database='STG_redcap',
     ):
         super().__init__(
             introduction=("The following participants have "
@@ -50,6 +51,7 @@ class CivicrmNotInRedcap(SqlReport):
             sql=STUDY_NUMBERS_SQL.format(
                     ', '.join(['%s'] * len(case_type_ids)),
                     ', '.join(['%s'] * len(redcap_project_ids)),
+                    staging_redcap_database,
                 ) + '''
                 SELECT
                     StudyNumber,
@@ -79,7 +81,8 @@ class RedcapNotInCiviCrm(SqlReport):
             case_type_ids,
             redcap_project_ids,
             recipients=[RECIPIENT_IT_DWH],
-            schedule=None
+            schedule=None,
+            staging_redcap_database='STG_redcap',
     ):
         super().__init__(
             introduction=("The following participants "
@@ -89,6 +92,7 @@ class RedcapNotInCiviCrm(SqlReport):
             sql=STUDY_NUMBERS_SQL.format(
                     ', '.join(['%s'] * len(case_type_ids)),
                     ', '.join(['%s'] * len(redcap_project_ids)),
+                    staging_redcap_database,
                 ) + '''
                 SELECT
                     StudyNumber,

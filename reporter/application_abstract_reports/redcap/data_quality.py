@@ -102,7 +102,8 @@ class RedcapMissingDataWhen(SqlReport):
         indicator_field,
         indicator_value,
         recipients,
-        schedule=None
+        schedule=None,
+        comparator='=',
     ):
         self._redcap_instance = redcap_instance
 
@@ -175,12 +176,14 @@ WHERE NOT EXISTS (
     WHERE e.project_id = pe.project_id
         AND e.record = pe.record
         AND e.field_name = %s
-        AND e.value = %s
+        AND e.value {1} %s
 )
 ORDER BY pe.record
 
                 '''.format(
-                ', '.join(['\'{}\''.format(f) for f in fields])),
+                    ', '.join(['\'{}\''.format(f) for f in fields]),
+                    comparator,
+                ),
             parameters=(project_id, indicator_field, indicator_value)
         )
 

@@ -501,7 +501,6 @@ class FastRedcapMissingConsent(RedcapMissingData):
                 'res_consent_7',
                 'opt_consent_8',
                 'opt_consent_9',
-                'opt_consent_10',
                 'opt_consent_11',
                 'opt_consent_12',
                 'opt_consent_13',
@@ -509,6 +508,21 @@ class FastRedcapMissingConsent(RedcapMissingData):
                 'consent_ext_dta_coll',
                 'consent_hscic',
             ],
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+        )
+
+
+class FastRedcapMissingConsentEDQ5(RedcapMissingDataWhen):
+    def __init__(self):
+        super().__init__(
+            redcap_instance=REDCAP_INSTANCE,
+            project_id=REDCAP_CRF_PROJECT_ID,
+            fields=[
+                'opt_consent_10',
+            ],
+            indicator_field='date',
+            indicator_value='2018-01-29',
+            comparator='<',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
