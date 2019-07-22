@@ -74,13 +74,15 @@ class BriccsLeicesterRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsLeicesterBmiMissing(RedcapMissingData):
+class BriccsLeicesterBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.internal,
             project_id=REDCAP_LEICESTER_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -304,13 +306,15 @@ class BriccsDoncasterRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsDoncasterBmiMissing(RedcapMissingData):
+class BriccsDoncasterBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_DONCASTER_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -522,13 +526,15 @@ class BriccsSheffieldRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsSheffieldBmiMissing(RedcapMissingData):
+class BriccsSheffieldBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_SHEFFIELD_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -740,13 +746,15 @@ class BriccsKetteringRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsKetteringBmiMissing(RedcapMissingData):
+class BriccsKetteringBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_KETTERING_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -958,13 +966,15 @@ class BriccsChesterfieldRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsChesterfieldBmiMissing(RedcapMissingData):
+class BriccsChesterfieldBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_CHESTERFIELD_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -1176,13 +1186,15 @@ class BriccsGranthamRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsGranthamBmiMissing(RedcapMissingData):
+class BriccsGranthamBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_GRANTHAM_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -1394,13 +1406,15 @@ class BriccsLincolnRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsLincolnBmiMissing(RedcapMissingData):
+class BriccsLincolnBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_LINCOLN_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -1612,13 +1626,15 @@ class BriccsNorthamptonRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsNorthamptonBmiMissing(RedcapMissingData):
+class BriccsNorthamptonBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_NORTHAMPTON_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -1830,13 +1846,15 @@ class BriccsDerbyRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsDerbyBmiMissing(RedcapMissingData):
+class BriccsDerbyBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_DERBY_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -2048,13 +2066,15 @@ class BriccsBostonRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsBostonBmiMissing(RedcapMissingData):
+class BriccsBostonBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_BOSTON_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
@@ -2266,13 +2286,15 @@ class BriccsNottinghamRedcapWebDataQuality(RedcapWebDataQuality):
         )
 
 
-class BriccsNottinghamBmiMissing(RedcapMissingData):
+class BriccsNottinghamBmiMissing(RedcapMissingDataWhen):
     def __init__(self):
         super().__init__(
             redcap_instance=RedcapInstance.external,
             project_id=REDCAP_NOTTINGHAM_PROJECT_ID,
             fields=['part_bmi'],
-            recipients=[RECIPIENT_MANAGER],
+            indicator_field='criteria_met',
+            indicator_value='1',
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
         )
 
 
