@@ -23,29 +23,29 @@ from reporter.emailing import (
 from reporter.connections import get_redcap_link
 
 
-I2B2_DB = "i2b2_app03_bioresource_Data"
+I2B2_DB = "i2b2_app03_national_bioresource_Data"
 REDCAP_PROJECT_ID = 9
 
 
-class BioresourcePatientMappingDuplicatesReport(
+class NationalBioresourcePatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
         super().__init__(I2B2_DB)
 
 
-class BioresourcePatientMappingMultiplesIdsReport(
+class NationalBioresourcePatientMappingMultiplesIdsReport(
         PatientMappingMultiplesIdsReport):
     def __init__(self):
         super().__init__(I2B2_DB)
 
 
-class BioresourcePatientSummaryDuplicatesReport(
+class NationalBioresourcePatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
         super().__init__(I2B2_DB)
 
 
-class BioresourcePatientSummaryMissingData(
+class NationalBioresourcePatientSummaryMissingData(
         PatientSummaryMissingData):
     def __init__(self):
         super().__init__(
@@ -54,15 +54,12 @@ class BioresourcePatientSummaryMissingData(
                 'CiviCrmId',
                 'NhsNumber',
                 'UhlSystemNumber',
-                'BioresourceId',
                 'StudyNumber',
-                'EnrolmentDate',
-                'ConsentDate',
-                'Gender',
-                'DOB',
+                'NationalBioresourceId',
+                'consent_date',
                 'DateOfBirth',
-                'Height',
-                'Weight',
+                'gender',
+                'ethnicity',
             ]
         )
 
@@ -79,13 +76,13 @@ class BioresourcePatientSummaryMissingData(
         )
 
 
-class BioresourcePatientSummaryMissingParticipants(
+class NationalBioresourcePatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
         super().__init__(I2B2_DB)
 
 
-class BioresourceValidEnrolmentsStudyIdDuplicates(
+class NationalBioresourceValidEnrolmentsStudyIdDuplicates(
         ValidEnrolmentsStudyIdDuplicates):
     def __init__(self):
         super().__init__(
@@ -94,7 +91,7 @@ class BioresourceValidEnrolmentsStudyIdDuplicates(
         )
 
 
-class BioresourceValidEnrolmentsContactMultipleRecruitments(
+class NationalBioresourceValidEnrolmentsContactMultipleRecruitments(
         ValidEnrolmentsContactMultipleRecruitments):
     def __init__(self):
         super().__init__(
@@ -103,7 +100,7 @@ class BioresourceValidEnrolmentsContactMultipleRecruitments(
         )
 
 
-class BioresourcePatientSummaryMissingRecruited(SqlReport):
+class NationalBioresourcePatientSummaryMissingRecruited(SqlReport):
     def __init__(self):
         super().__init__(
             introduction=("The following participants have an error "
@@ -112,12 +109,13 @@ class BioresourcePatientSummaryMissingRecruited(SqlReport):
             sql='''
 
 SELECT  civicrm_case_id, civicrm_contact_id
-FROM [i2b2_app03_bioresource_Data].[dbo].[LOAD_Civicrm_Bioresource] a
-WHERE is_recruited = 1
-    AND NOT EXISTS (
+FROM [i2b2_app03_National_BioResource_Data].[dbo].[LOAD_Civicrm_Bioresource] a
+JOIN [i2b2_app03_National_BioResource_Data].[dbo].[LOAD_FullyConsented] fc
+	ON fc.StudyNumber = a.national_bioresource_id
+WHERE NOT EXISTS (
         SELECT 1
-        FROM [i2b2_app03_bioresource_Data].[dbo].PatientSummary
-        WHERE StudyNumber = a.bioresource_id
+        FROM [i2b2_app03_National_BioResource_Data].[dbo].PatientSummary
+        WHERE StudyNumber = a.national_bioresource_id
 )
 
                 '''
@@ -131,7 +129,7 @@ WHERE is_recruited = 1
                 row["civicrm_contact_id"]))
 
 
-class BioresourceRecruitedWithoutFullConsent(
+class NationalBioresourceRecruitedWithoutFullConsent(
         RecruitedWithoutFullConsent):
     def __init__(self):
         super().__init__(

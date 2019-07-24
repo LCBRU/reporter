@@ -143,7 +143,7 @@ class MissingDateOfBirth(SqlReport):
     def __init__(self, database, recipients, schedule=None):
         super().__init__(
             introduction=("The following participants do "
-                          "not have a Date of Birth"),
+                          "not have a Date of Birth from the i2b2 Patient Summary"),
             recipients=recipients,
             schedule=schedule,
             sql='''
