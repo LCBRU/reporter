@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import SqlReport, Schedule
 from reporter.emailing import RECIPIENT_IT_DWH
 
 
@@ -27,7 +27,8 @@ WHERE project_id = 9
     )
 
 
-                '''
+                ''',
+            schedule=Schedule.never,
         )
 
     def get_report_line(self, row):

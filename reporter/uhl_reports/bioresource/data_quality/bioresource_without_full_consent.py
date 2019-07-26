@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import SqlReport, Schedule
 from reporter.emailing import RECIPIENT_BIORESOURCE_ADMIN
 from reporter.uhl_reports.civicrm import get_contact_id_search_link
 
@@ -27,7 +27,8 @@ WHERE
             OR StudyNumber = b.legacy_bioresource_id
     )
 
-                '''
+                ''',
+            schedule=Schedule.never,
         )
 
     def get_report_line(self, row):

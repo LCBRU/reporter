@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import Schedule, SqlReport
 from reporter.emailing import RECIPIENT_BIORESOURCE_ADMIN
 from reporter.uhl_reports.civicrm import get_contact_id_search_link
 
@@ -63,7 +63,8 @@ WHERE NOT EXISTS (
 		)
 
 
-                '''
+                ''',
+            schedule=Schedule.never,
         )
 
     def get_report_line(self, row):

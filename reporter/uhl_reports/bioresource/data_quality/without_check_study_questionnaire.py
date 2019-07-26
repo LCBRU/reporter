@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import SqlReport, Schedule
 from reporter.uhl_reports.civicrm import (
     get_case_link,
     get_contact_id_search_link,
@@ -51,7 +51,8 @@ JOIN    STG_redcap.dbo.redcap_data rcq
             )
     )
 
-                '''
+                ''',
+            schedule=Schedule.never,
         )
 
     def get_report_line(self, row):

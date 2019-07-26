@@ -24,6 +24,7 @@ from reporter.application_abstract_reports.redcap.data_quality import (
     RedcapInvalidWeightInKg,
     RedcapInvalidWeightInStonesAndPounds,
 )
+from reporter.core import Schedule
 
 REDCAP_PROJECT_ID = 9
 REDCAP_INSTANCE = RedcapInstance.internal
@@ -33,7 +34,8 @@ class BioresRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
     def __init__(self):
         super().__init__(
             study_name='Bioresource',
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER]
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -42,7 +44,8 @@ class BioresourceRedcapWithdrawnOrExcludedWithDataReport(
     def __init__(self):
         super().__init__(
             study_name='Bioresource',
-            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER]
+            recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -51,7 +54,8 @@ class BioresourceRedcapWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_PROJECT_ID,
-            recipients=[RECIPIENT_IT_DQ]
+            recipients=[RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -61,7 +65,8 @@ class BioresourceRedcapInvalidDate(
         super().__init__(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_PROJECT_ID,
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -72,7 +77,8 @@ class BioresourceRedcapInvalidStudyNumber(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_PROJECT_ID,
             fields=['record_id'],
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -82,7 +88,8 @@ class BioresourceRedcapRecordInvalidStudyNumber(
         super().__init__(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_PROJECT_ID,
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -93,7 +100,8 @@ class BioresourceRedcapInvalidHeightInCm(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_PROJECT_ID,
             fields=['your_height_centimetres'],
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -105,7 +113,8 @@ class BioresourceRedcapInvalidHeightInFeetAndInches(
             project_id=REDCAP_PROJECT_ID,
             feet_field='your_height_feet',
             inches_field='your_height_inches',
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -116,7 +125,8 @@ class BioresourceRedcapInvalidWeightInKg(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_PROJECT_ID,
             fields=['your_weight_kg'],
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -128,5 +138,6 @@ class BioresourceRedcapInvalidWeightInStonesAndPounds(
             project_id=REDCAP_PROJECT_ID,
             stones_field='your_weight_stones',
             pounds_field='your_weight_pounds',
-            recipients=[RECIPIENT_ADMIN]
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )

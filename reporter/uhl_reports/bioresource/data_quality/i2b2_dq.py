@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from reporter.core import SqlReport
+from reporter.core import SqlReport, Schedule
 from reporter.uhl_reports.civicrm import get_case_link
 from reporter.uhl_reports.i2b2.patient_mapping_tests import (
     PatientMappingDuplicatesReport,
@@ -63,7 +63,8 @@ class BioresourcePatientSummaryMissingData(
                 'DateOfBirth',
                 'Height',
                 'Weight',
-            ]
+            ],
+            schedule=Schedule.never,
         )
 
     def get_report_line(self, row):

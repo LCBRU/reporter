@@ -15,7 +15,7 @@ class FastEq5dNotSent(SqlReport):
                           "is over 6 months old, but their EQ-5D 6 month "
                           "follow up questionnaire has not been sent :"),
             recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 
 WITH due AS (
