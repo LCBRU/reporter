@@ -21,7 +21,7 @@ from reporter.emailing import (
     RECIPIENT_IT_DWH,
 )
 from reporter.connections import get_redcap_link
-
+from reporter.core import Schedule
 
 I2B2_DB = "i2b2_app03_bioresource_Data"
 REDCAP_PROJECT_ID = 9
@@ -30,7 +30,10 @@ REDCAP_PROJECT_ID = 9
 class BioresourcePatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            database=I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class BioresourcePatientMappingMultiplesIdsReport(

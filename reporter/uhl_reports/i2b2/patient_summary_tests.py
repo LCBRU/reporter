@@ -65,6 +65,53 @@ class PatientSummaryMissingData(SqlReport):
         )
 
 
+class PatientSummaryMissingDataWhen(SqlReport):
+    def __init__(
+        self,
+        database,
+        fields,
+        indicator_field,
+        indicator_value,
+        schedule=None,
+    ):
+        self.fields = fields
+
+        selects = map(
+            (lambda x:
+                'CASE WHEN {0} IS NULL THEN 1 ELSE 0 END [{0}]'.format(x)),
+            self.fields)
+        wheres = map(
+            (lambda x:
+                '{0} IS NULL'.format(x)),
+            self.fields)
+        super().__init__(
+            introduction=("The following participants have data "
+                            "missing from the patient_summary view"),
+            recipients=[RECIPIENT_IT_DWH],
+            schedule=schedule,
+            sql='''
+                SELECT
+                    patient_num,
+                    StudyNumber [ID],
+                    {}
+                FROM {}.dbo.PatientSummary ps
+                WHERE
+                    ({})
+                    AND IgnoreMissing = 'No'
+                    AND {} = {}
+                '''.format(', '.join(selects), database, ' OR '.join(wheres), indicator_field, indicator_value)
+        )
+
+    def get_report_line(self, row):
+        missing_fields = [f for f in self.fields if row[f] == 1]
+
+        return '- {} ({}): {}\r\n'.format(
+            row['ID'],
+            row['patient_num'],
+            ', '.join(missing_fields)
+        )
+        
+        
 class PatientSummaryMissingDataWithMissingFlag(SqlReport):
     def __init__(self, database, field, missing_flag, schedule=None):
         self.field = field

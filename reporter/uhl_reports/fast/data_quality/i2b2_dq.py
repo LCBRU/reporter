@@ -10,6 +10,7 @@ from reporter.uhl_reports.i2b2.patient_summary_tests import (
     PatientSummaryDuplicatesReport,
     PatientSummaryMissingData,
     PatientSummaryMissingParticipants,
+    PatientSummaryMissingDataWhen,
 )
 from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsStudyIdDuplicates,
@@ -54,11 +55,21 @@ class FastPatientSummaryMissingData(
                 'StudyNumber',
                 'CiviCrmId',
                 'consent_date',
-                'gender',
             ]
         )
 
 
+class FastPatientSummaryGenderMissingData(
+    PatientSummaryMissingDataWhen):
+    def __init__(self):
+        super().__init__(
+            database=I2B2_DB,
+            fields=['gender'],
+            indicator_field='consent_ext_dta_coll',
+            indicator_value='1',
+        )
+    
+    
 class FastPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
