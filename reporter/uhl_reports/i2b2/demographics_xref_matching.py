@@ -13,50 +13,166 @@ class DemographicsXrefMismatch(SqlReport):
             recipients=[RECIPIENT_IT_DQ],
             sql='''
 
-WITH matched_participants AS (
-SELECT
-    a.Study [a_study],
-    b.Study [b_study],
-    a.StudyId [a_study_id],
-    b.StudyId [b_study_id],
-    a.gender [a_gender],
-    b.gender [b_gender],
-    a.Birth_Date [a_birth_date],
-    b.Birth_Date [b_birth_date],
-    a.ethnicity [a_ethnicity],
-    b.ethnicity [b_ethnicity]
-FROM [i2b2ClinDataIntegration].[dbo].[all_participants] a
-JOIN    [i2b2ClinDataIntegration].[dbo].[all_participants] b
-    ON ((   b.NhsNumber = a.NhsNumber
-            AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(b.NhsNumber) = 0)
-        OR (b.UhlSystemNumber = a.UhlSystemNumber
-            AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(b.UhlSystemNumber) = 0)
-        OR (b.CiviCrmId = a.CiviCrmId AND b.CiviCrmId IS NOT NULL)
-        )
-    AND b.Study > a.Study
+CREATE TABLE #participants
+(
+	NhsNumber VARCHAR(200),
+	blank_NhsNumber BIT,
+	UhlSystemNumber VARCHAR(200),
+	blank_UhlSystemNumber BIT,
+	CiviCrmId VARCHAR(200),
+	blank_CiviCrmId BIT,
+    Study VARCHAR(14),
+    StudyId VARCHAR(200),
+    gender VARCHAR(MAX),
+    gender_first_char VARCHAR(1),
+    Birth_Date DATETIME,
+    ethnicity VARCHAR(MAX)
 )
 
+INSERT INTO #participants (
+	NhsNumber,
+	blank_NhsNumber,
+	UhlSystemNumber,
+	blank_UhlSystemNumber,
+	CiviCrmId,
+	blank_CiviCrmId,
+	Study,
+	StudyId,
+	gender,
+	gender_first_char,
+	Birth_Date,
+	ethnicity
+)
+SELECT
+	NhsNumber,
+	CASE WHEN i2b2ClinDataIntegration.dbo.IsNullOrEmpty(NhsNumber) = 1 THEN 1 ELSE 0 END,
+	UhlSystemNumber,
+	CASE WHEN i2b2ClinDataIntegration.dbo.IsNullOrEmpty(UhlSystemNumber) = 1 THEN 1 ELSE 0 END,
+	CiviCrmId,
+	CASE WHEN CiviCrmId IS NOT NULL THEN 1 ELSE 0 END,
+	Study,
+	StudyId,
+	gender,
+	LEFT(gender, 1),
+	Birth_Date,
+	ethnicity
+FROM [i2b2ClinDataIntegration].[dbo].[all_participants] a
+
+CREATE INDEX idx_participants_NhsNumber ON #participants (NhsNumber, Study);
+CREATE INDEX idx_participants_UhlSystemNumber ON #participants (UhlSystemNumber, Study);
+CREATE INDEX idx_participants_CiviCrmId ON #participants (CiviCrmId, Study);
+
+CREATE TABLE #xref
+(
+    a_Study VARCHAR(14),
+    a_StudyId VARCHAR(200),
+    a_gender VARCHAR(MAX),
+	a_gender_first_char VARCHAR(1),
+    a_Birth_Date DATETIME,
+    a_ethnicity VARCHAR(MAX),
+    b_Study VARCHAR(14),
+    b_StudyId VARCHAR(200),
+    b_gender VARCHAR(MAX),
+	b_gender_first_char VARCHAR(1),
+    b_Birth_Date DATETIME,
+    b_ethnicity VARCHAR(MAX)
+)
+INSERT INTO #xref (
+    a_Study,
+    a_StudyId,
+    a_gender,
+	a_gender_first_char,
+    a_Birth_Date,
+    a_ethnicity,
+    b_Study,
+    b_StudyId,
+    b_gender,
+	b_gender_first_char,
+    b_Birth_Date,
+    b_ethnicity
+)
+SELECT
+    a.Study [a_study],
+    a.StudyId [a_study_id],
+    a.gender [a_gender],
+	a.gender_first_char [a_gender_first_char],
+    a.Birth_Date [a_birth_date],
+    a.ethnicity [a_ethnicity],
+    b.Study [b_study],
+    b.StudyId [b_study_id],
+    b.gender [b_gender],
+	b.gender_first_char [b_gender_first_char],
+    b.Birth_Date [b_birth_date],
+    b.ethnicity [b_ethnicity]
+FROM #participants a
+JOIN    #participants b
+	ON b.NhsNumber = a.NhsNumber
+	AND b.blank_NhsNumber = 0
+	AND b.Study > a.Study
+UNION
+SELECT
+    a.Study [a_study],
+    a.StudyId [a_study_id],
+    a.gender [a_gender],
+	a.gender_first_char [a_gender_first_char],
+    a.Birth_Date [a_birth_date],
+    a.ethnicity [a_ethnicity],
+    b.Study [b_study],
+    b.StudyId [b_study_id],
+    b.gender [b_gender],
+	b.gender_first_char [b_gender_first_char],
+    b.Birth_Date [b_birth_date],
+    b.ethnicity [b_ethnicity]
+FROM #participants a
+JOIN    #participants b
+	ON b.UhlSystemNumber = a.UhlSystemNumber
+	AND b.blank_UhlSystemNumber = 0
+	AND b.Study > a.Study
+UNION
+SELECT
+    a.Study [a_study],
+    a.StudyId [a_study_id],
+    a.gender [a_gender],
+	a.gender_first_char [a_gender_first_char],
+    a.Birth_Date [a_birth_date],
+    a.ethnicity [a_ethnicity],
+    b.Study [b_study],
+    b.StudyId [b_study_id],
+    b.gender [b_gender],
+	b.gender_first_char [b_gender_first_char],
+    b.Birth_Date [b_birth_date],
+    b.ethnicity [b_ethnicity]
+FROM #participants a
+JOIN    #participants b
+	ON b.CiviCrmId = a.CiviCrmId
+	AND b.blank_CiviCrmId = 0
+	AND b.Study > a.Study
+
 SELECT *, 'Birth Date Mismatch' [error_message]
-FROM matched_participants
+FROM #xref
 WHERE a_birth_date IS NOT NULL
     AND b_birth_date IS NOT NULL
     AND a_birth_date <> b_birth_date
 UNION ALL
 SELECT *, 'Gender Mismatch' [error_message]
-FROM matched_participants
+FROM #xref
 WHERE i2b2ClinDataIntegration.dbo.IsNullOrEmpty(a_gender) = 0
     AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(b_gender) = 0
-    AND a_gender <> b_gender
+    AND a_gender_first_char <> b_gender_first_char
 UNION ALL
 SELECT *, 'Ethnicity Mismatch' [error_message]
-FROM matched_participants
+FROM #xref
 WHERE i2b2ClinDataIntegration.dbo.IsNullOrEmpty(a_ethnicity) = 0
     AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(b_ethnicity) = 0
     AND a_ethnicity <> b_ethnicity
     AND a_ethnicity <> 'Z'
     AND b_ethnicity <> 'Z'
-    AND NOT (a_ethnicity = 'A/B/C' AND b_ethnicity IN ('A', 'B', 'C'))
-    AND NOT (b_ethnicity = 'A/B/C' AND a_ethnicity IN ('A', 'B', 'C'))
+    AND NOT (a_ethnicity = 'White' AND b_ethnicity LIKE '%white%')
+    AND NOT (b_ethnicity = 'White' AND a_ethnicity LIKE '%white%')
+
+DROP TABLE #participants;
+DROP TABLE #xref;
+
 
                 '''
         )

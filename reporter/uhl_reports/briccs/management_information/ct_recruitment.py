@@ -117,81 +117,34 @@ class BriccsCtOutstandingAnalysis(SqlReport):
             sql='''
 
 SELECT
-	'Glenfield' Site,
-	StudyNumber,
-	lrc.project_id,
-	'local' as redcap,
-	lrc.consent_date
-FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
-JOIN STG_redcap.dbo.redcap_data studycode
-	ON studycode.project_id = lrc.project_id
-	AND studycode.record = lrc.StudyNumber
-	AND studycode.field_name = 'epi_studycode'
-	AND studycode.value = 8
-WHERE lrc.Full_Consent = 1
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-	AND NOT EXISTS (
-		SELECT 1
-		FROM STG_redcap.dbo.redcap_data ct_analysed
-		WHERE ct_analysed.project_id = lrc.project_id
-			AND ct_analysed.record = lrc.StudyNumber
-			AND ct_analysed.field_name = 'ct_date_time_start'
-			AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_analysed.value) = 0
-	) AND NOT EXISTS (
-		SELECT 1
-		FROM STG_redcap.dbo.redcap_data blood_not_taken
-		WHERE blood_not_taken.project_id = lrc.project_id
-			AND blood_not_taken.record = lrc.StudyNumber
-			AND blood_not_taken.field_name = 'blood_taken'
-			AND COALESCE(blood_not_taken.value, 0) = 0
-	)
+	REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
+	ps.StudyNumber,
+	ps.ConsentDate AS consent_date
+FROM [i2b2_app03_b1_data].[dbo].[Cache_PatientSummary] ps
+JOIN (
 
-UNION
+	SELECT lrc.StudyNumber
+	FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
+	JOIN STG_redcap.dbo.redcap_data ct_date_time_start
+		ON ct_date_time_start.project_id = lrc.project_id
+		AND ct_date_time_start.record = lrc.StudyNumber
+		AND ct_date_time_start.field_name = 'ct_date_time_start'
+		AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_date_time_start.value) = 0
 
-SELECT
-	REPLACE(REPLACE(lrc.project_name, 'briccs_', ''), '_recruitment', '') Site,
-	StudyNumber,
-	lrc.project_id,
-	'external' as redcap,
-	lrc.consent_date
-FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
-JOIN STG_redcap_briccsext.dbo.redcap_data studycode
-	ON studycode.project_id = lrc.project_id
-	AND studycode.record = lrc.StudyNumber
-	AND studycode.field_name = 'epi_studycode'
-	AND studycode.value = 8
-JOIN STG_redcap_briccsext.dbo.redcap_data ct_requested
-	ON ct_requested.project_id = lrc.project_id
-	AND ct_requested.record = lrc.StudyNumber
-	AND ct_requested.field_name = 'date_ct_reqd_iep'
-	AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_requested.value) = 0
-	-- Only interested in recruited that have been analysed
-JOIN STG_redcap_briccsext.dbo.redcap_data ct_received
-	ON ct_received.project_id = lrc.project_id
-	AND ct_received.record = lrc.StudyNumber
-	AND ct_received.field_name = 'iep_receipt_yn'
-	AND ct_received.record = ct_requested.record
-	AND COALESCE(ct_received.value, 0) = 1
-WHERE lrc.Full_Consent = 1
-	AND lrc.is_excluded = 0
-	AND lrc.is_withdrawn = 0
-	AND NOT EXISTS (
-		SELECT 1
-		FROM STG_redcap_briccsext.dbo.redcap_data ct_analysed
-		WHERE ct_analysed.project_id = lrc.project_id
-			AND ct_analysed.record = lrc.StudyNumber
-			AND ct_analysed.field_name = 'ct_date_time_start'
-			AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_analysed.value) = 0
-	) AND NOT EXISTS (
-		SELECT 1
-		FROM STG_redcap_briccsext.dbo.redcap_data blood_not_taken
-		WHERE blood_not_taken.project_id = lrc.project_id
-			AND blood_not_taken.record = lrc.StudyNumber
-			AND blood_not_taken.field_name = 'blood_taken'
-			AND COALESCE(blood_not_taken.value, 0) = 0
-	)
-ORDER BY consent_date ASC
+ UNION
+
+	SELECT lrc.StudyNumber
+	FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
+	JOIN STG_redcap_briccsext.dbo.redcap_data imaging_completed
+		ON imaging_completed.project_id = lrc.project_id
+		AND imaging_completed.record = lrc.StudyNumber
+		AND imaging_completed.field_name = 'cardiac_imaging_data_complete'
+		AND imaging_completed.value = 1
+	) we ON we.StudyNumber = ps.StudyNumber
+WHERE ps.In_BRICCS_CT_Study IS NOT NULL
+ AND ps.withplasma = 1
+ AND ps.[CT Analysis Complete] = 0
+ORDER BY ps.ConsentDate ASC
 
                 '''
         )
