@@ -168,5 +168,5 @@ ORDER BY ps.ConsentDate ASC
                 row['StudyNumber']
             ),
             row['Site'].title(),
-            row['consent_date'], '%Y-%m-%d',
+            row['consent_date'],
         )
