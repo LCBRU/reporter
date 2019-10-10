@@ -119,11 +119,15 @@ class BriccsCtOutstandingAnalysis(SqlReport):
 SELECT
 	REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
 	ps.StudyNumber,
-	ps.ConsentDate AS consent_date
+	ps.ConsentDate AS consent_date,
+	we.redcap,
+	we.project_id
 FROM [i2b2_app03_b1_data].[dbo].[Cache_PatientSummary] ps
 JOIN (
 
-	SELECT lrc.StudyNumber
+	SELECT lrc.StudyNumber,
+		'local' AS redcap,
+		lrc.project_id
 	FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
 	JOIN STG_redcap.dbo.redcap_data ct_date_time_start
 		ON ct_date_time_start.project_id = lrc.project_id
@@ -133,7 +137,9 @@ JOIN (
 
  UNION
 
-	SELECT lrc.StudyNumber
+	SELECT lrc.StudyNumber,
+		'external' AS redcap,
+		lrc.project_id
 	FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
 	JOIN STG_redcap_briccsext.dbo.redcap_data imaging_completed
 		ON imaging_completed.project_id = lrc.project_id
@@ -162,5 +168,5 @@ ORDER BY ps.ConsentDate ASC
                 row['StudyNumber']
             ),
             row['Site'].title(),
-            datetime.datetime.strptime(row['consent_date'], '%Y-%m-%d'),
+            row['consent_date'], '%Y-%m-%d',
         )
