@@ -21,10 +21,10 @@ from reporter.dq_log import log_report_run
 
 class Schedule(Enum):
     def daily(func):
-        schedule.every().day.at("08:00").do(func)
+        schedule.every().day.at("12:00").do(func)
 
     def weekly(func):
-        schedule.every().monday.at("08:00").do(func)
+        schedule.every().monday.at("12:00").do(func)
 
     def monthly(func):
         schedule.every(4).weeks.do(func)
