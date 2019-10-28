@@ -64,28 +64,28 @@ CREATE INDEX idx_participants_CiviCrmId ON #participants (CiviCrmId, Study);
 
 CREATE TABLE #xref
 (
-    a_Study VARCHAR(14),
-    a_StudyId VARCHAR(200),
+    a_study VARCHAR(14),
+    a_study_id VARCHAR(200),
     a_gender VARCHAR(MAX),
 	a_gender_first_char VARCHAR(1),
-    a_Birth_Date DATETIME,
+    a_birth_date DATETIME,
     a_ethnicity VARCHAR(MAX),
-    b_Study VARCHAR(14),
-    b_StudyId VARCHAR(200),
+    b_study VARCHAR(14),
+    b_study_id VARCHAR(200),
     b_gender VARCHAR(MAX),
 	b_gender_first_char VARCHAR(1),
-    b_Birth_Date DATETIME,
+    b_birth_date DATETIME,
     b_ethnicity VARCHAR(MAX)
 )
 INSERT INTO #xref (
     a_Study,
-    a_StudyId,
+    a_Study_id,
     a_gender,
 	a_gender_first_char,
     a_Birth_Date,
     a_ethnicity,
     b_Study,
-    b_StudyId,
+    b_Study_id,
     b_gender,
 	b_gender_first_char,
     b_Birth_Date,
@@ -130,8 +130,8 @@ JOIN    #participants b
 	AND b.Study > a.Study
 UNION
 SELECT
-    a.Study [a_study],
-    a.StudyId [a_study_id],
+    a.study [a_study],
+    a.studyId [a_study_id],
     a.gender [a_gender],
 	a.gender_first_char [a_gender_first_char],
     a.Birth_Date [a_birth_date],
