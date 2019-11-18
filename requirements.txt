@@ -7,7 +7,7 @@ matplotlib
 weasyprint
 Jinja2
 selenium
-PyMySQL
+pymssql<3.0
 python-dotenv
 sqlalchemy
 sqlalchemy-migrate
