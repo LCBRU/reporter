@@ -1,5 +1,5 @@
 schedule
-pymssql
+pymssql<3.0
 markdown
 requests
 pandas
@@ -7,7 +7,7 @@ matplotlib
 weasyprint
 Jinja2
 selenium
-pymssql<3.0
+PyMySQL
 python-dotenv
 sqlalchemy
 sqlalchemy-migrate
