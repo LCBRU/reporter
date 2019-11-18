@@ -120,7 +120,7 @@ class SqlReport(Report):
                     error_count=rows,
                 )
 
-                if conn.rowcount == 0:
+                if rows == 0:
                     return None, 0, attachments
         except Exception as e:
             print(self._sql)
@@ -135,7 +135,6 @@ class SqlReport(Report):
     def get_report_lines(self, cursor):
         markdown = ''
         rows = 0
-
         for row in cursor:
             line = self.get_report_line(row)
             if line:
