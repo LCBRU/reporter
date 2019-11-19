@@ -51,7 +51,6 @@ class PatientSummaryMissingData(SqlReport):
                 FROM {}.dbo.PatientSummary ps
                 WHERE
                     ({})
-                    AND IgnoreMissing = 'No'
                 '''.format(', '.join(selects), database, ' OR '.join(wheres))
         )
 
