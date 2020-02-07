@@ -49,4 +49,4 @@ WHERE   rd_wd.project_id = 67 -- Cardiomet
 
         markdown += "\r\n\r\n".format()
 
-        return markdown, cursor.rowcount + 1
+        return markdown, cursor.rowcount

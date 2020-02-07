@@ -47,10 +47,12 @@ WHERE   rd_wd.project_id = 56 -- Lenten
 
     def get_report_lines(self, cursor):
         markdown = ''
+        count = 0
 
         for p in cursor:
+            count += 1
             markdown += "- {}\r\n".format(p['StudyNumber'])
 
         markdown += "\r\n\r\n".format()
 
-        return markdown, cursor.rowcount + 1
+        return markdown, count

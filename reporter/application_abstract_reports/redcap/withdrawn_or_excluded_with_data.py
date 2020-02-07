@@ -61,4 +61,4 @@ ORDER BY Questionnaire, StudyNumber
 
             markdown += "\r\n\r\n".format()
 
-        return markdown, cursor.rowcount + 1
+        return markdown, cursor.rowcount

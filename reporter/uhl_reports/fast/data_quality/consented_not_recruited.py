@@ -40,11 +40,13 @@ WHERE NOT EXISTS (
 
     def get_report_lines(self, cursor):
         markdown = ''
+        count = 0
 
         for p in cursor:
+            count += 1
             markdown += "- **{}**\r\n".format(
                 p['fast_id'])
 
         markdown += "\r\n\r\n".format()
 
-        return markdown, cursor.rowcount + 1
+        return markdown, count
