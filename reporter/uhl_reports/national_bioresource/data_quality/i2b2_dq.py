@@ -82,13 +82,35 @@ class NationalBioresourcePatientSummaryMissingParticipants(
         super().__init__(I2B2_DB)
 
 
-class NationalBioresourceValidEnrolmentsStudyIdDuplicates(
-        ValidEnrolmentsStudyIdDuplicates):
+class NationalBioresourceValidEnrolmentsStudyIdDuplicates(SqlReport):
     def __init__(self):
         super().__init__(
-            I2B2_DB,
-            [RECIPIENT_ADMIN]
+            introduction=("The following recruited participants have "
+                          "duplicated study ids"),
+            recipients=[RECIPIENT_ADMIN],
+            schedule=None,
+            sql='''
+        SELECT
+            StudyNumber,
+            civicrm_case_id,
+            civicrm_contact_id
+        FROM {0}.dbo.Cache_LOAD_ValidEnrollments
+        WHERE StudyNumber IN (
+            SELECT StudyNumber
+            FROM {0}.dbo.Cache_LOAD_ValidEnrollments
+            GROUP BY StudyNumber
+            HAVING COUNT(*) > 1
         )
+        ORDER BY StudyNumber
+                '''.format(I2B2_DB)
+        )
+
+    def get_report_line(self, row):
+        return '- {}\r\n\r\n'.format(
+            get_case_link(
+                row['StudyNumber'],
+                row["civicrm_case_id"],
+                row["civicrm_contact_id"]))
 
 
 class NationalBioresourceValidEnrolmentsContactMultipleRecruitments(

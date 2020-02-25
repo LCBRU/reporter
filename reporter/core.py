@@ -54,6 +54,8 @@ class Report:
 
     def run(self):
         try:
+            logging.info("{} started".format(self._name))
+            
             report, rows, attachments = self.get_report()
 
             logging.info("{} ran with {} rows".format(self._name, rows))
