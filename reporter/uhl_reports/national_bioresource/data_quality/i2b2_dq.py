@@ -21,6 +21,7 @@ from reporter.emailing import (
     RECIPIENT_IT_DWH,
 )
 from reporter.connections import get_redcap_link
+from reporter.uhl_reports.civicrm import get_contact_link
 
 
 I2B2_DB = "i2b2_app03_national_bioresource_Data"
@@ -113,13 +114,25 @@ class NationalBioresourceValidEnrolmentsStudyIdDuplicates(SqlReport):
                 row["civicrm_contact_id"]))
 
 
-class NationalBioresourceValidEnrolmentsContactMultipleRecruitments(
-        ValidEnrolmentsContactMultipleRecruitments):
+class NationalBioresourceValidEnrolmentsContactMultipleRecruitments(SqlReport):
     def __init__(self):
         super().__init__(
-            I2B2_DB,
-            [RECIPIENT_ADMIN]
+            introduction=("The following participants have multiple "
+                          "recruited enrolments"),
+            recipients=[RECIPIENT_ADMIN],
+            schedule=None,
+            sql='''
+            SELECT civicrm_contact_id
+            FROM {}.dbo.Cache_LOAD_ValidEnrollments
+            WHERE civicrm_contact_id IS NOT NULL
+            GROUP BY civicrm_contact_id
+            HAVING COUNT(*) > 1
+                '''.format(I2B2_DB)
         )
+
+    def get_report_line(self, row):
+        return '- {}\r\n\r\n'.format(
+            get_contact_link('Click to View', row["civicrm_contact_id"]))
 
 
 class NationalBioresourcePatientSummaryMissingRecruited(SqlReport):
