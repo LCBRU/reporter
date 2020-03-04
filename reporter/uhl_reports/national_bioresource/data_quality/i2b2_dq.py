@@ -145,11 +145,11 @@ class NationalBioresourcePatientSummaryMissingRecruited(SqlReport):
 
 SELECT  civicrm_case_id, civicrm_contact_id
 FROM [i2b2_app03_National_BioResource_Data].[dbo].[LOAD_Civicrm_Bioresource] a
-JOIN [i2b2_app03_National_BioResource_Data].[dbo].[LOAD_FullyConsented] fc
+JOIN [i2b2_app03_National_BioResource_Data].[dbo].[cache_LOAD_FullyConsented] fc
 	ON fc.StudyNumber = a.national_bioresource_id
 WHERE NOT EXISTS (
         SELECT 1
-        FROM [i2b2_app03_National_BioResource_Data].[dbo].PatientSummary
+        FROM [i2b2_app03_National_BioResource_Data].[dbo].cache_PatientSummary
         WHERE StudyNumber = a.national_bioresource_id
 )
 
