@@ -4,6 +4,7 @@ from reporter.uhl_reports.civicrm.civicrm_redcap_xref import (
     CivicrmNotInRedcap,
     RedcapNotInCiviCrm,
 )
+from reporter.connections import RedcapInstance
 
 CASE_TYPE_ID = 28
 LIMB_REDCAP_PROJECT_ID = 32
@@ -14,7 +15,7 @@ class LimbCivicrmNotInRedcap(CivicrmNotInRedcap):
         super().__init__(
             case_type_ids=[CASE_TYPE_ID],
             redcap_project_ids=[LIMB_REDCAP_PROJECT_ID],
-            staging_redcap_database='STG_uol_crf_redcap',
+            redcap_instance=RedcapInstance.uol_lamp(),
         )
 
 
@@ -23,5 +24,5 @@ class LimbRedcapNotInCiviCrm(RedcapNotInCiviCrm):
         super().__init__(
             case_type_ids=[CASE_TYPE_ID],
             redcap_project_ids=[LIMB_REDCAP_PROJECT_ID],
-            staging_redcap_database='STG_uol_crf_redcap',
+            redcap_instance=RedcapInstance.uol_lamp(),
         )

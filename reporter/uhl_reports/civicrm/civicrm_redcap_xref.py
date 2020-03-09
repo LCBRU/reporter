@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from reporter.core import SqlReport
-from reporter.connections import get_redcap_link
+from reporter.connections import get_redcap_link, RedcapInstance
 from reporter.uhl_reports.civicrm import get_case_link
 from reporter.emailing import (
     RECIPIENT_IT_DWH
@@ -27,7 +27,7 @@ STUDY_NUMBERS_SQL = '''
         SELECT  DISTINCT
             SUBSTRING(record, PATINDEX('%[^0]%', record + '.'), LEN(record)) StudyNumber,
             project_id
-        FROM    {2}.dbo.redcap_data
+        FROM    {2}.redcap_data
         WHERE project_id IN ({1})
             AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(record) = 0
     )
@@ -41,8 +41,13 @@ class CivicrmNotInRedcap(SqlReport):
             redcap_project_ids,
             recipients=[RECIPIENT_IT_DWH],
             schedule=None,
-            staging_redcap_database='STG_redcap',
+            redcap_instance=None,
     ):
+        if redcap_instance is None:
+            redcap_instance = RedcapInstance.internal()
+
+        self.redcap_instance = redcap_instance
+
         super().__init__(
             introduction=("The following participants have "
                           "are recruited in CiviCrm, but do not have "
@@ -51,7 +56,7 @@ class CivicrmNotInRedcap(SqlReport):
             sql=STUDY_NUMBERS_SQL.format(
                     ', '.join(['%s'] * len(case_type_ids)),
                     ', '.join(['%s'] * len(redcap_project_ids)),
-                    staging_redcap_database,
+                    redcap_instance['staging_database'],
                 ) + '''
                 SELECT
                     StudyNumber,
@@ -82,8 +87,13 @@ class RedcapNotInCiviCrm(SqlReport):
             redcap_project_ids,
             recipients=[RECIPIENT_IT_DWH],
             schedule=None,
-            staging_redcap_database='STG_redcap',
+            redcap_instance=None,
     ):
+        if redcap_instance is None:
+            redcap_instance = RedcapInstance.internal()
+
+        self.redcap_instance = redcap_instance
+
         super().__init__(
             introduction=("The following participants "
                           "are recruited in REDCap, but do not have "
@@ -92,7 +102,7 @@ class RedcapNotInCiviCrm(SqlReport):
             sql=STUDY_NUMBERS_SQL.format(
                     ', '.join(['%s'] * len(case_type_ids)),
                     ', '.join(['%s'] * len(redcap_project_ids)),
-                    staging_redcap_database,
+                    redcap_instance['staging_database'],
                 ) + '''
                 SELECT
                     StudyNumber,
@@ -108,7 +118,7 @@ class RedcapNotInCiviCrm(SqlReport):
 
     def get_report_line(self, row):
         return '- {}\r\n'.format(
-            get_redcap_link(
+            self.redcap_instance['link_generator'](
                 row['StudyNumber'] or 'Click Here',
                 row['project_id'],
                 row['StudyNumber'],

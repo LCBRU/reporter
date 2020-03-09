@@ -95,7 +95,7 @@ class RedcapInstance(Enum):
     @staticmethod
     def uol_lamp():
         return {
-            'staging_database': 'redcap',
+            'staging_database': 'STG_uol_crf_redcap.dbo',
             'link_generator': get_redcap_uol_crf_link,
             'base_url': REDCAP_INTERNAL_URL,
             'connection': DatabaseConnection.uol_lamp,
@@ -104,7 +104,7 @@ class RedcapInstance(Enum):
     @staticmethod
     def uol_survey():
         return {
-            'staging_database': 'redcap',
+            'staging_database': 'STG_redcap_Survey.dbo',
             'link_generator': get_redcap_uol_survey_link,
             'base_url': REDCAP_INTERNAL_URL,
             'connection': DatabaseConnection.uol_survey,

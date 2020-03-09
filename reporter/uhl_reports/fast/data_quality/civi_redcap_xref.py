@@ -2,8 +2,6 @@
 
 from reporter.uhl_reports.civicrm.civicrm_redcap_xref import (
     CivicrmNotInRedcap,
-    RedcapNotInCiviCrm,
-    RedcapNotInCiviCrm,
 )
 from reporter.core import SqlReport, Schedule
 from reporter.emailing import (
