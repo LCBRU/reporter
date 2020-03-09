@@ -15,6 +15,7 @@ class PatientMappingDuplicatesReport(SqlReport):
             sql='''
                 SELECT PATIENT_IDE, PATIENT_IDE_SOURCE, COUNT(*) AS ct
                 FROM {}.dbo.Patient_Mapping pm
+                WHERE i2b2ClinDataIntegration.dbo.IsNullOrEmpty(PATIENT_IDE) = 0
                 GROUP BY PATIENT_IDE, PATIENT_IDE_SOURCE
                 HAVING COUNT(*) > 1;
                 '''.format(database)

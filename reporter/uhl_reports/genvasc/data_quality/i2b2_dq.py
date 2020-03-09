@@ -21,7 +21,6 @@ from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
     ValidEnrolmentsContactMultipleRecruitments,
 )
 from reporter.emailing import (
-    RECIPIENT_GENVASC_ADMIN as RECIPIENT_ADMIN,
     RECIPIENT_IT_DWH,
 )
 
@@ -73,7 +72,8 @@ class GenvascMissingNhsNumber(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN])
+            [RECIPIENT_IT_DWH],
+        )
 
 
 class GenvascMissingDateOfBirth(
@@ -81,7 +81,8 @@ class GenvascMissingDateOfBirth(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN])
+            [RECIPIENT_IT_DWH],
+        )
 
 
 class GenvascMissingRecruitmentDate(
@@ -89,7 +90,8 @@ class GenvascMissingRecruitmentDate(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN])
+            [RECIPIENT_IT_DWH],
+        )
 
 
 class GenvascMissingSampleFetchedDate(
@@ -97,7 +99,8 @@ class GenvascMissingSampleFetchedDate(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN])
+            [RECIPIENT_IT_DWH],
+        )
 
 
 class GenvascInvalidGender(
@@ -105,7 +108,8 @@ class GenvascInvalidGender(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN])
+            [RECIPIENT_IT_DWH],
+        )
 
 
 class GenvascValidEnrolmentsStudyIdDuplicates(
@@ -113,7 +117,7 @@ class GenvascValidEnrolmentsStudyIdDuplicates(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DWH],
         )
 
 
@@ -122,7 +126,7 @@ class GenvascValidEnrolmentsContactMultipleRecruitments(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DWH],
         )
 
 
