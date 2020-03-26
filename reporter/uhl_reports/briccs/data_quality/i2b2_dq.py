@@ -51,7 +51,7 @@ class BriccsPatientSummaryMissingData(
         super().__init__(
             I2B2_DB,
             [
-                'NhsNumber',
+                # 'NhsNumber', - Some recruits are not from England
                 'ConsentDate',
                 'StudyNumber',
                 'InterviewDate',
