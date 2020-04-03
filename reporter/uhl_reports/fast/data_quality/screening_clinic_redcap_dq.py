@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from reporter.core import Schedule
 from reporter.connections import RedcapInstance
 from reporter.emailing import (
     RECIPIENT_FAST_MANAGER,
@@ -31,6 +32,7 @@ class FastRedcapInvalidEmailAddress(
             project_id=REDCAP_SCREENING_PROJECT_ID,
             fields=['email_add'],
             recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -41,6 +43,7 @@ class FastScreeningRedcapInvalidDate(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_SCREENING_PROJECT_ID,
             recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -52,6 +55,7 @@ class FastScreeningRedcapInvalidNhsNumber(
             project_id=REDCAP_SCREENING_PROJECT_ID,
             fields=['nhs_no'],
             recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -63,6 +67,7 @@ class FastRedcapInvalidPostCode(
             project_id=REDCAP_SCREENING_PROJECT_ID,
             fields=['postcode'],
             recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -84,6 +89,7 @@ class FastRedcapMissingDataWhenRecruited(RedcapMissingDataWhen):
             indicator_field='patient_recruited',
             indicator_value='1',
             recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -96,4 +102,5 @@ class FastRedcapMissingAddressWhenRecruited(RedcapMissingAllWhen):
             indicator_field='patient_recruited',
             indicator_value='1',
             recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )

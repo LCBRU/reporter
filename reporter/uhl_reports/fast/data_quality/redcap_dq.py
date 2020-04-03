@@ -59,7 +59,7 @@ class FastClinicalRedcapMissingData(SqlReport):
             introduction=("The following participants have data "
                           "missing from REDCap"),
             recipients=recipients,
-            schedule=schedule,
+            schedule=Schedule.never,
             conn=REDCAP_INSTANCE()['connection'],
             sql='''
 
@@ -128,7 +128,7 @@ class FastClinicalRedcapMissingData_Extended(SqlReport):
             introduction=("The following participants have data "
                           "missing from REDCap"),
             recipients=recipients,
-            schedule=schedule,
+            schedule=Schedule.never,
             conn=REDCAP_INSTANCE()['connection'],
             sql='''
 
@@ -206,7 +206,7 @@ class FastClinicalRedcapMissingMeasurements(SqlReport):
             introduction=("The following participants have measurements "
                           "missing from REDCap"),
             recipients=recipients,
-            schedule=schedule,
+            schedule=Schedule.never,
             conn=REDCAP_INSTANCE()['connection'],
             sql='''
 
@@ -278,6 +278,7 @@ class FastClinicalRedcapInvalidNhsNumber(
             project_id=REDCAP_CRF_PROJECT_ID,
             fields=['nhs_number'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -289,6 +290,7 @@ class FastRedcapInvalidStudyNumber(
             project_id=REDCAP_CRF_PROJECT_ID,
             fields=['fst_label', 'record_id'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -299,6 +301,7 @@ class FastRedcapRecordInvalidStudyNumber(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_CRF_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -311,6 +314,7 @@ class FastRedcapInvalidBloodPressure(
             systolic_field_name='sys_bp',
             diastolic_field_name='dias_bp',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -322,6 +326,7 @@ class FastRedcapInvalidPulse(
             project_id=REDCAP_CRF_PROJECT_ID,
             fields=['pulse'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -333,6 +338,7 @@ class FastRedcapInvalidHeightInCm(
             project_id=REDCAP_CRF_PROJECT_ID,
             fields=['height_cms'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -345,6 +351,7 @@ class FastRedcapInvalidHeightInFeetAndInches(
             feet_field='height_ft',
             inches_field='height_inches',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -356,6 +363,7 @@ class FastRedcapInvalidWeightInKg(
             project_id=REDCAP_CRF_PROJECT_ID,
             fields=['weight_kgs'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -368,6 +376,7 @@ class FastRedcapInvalidWeightInStonesAndPounds(
             stones_field='weight_stones',
             pounds_field='weight_pounds',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -379,6 +388,7 @@ class FastRedcapInvalidBmi(
             project_id=REDCAP_CRF_PROJECT_ID,
             fields=['bmi'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -389,6 +399,7 @@ class FastRedcapInvalidDate(
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_CRF_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 class FastCurrentSmokerGroupButNotCurrentSmoker(
@@ -523,6 +534,7 @@ class FastRedcapOutsideAgeRange(
             min_age=65,
             max_age=75,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -531,6 +543,7 @@ class FastRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         super().__init__(
             'FAST',
             [RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -550,6 +563,7 @@ class FastRedcapCrfWebDataQuality(RedcapWebDataQuality):
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_CRF_PROJECT_ID,
             recipients=[RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -559,6 +573,7 @@ class FastRedcapScreeningWebDataQuality(RedcapWebDataQuality):
             redcap_instance=REDCAP_INSTANCE,
             project_id=REDCAP_SCREENING_PROJECT_ID,
             recipients=[RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -584,6 +599,7 @@ class FastRedcapMissingConsent(RedcapMissingData):
                 'consent_hscic',
             ],
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -599,6 +615,7 @@ class FastRedcapMissingConsentEDQ5(RedcapMissingDataWhen):
             indicator_value='2018-01-29',
             comparator='<',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -613,6 +630,7 @@ class FastRedcapMissingPisConsent(RedcapMissingDataWhenNot):
             indicator_field='invitation_grp',
             indicator_value='5',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -627,4 +645,5 @@ class FastRedcapMissingSiblingPisConsent(RedcapMissingDataWhen):
             indicator_field='invitation_grp',
             indicator_value='5',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )

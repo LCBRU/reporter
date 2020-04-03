@@ -14,7 +14,7 @@ class FastRecruitedNotConsentedReport(SqlReport):
             introduction=("The following FAST participants are "
                           "recruited, but do not have full consent:"),
             recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 WITH recruited AS (
     SELECT

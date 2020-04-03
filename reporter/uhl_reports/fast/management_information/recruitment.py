@@ -12,6 +12,7 @@ from reporter.connections import RedcapInstance
 class FastGroupErrors(SqlReport):
     def __init__(self):
         super().__init__(
+            schedule=Schedule.never,
             introduction=("The following Glenfield participants are "
                           "in Onyx, but are not in CiviCrm"),
             recipients=[RECIPIENT_MANAGER],

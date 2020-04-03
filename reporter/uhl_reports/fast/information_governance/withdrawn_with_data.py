@@ -13,7 +13,7 @@ class FastWithdrawnWithDataReport(SqlReport):
             introduction=("Withdrawn participants with data "
                           "in REDCap for FAST study"),
             recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 
 SELECT record [StudyNumber]

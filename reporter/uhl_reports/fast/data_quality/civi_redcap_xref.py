@@ -20,6 +20,7 @@ class FastScreeningCivicrmNotInRedcap(CivicrmNotInRedcap):
         super().__init__(
             case_type_ids=[CASE_TYPE_ID],
             redcap_project_ids=[FAST_SCREENING_REDCAP_PROJECT_ID],
+            schedule=Schedule.never,
         )
 
 
@@ -30,7 +31,7 @@ class FastRedcapNotCivicrmReport(SqlReport):
                           "recruited in REDCap, but are not "
                           "recruited is CiviCRM:"),
             recipients=[RECIPIENT_IT_DWH],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 SELECT
     ri.value AS fast_id,

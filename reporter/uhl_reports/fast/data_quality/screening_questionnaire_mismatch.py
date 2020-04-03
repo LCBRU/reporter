@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+from reporter.core import Schedule
 from reporter.connections import RedcapInstance
 from reporter.emailing import (
     RECIPIENT_FAST_ADMIN,
@@ -19,7 +19,8 @@ class FastRedcapXrefMismatchPractice(
             redcap_instance_b=RedcapInstance.internal,
             project_id_b=48,
             field_name_b='gp_practice',
-            recipients=[RECIPIENT_FAST_ADMIN]
+            recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -33,7 +34,8 @@ class FastRedcapXrefMismatchInvitationGroup(
             redcap_instance_b=RedcapInstance.internal,
             project_id_b=48,
             field_name_b='invitation_group',
-            recipients=[RECIPIENT_FAST_ADMIN]
+            recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -47,5 +49,6 @@ class FastRedcapXrefMismatchNhsNumber(
             redcap_instance_b=RedcapInstance.internal,
             project_id_b=48,
             field_name_b='nhs_no',
-            recipients=[RECIPIENT_FAST_ADMIN]
+            recipients=[RECIPIENT_FAST_ADMIN],
+            schedule=Schedule.never,
         )

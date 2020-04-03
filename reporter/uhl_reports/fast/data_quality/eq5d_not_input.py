@@ -15,7 +15,7 @@ class FastEq5dNotEntered(SqlReport):
                           "returned the EQ-5D follow up questionnaire, "
                           "but it has not been entered:"),
             recipients=[RECIPIENT_FAST_MANAGER, RECIPIENT_FAST_ADMIN],
-            schedule=Schedule.weekly,
+            schedule=Schedule.never,
             sql='''
 
 WITH received AS (
