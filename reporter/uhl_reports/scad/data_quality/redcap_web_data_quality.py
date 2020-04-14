@@ -55,5 +55,5 @@ class ScadRedcapRegistryWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             REDCAP_REGISTRY_PROJECT_ID,
-            [RECIPIENT_IT_DQ],
+            [RECIPIENT_ADMIN],
         )
