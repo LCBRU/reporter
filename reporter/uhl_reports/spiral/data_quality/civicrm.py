@@ -9,6 +9,7 @@ from reporter.uhl_reports.civicrm.enrolment_dq import (
     MultipleRecruitementsReport,
     CivicrmInvalidCaseStatus
 )
+from reporter.core import Schedule
 
 CASE_TYPE_ID = 25
 
@@ -17,21 +18,27 @@ class SpiralCiviCrmMissingStudyNumber(MissingStudyNumber):
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class SpiralCiviCrmDuplicateStudyNumber(DuplicateStudyIdReport):
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class SpiralCiviCrmMultipleRecruitments(MultipleRecruitementsReport):
     def __init__(self):
         super().__init__(
             CASE_TYPE_ID,
-            recipients=[RECIPIENT_ADMIN])
+            recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )
 
 
 class SpiralCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
@@ -43,4 +50,6 @@ class SpiralCivicrmInvalidCaseStatus(CivicrmInvalidCaseStatus):
                 'Excluded',
                 'Withdrawn'
             ],
-            [RECIPIENT_ADMIN])
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
+        )

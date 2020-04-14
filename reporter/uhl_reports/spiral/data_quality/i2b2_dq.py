@@ -18,6 +18,7 @@ from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
 from reporter.emailing import (
     RECIPIENT_SPIRAL_ADMIN as RECIPIENT_ADMIN,
 )
+from reporter.core import Schedule
 
 
 I2B2_DB = "i2b2_app03_spiral_Data"
@@ -26,19 +27,28 @@ I2B2_DB = "i2b2_app03_spiral_Data"
 class SpiralPatientMappingDuplicatesReport(
         PatientMappingDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class SpiralPatientMappingMultiplesIdsReport(
         PatientMappingMultiplesIdsReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class SpiralPatientSummaryDuplicatesReport(
         PatientSummaryDuplicatesReport):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class SpiralPatientSummaryMissingData(
@@ -55,14 +65,18 @@ class SpiralPatientSummaryMissingData(
                 'Gender',
                 'DateOfBirth',
                 'Ethnicity',
-            ]
+            ],
+            schedule=Schedule.never,
         )
 
 
 class SpiralPatientSummaryMissingParticipants(
         PatientSummaryMissingParticipants):
     def __init__(self):
-        super().__init__(I2B2_DB)
+        super().__init__(
+            I2B2_DB,
+            schedule=Schedule.never,
+        )
 
 
 class SpiralValidEnrolmentsStudyIdDuplicates(
@@ -70,7 +84,8 @@ class SpiralValidEnrolmentsStudyIdDuplicates(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -79,7 +94,8 @@ class SpiralValidEnrolmentsContactMultipleRecruitments(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -88,7 +104,8 @@ class SpiralRecruitedWithoutFullConsent(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -97,5 +114,6 @@ class SpiralPatientSummaryMissingRecruited(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )

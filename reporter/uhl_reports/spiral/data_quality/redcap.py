@@ -29,6 +29,7 @@ from reporter.application_abstract_reports.redcap.withdrawn_or_excluded_with_dat
 from reporter.application_abstract_reports.redcap.web_data_quality import (
     RedcapWebDataQuality,
 )
+from reporter.core import Schedule
 
 
 DEMOGRAPHICS_PROJECT_ID = 68
@@ -43,6 +44,7 @@ class SpiralRedcapPercentageCompleteReport(RedcapPercentageCompleteReport):
         super().__init__(
             study_name='Spiral',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -52,6 +54,7 @@ class SpiralRedcapWithdrawnOrExcludedWithDataReport(
         super().__init__(
             study_name='Spiral',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            schedule=Schedule.never,
         )
 
 
@@ -65,6 +68,7 @@ class SpiralRedcapCrfInvalidPatientId(
             project_id=CRF_PROJECT_ID,
             fields=['record_id'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -75,6 +79,7 @@ class SpiralRedcapCrfRecordInvalidStudyNumber(
             redcap_instance=REDCAP_INSTANCE,
             project_id=CRF_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -85,6 +90,7 @@ class SpiralRedcapCrfInvalidDates(
             redcap_instance=REDCAP_INSTANCE,
             project_id=CRF_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -97,6 +103,7 @@ class SpiralRedcapCrfInvalidBloodPressure(
             systolic_field_name='systolic',
             diastolic_field_name='diastolic',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -108,6 +115,7 @@ class SpiralRedcapCrfInvalidHeightInCm(
             project_id=CRF_PROJECT_ID,
             fields=['height'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -119,6 +127,7 @@ class SpiralRedcapCrfInvalidWeightInKg(
             project_id=CRF_PROJECT_ID,
             fields=['weight'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -130,6 +139,7 @@ class SpiralRedcapCrfInvalidBmi(
             project_id=CRF_PROJECT_ID,
             fields=['bmi'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -143,6 +153,7 @@ class SpiralRedcapDemographicsInvalidNhsNumber(
             project_id=DEMOGRAPHICS_PROJECT_ID,
             fields=['nhs_no'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -153,6 +164,7 @@ class SpiralRedcapDemographicsInvalidDates(
             redcap_instance=REDCAP_INSTANCE,
             project_id=DEMOGRAPHICS_PROJECT_ID,
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -164,6 +176,7 @@ class SpiralRedcapDemographicsInvalidUhlSystemNumber(
             project_id=DEMOGRAPHICS_PROJECT_ID,
             fields=['s_no'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -175,6 +188,7 @@ class SpiralRedcapDemographicsInvalidPostCode(
             project_id=DEMOGRAPHICS_PROJECT_ID,
             fields=['postcode', 'gp_postcode'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -186,6 +200,7 @@ class SpiralRedcapDemographicsInvalidEmailAddress(
             project_id=DEMOGRAPHICS_PROJECT_ID,
             fields=['email_add'],
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -202,6 +217,7 @@ class SpiralRedcapXrefMismatchPatientId(
             project_id_b=DEMOGRAPHICS_PROJECT_ID,
             field_name_b='patient_id',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -216,6 +232,7 @@ class SpiralRedcapXrefMismatchDob(
             project_id_b=DEMOGRAPHICS_PROJECT_ID,
             field_name_b='dob',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -230,6 +247,7 @@ class SpiralRedcapXrefMismatchGender(
             project_id_b=DEMOGRAPHICS_PROJECT_ID,
             field_name_b='gender',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -244,6 +262,7 @@ class SpiralRedcapXrefMismatchEthnicity(
             project_id_b=DEMOGRAPHICS_PROJECT_ID,
             field_name_b='ethnicity',
             recipients=[RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
@@ -252,7 +271,8 @@ class SpiralRedcapCrfWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             CRF_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
 
 
@@ -261,5 +281,6 @@ class SpiralRedcapDemographicsWebDataQuality(RedcapWebDataQuality):
         super().__init__(
             REDCAP_INSTANCE,
             DEMOGRAPHICS_PROJECT_ID,
-            [RECIPIENT_IT_DQ]
+            [RECIPIENT_IT_DQ],
+            schedule=Schedule.never,
         )
