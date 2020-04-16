@@ -17,6 +17,7 @@ from reporter.uhl_reports.i2b2.valid_enrolment_tests import (
 )
 from reporter.emailing import (
     RECIPIENT_LIMB_ADMIN as RECIPIENT_ADMIN,
+    RECIPIENT_IT_DWH,
 )
 
 
@@ -98,5 +99,5 @@ class LimbPatientSummaryMissingRecruited(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_IT_DWH],
         )
