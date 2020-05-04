@@ -24,10 +24,10 @@ class Schedule(Enum):
         schedule.every().day.at("12:00").do(func)
 
     def weekly(func):
-        schedule.every().monday.at("12:00").do(func)
+        schedule.every().sunday.at("15:00").do(func)
 
     def monthly(func):
-        schedule.every(4).weeks.do(func)
+        schedule.every(4).saturday.at("15:00").do(func)
 
     def never(func):
         pass
