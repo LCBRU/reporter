@@ -15,46 +15,43 @@ class BriccsCtRecruitment(SqlReport):
 			sql='''
 
 SELECT
-	REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
-	COUNT(*) TotalRecruitment,
-	MIN(we.withdrawn) Withdrawn,
-	MIN(we.excluded) Excluded,
-	SUM(ps.withPlasma) WithPlasma,
-	SUM(CASE WHEN [CT requested by UHL team] = 1 AND ps.withPlasma = 1 THEN 1 ELSE 0 END) [CT requested by UHL team],
-	SUM(CASE WHEN [CT received by UHL team] = 1 AND ps.withPlasma = 1 THEN 1 ELSE 0 END) [CT received by UHL team],
-	SUM(completeWithplasma) [completeWithplasma],
-	CASE
-		WHEN ps.RecruitingSite = 'briccs_glenfield_recruitment' THEN SUM(ps.withPlasma)
-		ELSE SUM(CASE WHEN [CT received by UHL team] = 1 AND ps.withPlasma = 1 THEN 1 ELSE 0 END)
-	END - SUM(completeWithplasma) [CT Awaiting Analysis]
+    REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
+    COUNT(*) TotalRecruitment,
+    MIN(we.withdrawn) Withdrawn,
+    MIN(we.excluded) Excluded,
+    SUM(ps.withPlasma) WithPlasma,
+    SUM([CT requested by UHL team with plasma]) [CT requested by UHL team],
+    SUM([CT received by UHL team with plasma]) [CT received by UHL team],
+    SUM(completeWithplasma) [completeWithplasma],
+    SUM([CT Awaiting Analysis]) [CT Awaiting Analysis]
 FROM [i2b2_app03_b1_data].dbo.Cache_PatientSummary ps
 LEFT JOIN (
-	SELECT
-		'briccs_glenfield_recruitment' RecruitingSite,
-		SUM(lrc.is_withdrawn) [withdrawn],
-		SUM(lrc.is_excluded) [excluded]
-	FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
-	JOIN STG_redcap.dbo.redcap_data studycode
-		ON studycode.project_id = lrc.project_id
-		AND studycode.record = lrc.StudyNumber
-		AND studycode.field_name = 'epi_studycode'
-		AND studycode.value = 8
+    SELECT
+        'briccs_glenfield_recruitment' RecruitingSite,
+        SUM(lrc.is_withdrawn) [withdrawn],
+        SUM(lrc.is_excluded) [excluded]
+    FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
+    JOIN STG_redcap.dbo.redcap_data studycode
+        ON studycode.project_id = lrc.project_id
+        AND studycode.record = lrc.StudyNumber
+        AND studycode.field_name = 'epi_studycode'
+        AND studycode.value = 8
 
-	UNION
+    UNION
 
-	SELECT
-		'briccs_kettering_recruitment' RecruitingSite,
-		SUM(lrc.is_withdrawn) [withdrawn],
-		SUM(lrc.is_excluded) [excluded]
-	FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
-	JOIN STG_redcap_briccsext.dbo.redcap_data studycode
-		ON studycode.project_id = lrc.project_id
-		AND studycode.record = lrc.StudyNumber
-		AND studycode.field_name = 'epi_studycode'
-		AND studycode.value = 8
-	) we ON we.RecruitingSite = ps.RecruitingSite
+    SELECT
+        'briccs_kettering_recruitment' RecruitingSite,
+        SUM(lrc.is_withdrawn) [withdrawn],
+        SUM(lrc.is_excluded) [excluded]
+    FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
+    JOIN STG_redcap_briccsext.dbo.redcap_data studycode
+        ON studycode.project_id = lrc.project_id
+        AND studycode.record = lrc.StudyNumber
+        AND studycode.field_name = 'epi_studycode'
+        AND studycode.value = 8
+    ) we ON we.RecruitingSite = ps.RecruitingSite
 WHERE
-	In_BRICCS_CT_Study = 1
+    In_BRICCS_CT_Study = 1
 GROUP BY ps.RecruitingSite
 
 			'''
@@ -117,39 +114,39 @@ class BriccsCtOutstandingAnalysis(SqlReport):
             sql='''
 
 SELECT
-	REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
-	ps.StudyNumber,
-	ps.ConsentDate AS consent_date,
-	we.redcap,
-	we.project_id
+    REPLACE(REPLACE(ps.RecruitingSite, 'Briccs_', ''), '_Recruitment', '') Site,
+    ps.StudyNumber,
+    ps.ConsentDate AS consent_date,
+    we.redcap,
+    we.project_id
 FROM [i2b2_app03_b1_data].[dbo].[Cache_PatientSummary] ps
 JOIN (
 
-	SELECT lrc.StudyNumber,
-		'local' AS redcap,
-		lrc.project_id
-	FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
-	JOIN STG_redcap.dbo.redcap_data ct_date_time_start
-		ON ct_date_time_start.project_id = lrc.project_id
-		AND ct_date_time_start.record = lrc.StudyNumber
-		AND ct_date_time_start.field_name = 'ct_date_time_start'
-		AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_date_time_start.value) = 0
+    SELECT lrc.StudyNumber,
+        'local' AS redcap,
+        lrc.project_id
+    FROM [i2b2_app03_b1_data].[dbo].[LOAD_Redcap] lrc
+    JOIN STG_redcap.dbo.redcap_data ct_date_time_start
+        ON ct_date_time_start.project_id = lrc.project_id
+        AND ct_date_time_start.record = lrc.StudyNumber
+        AND ct_date_time_start.field_name = 'ct_date_time_start'
+        AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ct_date_time_start.value) = 0
 
  UNION
 
-	SELECT lrc.StudyNumber,
-		'external' AS redcap,
-		lrc.project_id
-	FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
-	JOIN STG_redcap_briccsext.dbo.redcap_data imaging_completed
-		ON imaging_completed.project_id = lrc.project_id
-		AND imaging_completed.record = lrc.StudyNumber
-		AND imaging_completed.field_name = 'cardiac_imaging_data_complete'
-		AND imaging_completed.value = 1
-	) we ON we.StudyNumber = ps.StudyNumber
+    SELECT lrc.StudyNumber,
+        'external' AS redcap,
+        lrc.project_id
+    FROM [i2b2_app03_b1_data].[dbo].[LOAD_RedcapExternal] lrc
+    JOIN STG_redcap_briccsext.dbo.redcap_data imaging_completed
+        ON imaging_completed.project_id = lrc.project_id
+        AND imaging_completed.record = lrc.StudyNumber
+        AND imaging_completed.field_name = 'cardiac_imaging_data_complete'
+        AND imaging_completed.value = 1
+    ) we ON we.StudyNumber = ps.StudyNumber
 WHERE ps.In_BRICCS_CT_Study IS NOT NULL
- AND ps.withplasma = 1
- AND ps.[CT Analysis Complete] = 0
+ AND [CT Awaiting Analysis] = 1
+ AND i2b2ClinDataIntegration.dbo.IsNullOrEmpty(ps.UhlSystemNumber) = 0
 ORDER BY ps.ConsentDate ASC
 
                 '''
