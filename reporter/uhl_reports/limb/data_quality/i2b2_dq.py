@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from reporter.core import Schedule
 from reporter.uhl_reports.i2b2.patient_mapping_tests import (
     PatientMappingDuplicatesReport,
     PatientMappingMultiplesIdsReport,
@@ -90,7 +91,8 @@ class LimbRecruitedWithoutFullConsent(
     def __init__(self):
         super().__init__(
             I2B2_DB,
-            [RECIPIENT_ADMIN]
+            [RECIPIENT_ADMIN],
+            schedule=Schedule.never,
         )
 
 
