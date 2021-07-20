@@ -790,9 +790,9 @@ LEFT JOIN redcap_data dbp
     AND dbp.record = p.record
     AND dbp.field_name = %s
 LEFT JOIN redcap_data_quality_status sbp_dqs
-    ON sbp_dqs.project_id = sbp.project_id
-    AND sbp_dqs.record = sbp.record
-    AND sbp_dqs.field_name = sbp.field_name
+    ON sbp_dqs.project_id = p.project_id
+    AND sbp_dqs.record = p.record
+    AND sbp_dqs.field_name = %s
 LEFT JOIN redcap_data_quality_resolutions sbp_dqr
     ON sbp_dqr.status_id = sbp_dqs.status_id
     AND (
@@ -806,9 +806,9 @@ LEFT JOIN redcap_data_quality_resolutions sbp_dqr
         OR  sbp_dqr.comment LIKE '%% validated %%'
     )
 LEFT JOIN redcap_data_quality_status dbp_dqs
-    ON dbp_dqs.project_id = sbp.project_id
-    AND dbp_dqs.record = sbp.record
-    AND dbp_dqs.field_name = sbp.field_name
+    ON dbp_dqs.project_id = p.project_id
+    AND dbp_dqs.record = p.record
+    AND dbp_dqs.field_name = %s
 LEFT JOIN redcap_data_quality_resolutions dbp_dqr
     ON dbp_dqr.status_id = dbp_dqs.status_id
     AND (
@@ -823,11 +823,22 @@ LEFT JOIN redcap_data_quality_resolutions dbp_dqr
     )
 
                 ''',
-            parameters=(project_id, systolic_field_name, diastolic_field_name)
+            parameters=(
+                project_id,
+                systolic_field_name,
+                diastolic_field_name,
+                systolic_field_name,
+                diastolic_field_name,
+            )
         )
 
+        self._sbp_validated = self.get_validated_messages(project_id=project_id, field_name=systolic_field_name)
+        self._dbp_validated = self.get_validated_messages(project_id=project_id, field_name=diastolic_field_name)
+        self._all_validated = self._sbp_validated.union(self._dbp_validated)
+
     def get_report_line(self, row):
-        error = self.get_error_message(row['sbp'], row['dbp'], row['sbp_validated'], row['dbp_validated'])
+
+        error = self.get_error_message(row['record'], row['sbp'], row['dbp'])
 
         if error:
             return '- {}: {}\r\n'.format(
@@ -836,31 +847,92 @@ LEFT JOIN redcap_data_quality_resolutions dbp_dqr
                 error
             )
 
-    def get_error_message(self, sbp, dbp, sbp_validated, dbp_validated):
-        if self.is_na(sbp) and self.is_na(dbp):
-            return
-        if sbp is None and dbp is None:
+    def get_error_message(self, record, sbp, dbp):
+        # This whole thing needs to be reworked.
+        # 
+        # I think what we need to do is separate the the gathering of error messages
+        # and the checking whether it's been validated.  And also separate the
+        # error messages for both fields.
+        sbp_unusable = False
+        dbp_unusable = False
+
+        if self.is_na(sbp) or sbp is None:
+            sbp_unusable = True
+
+        if self.is_na(dbp) or dbp is None:
+            dbp_unusable = True
+
+        if sbp_unusable and dbp_unusable:
             return
 
-        if sbp is None and dbp is not None:
-            return 'Systolic BP not entered'
-        if sbp is not None and dbp is None:
-            return 'Diastolic BP not entered'
-        if not sbp.replace('.', '', 1).isdigit():
-            return 'Systolic BP is not numeric'
-        if not dbp.replace('.', '', 1).isdigit():
-            return 'Diastolic BP is not numeric'
-        if float(sbp) > 200 and sbp_validated == 0:
-            return 'Systolic BP is too high'
-        if float(dbp) < 35 and dbp_validated == 0:
-            return 'Diastolic BP is too low'
-        if float(dbp) >= float(sbp):
-            return 'Diastolic BP is above Systolic BP'
+        sbp_errors = []
+        dbp_errors = []
+        combined_errors = []
 
-        return
+        if sbp_unusable and not dbp_unusable:
+            sbp_errors.append('Systolic BP not entered')
+        if dbp_unusable and not sbp_unusable:
+            dbp_errors.append('Diastolic BP not entered')
+
+        if not sbp_unusable:
+            if not sbp.replace('.', '', 1).isdigit():
+                sbp_errors.append('Systolic BP is not numeric')
+                sbp_unusable = True
+            if float(sbp) > 200:
+                sbp_errors.append('Systolic BP is too high')
+
+        if not dbp_unusable:
+            if not dbp.replace('.', '', 1).isdigit():
+                dbp_errors.append('Diastolic BP is not numeric')
+                dbp_unusable = True
+            if float(dbp) < 35:
+                sbp_errors.append('Diastolic BP is too low')
+
+        if not dbp_unusable and not sbp_unusable:
+            if float(dbp) >= float(sbp):
+                combined_errors.append('Diastolic BP is above Systolic BP')
+
+        result = ''
+
+        if not record in self._sbp_validated:
+            result += '; '.join(sbp_errors)
+
+        if not record in self._dbp_validated:
+            result += '; '.join(dbp_errors)
+
+        if not record in self._all_validated:
+            result += '; '.join(combined_errors)
+
+        return result
 
     def is_na(self, value):
         return (value or '').strip().replace('/', '').lower() == 'na'
+
+    def get_validated_messages(self, project_id, field_name):
+        sql = """
+SELECT DISTINCT(dqs.record)
+FROM redcap_data_quality_status dqs
+JOIN redcap_data_quality_resolutions dqr
+    ON dqr.status_id = dqs.status_id
+    AND (
+            dqr.comment LIKE 'valid'
+        OR  dqr.comment LIKE '%% valid'
+        OR  dqr.comment LIKE 'valid %%'
+        OR  dqr.comment LIKE '%% valid %%'
+        OR	dqr.comment LIKE 'validated'
+        OR	dqr.comment LIKE 'validated %%'
+        OR  dqr.comment LIKE '%% validated'
+        OR  dqr.comment LIKE '%% validated %%'
+    )
+WHERE dqs.project_id = %s
+    AND dqs.field_name = %s
+;
+        """
+
+        with self._conn() as conn:
+            conn.execute(sql, (project_id, field_name))
+            
+            return {row['record'] for row in conn}
 
 
 class RedcapInvalidPulse(SqlReport):
@@ -1350,7 +1422,7 @@ WHERE e.project_id = %s
             return True
         if not 20.0 < float(value) < 200.0 and validated == 0:
             return True
-
+    
 
 class RedcapInvalidWeightInStonesAndPounds(SqlReport):
     def __init__(
@@ -1638,8 +1710,7 @@ class RedcapImpliesCheck(SqlReport):
             comparison = "NOT EXISTS"
 
         super().__init__(
-            introduction=("The following participants have the following "
-                          "invalid data in REDCap"),
+            introduction=("The following participants have the following invalid data in REDCap"),
             recipients=recipients,
             schedule=schedule,
             conn=redcap_instance()['connection'],
@@ -1706,8 +1777,7 @@ class RedcapXrefMismatch(SqlReport):
         self._redcap_instance_b = redcap_instance_b
 
         super().__init__(
-            introduction=("The following fields do not match "
-                          "in REDCap"),
+            introduction=("The following fields do not match in REDCap"),
             recipients=recipients,
             schedule=schedule,
             conn=redcap_instance_a()['connection'],
