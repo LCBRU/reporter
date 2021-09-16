@@ -704,8 +704,6 @@ LEFT JOIN redcap_data dbp
                 project_id,
                 systolic_field_name,
                 diastolic_field_name,
-                systolic_field_name,
-                diastolic_field_name,
             )
         )
 
