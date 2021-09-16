@@ -1212,14 +1212,14 @@ WHERE e.project_id = %s
 
     def get_report_line(self, row):
         if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
-            if self.is_invalid(row['value'], row['validated']):
+            if self.is_invalid(row['value']):
                 return '- {}: {}\r\n'.format(
                     self._redcap_instance()['link_generator'](
                         row['record'], row['project_id'], row['record']),
                     row['element_label']
                 )
 
-    def is_invalid(self, value, validated):
+    def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
