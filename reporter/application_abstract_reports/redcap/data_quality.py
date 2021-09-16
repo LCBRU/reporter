@@ -3,8 +3,44 @@
 import re
 import datetime
 from reporter.core import SqlReport
+from functools import lru_cache
 
 # Abstract Reports
+
+def is_validated(redcap_instance, project_id, record, field_name):
+    return {
+            'project_id': project_id,
+            'record': record,
+            'field_name': field_name,
+    } in get_validated(redcap_instance)
+
+
+@lru_cache
+def get_validated(redcap_instance):
+    print('*'* 100)
+    sql = """
+        SELECT DISTINCT s.project_id, s.record, s.field_name
+        FROM redcap_data_quality_status s
+        JOIN redcap_data_quality_resolutions r
+            ON r.status_id = s.status_id
+        WHERE r.comment LIKE 'valid'
+            OR  r.comment LIKE '%% valid'
+            OR  r.comment LIKE 'valid %%'
+            OR  r.comment LIKE '%% valid %%'
+            OR  r.comment LIKE 'validated'
+            OR  r.comment LIKE 'validated %%'
+            OR  r.comment LIKE '%% validated'
+            OR  r.comment LIKE '%% validated %%'
+        ;
+    """
+    with redcap_instance()['connection']() as conn:
+        conn.execute(sql)
+        
+        return [{
+            'project_id': row['project_id'],
+            'record': row['record'],
+            'field_name': row['field_name'],
+        } for row in conn]
 
 
 class RedcapMissingData(SqlReport):
@@ -48,26 +84,11 @@ WITH recruited AS (
     JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
-	LEFT JOIN redcap_data_quality_status dqs
-		ON dqs.project_id = r.project_id
-		AND dqs.record = r.record
-		AND dqs.field_name = md.field_name
-	LEFT JOIN redcap_data_quality_resolutions dqr
-		ON dqr.status_id = dqs.status_id
-		AND (
-                dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE 'valid %%'
-            OR  dqr.comment LIKE '%% valid'
-            OR  dqr.comment LIKE '%% valid %%'
-            OR	dqr.comment LIKE 'validated'
-            OR	dqr.comment LIKE 'validated %%'
-            OR  dqr.comment LIKE '%% validated'
-            OR  dqr.comment LIKE '%% validated %%'
-        )
 )
 SELECT
     pe.project_id,
     pe.record,
+    pe.field_name,
     pe.error AS [error_message]
 FROM potential_errors pe
 WHERE NOT EXISTS (
@@ -86,11 +107,12 @@ ORDER BY pe.record
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['error_message']
+            )
 
 
 class RedcapMissingDataWhen(SqlReport):
@@ -140,26 +162,10 @@ WITH recruited AS (
     JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
-	LEFT JOIN redcap_data_quality_status dqs
-		ON dqs.project_id = r.project_id
-		AND dqs.record = r.record
-		AND dqs.field_name = md.field_name
-	LEFT JOIN redcap_data_quality_resolutions dqr
-		ON dqr.status_id = dqs.status_id
-		AND (
-                dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE '%% valid'
-            OR  dqr.comment LIKE 'valid %%'
-            OR  dqr.comment LIKE '%% valid %%'
-            OR	dqr.comment LIKE 'validated'
-            OR	dqr.comment LIKE 'validated %%'
-            OR  dqr.comment LIKE '%% validated'
-            OR  dqr.comment LIKE '%% validated %%'
-        )
-	WHERE dqr.res_id IS NULL
 )
 SELECT
     pe.project_id,
+    pe.field_name,
     pe.record,
     pe.error AS [error_message]
 FROM potential_errors pe
@@ -188,11 +194,12 @@ ORDER BY pe.record
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['error_message']
+            )
 
 
 class RedcapMissingDataWhenNot(SqlReport):
@@ -241,27 +248,11 @@ WITH recruited AS (
     JOIN redcap_metadata md
         ON md.project_id = r.project_id
         AND md.field_name IN ({0})
-	LEFT JOIN redcap_data_quality_status dqs
-		ON dqs.project_id = r.project_id
-		AND dqs.record = r.record
-		AND dqs.field_name = md.field_name
-	LEFT JOIN redcap_data_quality_resolutions dqr
-		ON dqr.status_id = dqs.status_id
-		AND (
-                dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE 'valid %%'
-            OR  dqr.comment LIKE '%% valid'
-            OR  dqr.comment LIKE '%% valid %%'
-            OR	dqr.comment LIKE 'validated'
-            OR	dqr.comment LIKE 'validated %%'
-            OR  dqr.comment LIKE '%% validated'
-            OR  dqr.comment LIKE '%% validated %%'
-        )
-	WHERE dqr.res_id IS NULL
 )
 SELECT
     pe.project_id,
     pe.record,
+    pe.field_name,
     pe.error AS [error_message]
 FROM potential_errors pe
 WHERE NOT EXISTS (
@@ -287,11 +278,12 @@ ORDER BY pe.record
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['error_message']
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['error_message']
+            )
 
 
 class RedcapMissingAllWhen(SqlReport):
@@ -306,6 +298,7 @@ class RedcapMissingAllWhen(SqlReport):
         schedule=None
     ):
         self._redcap_instance = redcap_instance
+        self._indicator_field = indicator_field
 
         super().__init__(
             introduction=("The following participants have data "
@@ -335,31 +328,7 @@ SELECT
     r.project_id,
     r.record
 FROM recruited r
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM redcap_data e
-	LEFT JOIN redcap_data_quality_status dqs
-		ON dqs.project_id = e.project_id
-		AND dqs.record = e.record
-		AND dqs.field_name = e.field_name
-	LEFT JOIN redcap_data_quality_resolutions dqr
-		ON dqr.status_id = dqs.status_id
-		AND (
-                dqr.comment LIKE 'valid'
-            OR  dqr.comment LIKE '%% valid'
-            OR  dqr.comment LIKE 'valid %%'
-            OR  dqr.comment LIKE '%% valid %%'
-            OR	dqr.comment LIKE 'validated'
-            OR	dqr.comment LIKE 'validated %%'
-            OR  dqr.comment LIKE '%% validated'
-            OR  dqr.comment LIKE '%% validated %%'
-        )
-    WHERE e.project_id = r.project_id
-        AND e.record = r.record
-        AND e.field_name IN ({0})
-        AND LEN(RTRIM(LTRIM(COALESCE(e.value, '')))) > 0
-        AND dqr.res_id IS NULL
-) AND EXISTS (
+WHERE EXISTS (
     SELECT 1
     FROM redcap_data e
     WHERE e.project_id = r.project_id
@@ -376,9 +345,11 @@ ORDER BY r.record
         )
 
     def get_report_line(self, row):
-        return '- {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']))
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], self._indicator_field):
+            return '- {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record'])
+            )
 
 
 class RedcapInvalidNhsNumber(SqlReport):
@@ -404,30 +375,14 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    md.field_name
 FROM redcap_data e
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -442,12 +397,13 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.invalid_nhs_number(row['value']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if self.invalid_nhs_number(row['value']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
     def invalid_nhs_number(self, nhs_number):
         """
@@ -493,31 +449,15 @@ class RedcapInvalidStudyNumber(SqlReport):
 SELECT DISTINCT
     e.project_id,
     e.record,
+    md.field_name,
     md.element_label
 FROM redcap_data e
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.value) = 1
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -534,11 +474,12 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['element_label']
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['element_label']
+            )
 
 
 class RedcapFieldMatchesRegularExpression(SqlReport):
@@ -569,28 +510,11 @@ SELECT
     md.element_label,
     e.field_name
 FROM redcap_data e
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
 WHERE e.project_id = %s
     AND e.field_name IN ({0})
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -606,12 +530,13 @@ ORDER BY e.record
         )
 
     def get_report_line(self, row):
-        if not re.search(self._regular_expression, row['value']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if not re.search(self._regular_expression, row['value']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
 
 class RedcapRecordInvalidStudyNumber(SqlReport):
@@ -634,27 +559,11 @@ class RedcapRecordInvalidStudyNumber(SqlReport):
 
 SELECT
     e.project_id,
-    e.record
+    e.record,
+    e.field_name
 FROM redcap_data e
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE e.project_id = %s
     AND i2b2ClinDataIntegration.dbo.isInvalidStudyNumber(e.record) = 1
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -665,16 +574,18 @@ WHERE e.project_id = %s
         )
 GROUP BY
     e.project_id,
-    e.record
+    e.record,
+    e.field_name
                 ''',
             parameters=(project_id)
         )
 
     def get_report_line(self, row):
-        return '- {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record'])
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record'])
+            )
 
 
 class RedcapInvalidUhlSystemNumber(RedcapFieldMatchesRegularExpression):
@@ -763,9 +674,7 @@ SELECT
     p.project_id,
     p.record,
     sbp.value AS sbp,
-    dbp.value AS dbp,
-    CASE WHEN sbp_dqr.res_id IS NULL THEN 0 ELSE 1 END sbp_validated,
-    CASE WHEN dbp_dqr.res_id IS NULL THEN 0 ELSE 1 END dbp_validated
+    dbp.value AS dbp
 FROM (
     SELECT DISTINCT
         project_id,
@@ -789,38 +698,6 @@ LEFT JOIN redcap_data dbp
     ON dbp.project_id = p.project_id
     AND dbp.record = p.record
     AND dbp.field_name = %s
-LEFT JOIN redcap_data_quality_status sbp_dqs
-    ON sbp_dqs.project_id = p.project_id
-    AND sbp_dqs.record = p.record
-    AND sbp_dqs.field_name = %s
-LEFT JOIN redcap_data_quality_resolutions sbp_dqr
-    ON sbp_dqr.status_id = sbp_dqs.status_id
-    AND (
-            sbp_dqr.comment LIKE 'valid'
-        OR  sbp_dqr.comment LIKE 'valid %%'
-        OR  sbp_dqr.comment LIKE '%% valid'
-        OR  sbp_dqr.comment LIKE '%% valid %%'
-        OR	sbp_dqr.comment LIKE 'validated'
-        OR	sbp_dqr.comment LIKE 'validated %%'
-        OR  sbp_dqr.comment LIKE '%% validated'
-        OR  sbp_dqr.comment LIKE '%% validated %%'
-    )
-LEFT JOIN redcap_data_quality_status dbp_dqs
-    ON dbp_dqs.project_id = p.project_id
-    AND dbp_dqs.record = p.record
-    AND dbp_dqs.field_name = %s
-LEFT JOIN redcap_data_quality_resolutions dbp_dqr
-    ON dbp_dqr.status_id = dbp_dqs.status_id
-    AND (
-            dbp_dqr.comment LIKE 'valid'
-        OR  dbp_dqr.comment LIKE '%% valid'
-        OR  dbp_dqr.comment LIKE 'valid %%'
-        OR  dbp_dqr.comment LIKE '%% valid %%'
-        OR	dbp_dqr.comment LIKE 'validated'
-        OR	dbp_dqr.comment LIKE 'validated %%'
-        OR  dbp_dqr.comment LIKE '%% validated'
-        OR  dbp_dqr.comment LIKE '%% validated %%'
-    )
 
                 ''',
             parameters=(
@@ -958,30 +835,14 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    md.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -998,12 +859,13 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if self.is_invalid(row['value']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
@@ -1037,30 +899,14 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    md.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -1077,12 +923,13 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if self.is_invalid(row['value']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
@@ -1116,30 +963,14 @@ SELECT
     e.project_id,
     e.record,
     e.value,
-    md.element_label
+    md.element_label,
+    md.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -1156,12 +987,13 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if self.is_invalid(row['value']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
@@ -1195,7 +1027,8 @@ SELECT
     e.record,
     e.value,
     md.element_label,
-    md.element_validation_type
+    md.element_validation_type,
+    md.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
@@ -1226,12 +1059,13 @@ WHERE e.project_id = %s
         elif row['element_validation_type'][:9] == 'datetime_':
             invalid = self.is_invalid(row['value'], '%Y-%m-%d %H:%M')
 
-        if invalid:
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if invalid:
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
     def is_invalid(self, value, format_string):
         try:
@@ -1266,7 +1100,7 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         p.record,
         feet.value [feet],
         inches.value [inches],
-        CASE WHEN feet_dqr.res_id IS NULL THEN 0 ELSE 1 END feet_validated
+        feet.field_name
     FROM (
         SELECT DISTINCT
             project_id,
@@ -1290,37 +1124,22 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
         ON inches.project_id = p.project_id
         AND inches.record = p.record
         AND inches.field_name = %s
-    LEFT JOIN redcap_data_quality_status feet_dqs
-        ON feet_dqs.project_id = feet.project_id
-        AND feet_dqs.record = feet.record
-        AND feet_dqs.field_name = feet.field_name
-    LEFT JOIN redcap_data_quality_resolutions feet_dqr
-        ON feet_dqr.status_id = feet_dqs.status_id
-        AND (
-                feet_dqr.comment LIKE 'valid'
-            OR  feet_dqr.comment LIKE 'valid %%'
-            OR  feet_dqr.comment LIKE '%% valid'
-            OR  feet_dqr.comment LIKE '%% valid %%'
-            OR	feet_dqr.comment LIKE 'validated'
-            OR	feet_dqr.comment LIKE 'validated %%'
-            OR  feet_dqr.comment LIKE '%% validated'
-            OR  feet_dqr.comment LIKE '%% validated %%'
-        )
                 ''',
             parameters=(project_id, feet_field, inches_field)
         )
 
     def get_report_line(self, row):
-        error = self.get_error_message(row['feet'], row['inches'], row['feet_validated'])
+        error = self.get_error_message(row['feet'], row['inches'])
 
-        if error:
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                error
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if error:
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    error
+                )
 
-    def get_error_message(self, feet, inches, feet_validated):
+    def get_error_message(self, feet, inches):
         if self.is_na(feet) or self.is_na(inches):
             return
         if feet is None and inches is None:
@@ -1334,9 +1153,9 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
             return 'Height in feet is not numeric'
         if not inches.replace('.', '', 1).isdigit():
             return 'Height in inches is not numeric'
-        if float(feet) < 3 and feet_validated == 0:
+        if float(feet) < 3:
             return 'Height in feet too low'
-        if float(feet) > 7 and feet_validated == 0:
+        if float(feet) > 7:
             return 'Height in feet too high'
         if not 0 <= float(inches) < 12:
             return 'Height in inches is incorrect'
@@ -1371,27 +1190,11 @@ SELECT
     e.record,
     e.value,
     md.element_label,
-    CASE WHEN dqr.res_id IS NULL THEN 0 ELSE 1 END validated
+    md.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
     AND NOT EXISTS (
@@ -1408,19 +1211,20 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value'], row['validated']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if self.is_invalid(row['value'], row['validated']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
     def is_invalid(self, value, validated):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
-        if not 20.0 < float(value) < 200.0 and validated == 0:
+        if not 20.0 < float(value) < 200.0:
             return True
     
 
@@ -1449,7 +1253,7 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         p.record,
         stones.value [stones],
         pounds.value [pounds],
-        CASE WHEN stones_dqr.res_id IS NULL THEN 0 ELSE 1 END stones_validated
+        stones.field_name
     FROM (
         SELECT DISTINCT
             project_id,
@@ -1473,38 +1277,22 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
         ON pounds.project_id = p.project_id
         AND pounds.record = p.record
         AND pounds.field_name = %s
-    LEFT JOIN redcap_data_quality_status stones_dqs
-        ON stones_dqs.project_id = stones.project_id
-        AND stones_dqs.record = stones.record
-        AND stones_dqs.field_name = stones.field_name
-    LEFT JOIN redcap_data_quality_resolutions stones_dqr
-        ON stones_dqr.status_id = stones_dqs.status_id
-        AND (
-                stones_dqr.comment LIKE 'valid'
-            OR  stones_dqr.comment LIKE 'valid %%'
-            OR  stones_dqr.comment LIKE '%% valid'
-            OR  stones_dqr.comment LIKE '%% valid %%'
-            OR	stones_dqr.comment LIKE 'validated'
-            OR	stones_dqr.comment LIKE 'validated %%'
-            OR  stones_dqr.comment LIKE '%% validated'
-            OR  stones_dqr.comment LIKE '%% validated %%'
-        )
-
                 ''',
             parameters=(project_id, stones_field, pounds_field)
         )
 
     def get_report_line(self, row):
-        error = self.get_error_message(row['stones'], row['pounds'], row['stones_validated'])
+        error = self.get_error_message(row['stones'], row['pounds'])
 
-        if error:
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                error
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if error:
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    error
+                )
 
-    def get_error_message(self, stones, pounds, stones_validated):
+    def get_error_message(self, stones, pounds):
         if self.is_na(stones) or self.is_na(pounds):
             return
         if stones is None and pounds is None:
@@ -1519,7 +1307,7 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
 
         calculated_kg = ((float(stones or 0) * 14) + float(pounds)) * 0.453592
 
-        if not 20.0 < calculated_kg < 200.0 and stones_validated == 0:
+        if not 20.0 < calculated_kg < 200.0:
             return 'Invalid weight'
 
         return
@@ -1552,27 +1340,11 @@ SELECT
     e.record,
     e.value,
     md.element_label,
-    CASE WHEN dqr.res_id IS NULL THEN 0 ELSE 1 END validated
+    md.field_name
 FROM redcap_data e
 JOIN redcap_metadata md
     ON md.project_id = e.project_id
     AND md.field_name = e.field_name
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = e.project_id
-    AND dqs.record = e.record
-    AND dqs.field_name = e.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE e.project_id = %s
     AND e.field_name IN ({})
     AND NOT EXISTS (
@@ -1589,19 +1361,20 @@ WHERE e.project_id = %s
         )
 
     def get_report_line(self, row):
-        if self.is_invalid(row['value'], row['validated']):
-            return '- {}: {}\r\n'.format(
-                self._redcap_instance()['link_generator'](
-                    row['record'], row['project_id'], row['record']),
-                row['element_label']
-            )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            if self.is_invalid(row['value']):
+                return '- {}: {}\r\n'.format(
+                    self._redcap_instance()['link_generator'](
+                        row['record'], row['project_id'], row['record']),
+                    row['element_label']
+                )
 
-    def is_invalid(self, value, validated):
+    def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() in ('na', ''):
             return False
         if not value.replace('.', '', 1).isdigit():
             return True
-        if not 17.0 <= float(value) <= 80.0 and validated == 0:
+        if not 17.0 <= float(value) <= 80.0:
             return True
 
 
@@ -1630,6 +1403,7 @@ class RedcapOutsideAgeRange(SqlReport):
 SELECT
     dob.project_id,
     dob.record,
+    rec.field_name,
     [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         CONVERT(DATE, dob.value),
         CONVERT(DATE, rec.value)) AgeAtRecruitment
@@ -1638,28 +1412,11 @@ JOIN    redcap_data rec
     ON rec.project_id = dob.project_id
     AND rec.record = dob.record
     AND rec.field_name = %s
-LEFT JOIN redcap_data_quality_status dqs
-    ON dqs.project_id = rec.project_id
-    AND dqs.record = rec.record
-    AND dqs.field_name = rec.field_name
-LEFT JOIN redcap_data_quality_resolutions dqr
-    ON dqr.status_id = dqs.status_id
-    AND (
-            dqr.comment LIKE 'valid'
-        OR  dqr.comment LIKE 'valid %%'
-        OR  dqr.comment LIKE '%% valid'
-        OR  dqr.comment LIKE '%% valid %%'
-        OR	dqr.comment LIKE 'validated'
-        OR	dqr.comment LIKE 'validated %%'
-        OR  dqr.comment LIKE '%% validated'
-        OR  dqr.comment LIKE '%% validated %%'
-    )
 WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         CONVERT(DATE, dob.value),
         CONVERT(DATE, rec.value)) NOT BETWEEN %s AND %s
     AND dob.field_name = %s
     AND dob.project_id = %s
-    AND dqr.res_id IS NULL
     AND NOT EXISTS (
         SELECT 1
         FROM redcap_data stat
@@ -1680,11 +1437,12 @@ WHERE [i2b2ClinDataIntegration].dbo.[GetAgeAtDate](
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            row['AgeAtRecruitment']
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                row['AgeAtRecruitment']
+            )
 
 
 class RedcapImpliesCheck(SqlReport):
@@ -1718,7 +1476,8 @@ class RedcapImpliesCheck(SqlReport):
 
 SELECT
     a.record,
-    a.project_id
+    a.project_id,
+    a.field_name
 FROM    redcap_data a
 WHERE a.project_id = %s
     AND a.field_name IN ({0})
@@ -1753,11 +1512,12 @@ WHERE a.project_id = %s
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            self._error_message
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                self._error_message
+            )
 
 
 class RedcapXrefMismatch(SqlReport):
@@ -1931,7 +1691,8 @@ class RedcapFieldsMustExistWhenOthersExist(SqlReport):
 
 SELECT
     DISTINCT a.record,
-    a.project_id
+    a.project_id,
+    a.field_name
 FROM    redcap_data a
 WHERE a.project_id = %s
     AND EXISTS (
@@ -1971,10 +1732,11 @@ WHERE a.project_id = %s
         )
 
     def get_report_line(self, row):
-        return '- {}: {}\r\n'.format(
-            self._redcap_instance()['link_generator'](
-                row['record'], row['project_id'], row['record']),
-            self._error_message
-        )
+        if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
+            return '- {}: {}\r\n'.format(
+                self._redcap_instance()['link_generator'](
+                    row['record'], row['project_id'], row['record']),
+                self._error_message
+            )
 
 
