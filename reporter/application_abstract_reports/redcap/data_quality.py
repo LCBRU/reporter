@@ -15,7 +15,7 @@ def is_validated(redcap_instance, project_id, record, field_name):
     } in get_validated(redcap_instance)
 
 
-@lru_cache
+@lru_cache()
 def get_validated(redcap_instance):
     print('*'* 100)
     sql = """
