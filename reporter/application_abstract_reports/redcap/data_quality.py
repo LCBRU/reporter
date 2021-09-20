@@ -7,6 +7,18 @@ from functools import lru_cache
 
 # Abstract Reports
 
+def is_na(value):
+    return (value or '').strip().replace('/', '').lower() == 'na'
+
+def is_number(value):
+    try:
+        x = float(value)
+        return True
+    except ValueError:
+        return False
+
+
+
 def is_validated(redcap_instance, project_id, record, field_name):
     return {
             'project_id': project_id,
@@ -17,7 +29,6 @@ def is_validated(redcap_instance, project_id, record, field_name):
 
 @lru_cache()
 def get_validated(redcap_instance):
-    print('*'* 100)
     sql = """
         SELECT DISTINCT s.project_id, s.record, s.field_name
         FROM redcap_data_quality_status s
@@ -738,10 +749,10 @@ LEFT JOIN redcap_data dbp
         sbp_unusable = False
         dbp_unusable = False
 
-        if self.is_na(sbp) or sbp is None:
+        if is_na(sbp) or sbp is None:
             sbp_unusable = True
 
-        if self.is_na(dbp) or dbp is None:
+        if is_na(dbp) or dbp is None:
             dbp_unusable = True
 
         if sbp_unusable and dbp_unusable:
@@ -757,17 +768,17 @@ LEFT JOIN redcap_data dbp
             dbp_errors.append('Diastolic BP not entered')
 
         if not sbp_unusable:
-            if not sbp.replace('.', '', 1).isdigit():
+            if not is_number(sbp):
                 sbp_errors.append('Systolic BP is not numeric')
                 sbp_unusable = True
-            if float(sbp) > 200:
+            elif float(sbp) > 200:
                 sbp_errors.append('Systolic BP is too high')
 
         if not dbp_unusable:
-            if not dbp.replace('.', '', 1).isdigit():
+            if not is_number(dbp):
                 dbp_errors.append('Diastolic BP is not numeric')
                 dbp_unusable = True
-            if float(dbp) < 35:
+            elif float(dbp) < 35:
                 sbp_errors.append('Diastolic BP is too low')
 
         if not dbp_unusable and not sbp_unusable:
@@ -786,9 +797,6 @@ LEFT JOIN redcap_data dbp
             result += '; '.join(combined_errors)
 
         return result
-
-    def is_na(self, value):
-        return (value or '').strip().replace('/', '').lower() == 'na'
 
     def get_validated_messages(self, project_id, field_name):
         sql = """
@@ -875,7 +883,7 @@ WHERE e.project_id = %s
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
-        if not value.replace('.', '', 1).isdigit():
+        if not is_number(value):
             return True
         if not 20 < float(value) < 200:
             return True
@@ -939,7 +947,7 @@ WHERE e.project_id = %s
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
-        if not value.replace('.', '', 1).isdigit():
+        if not is_number(value):
             return True
         if not 100 < float(value) < 250:
             return True
@@ -1003,7 +1011,7 @@ WHERE e.project_id = %s
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
-        if not value.replace('.', '', 1).isdigit():
+        if not is_number(value):
             return True
         if not 1.0 < float(value) < 2.5:
             return True
@@ -1145,7 +1153,7 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
                 )
 
     def get_error_message(self, feet, inches):
-        if self.is_na(feet) or self.is_na(inches):
+        if is_na(feet) or is_na(inches):
             return
         if feet is None and inches is None:
             return
@@ -1154,9 +1162,9 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
             return 'Height in feet not entered'
         if feet is not None and inches is None:
             return 'Height in inches not entered'
-        if not feet.replace('.', '', 1).isdigit():
+        if not is_number(feet):
             return 'Height in feet is not numeric'
-        if not inches.replace('.', '', 1).isdigit():
+        if not is_number(inches):
             return 'Height in inches is not numeric'
         if float(feet) < 3:
             return 'Height in feet too low'
@@ -1166,9 +1174,6 @@ class RedcapInvalidHeightInFeetAndInches(SqlReport):
             return 'Height in inches is incorrect'
 
         return
-
-    def is_na(self, value):
-        return (value or '').strip().replace('/', '').lower() == 'na'
 
 
 class RedcapInvalidWeightInKg(SqlReport):
@@ -1227,7 +1232,7 @@ WHERE e.project_id = %s
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() == 'na':
             return False
-        if not value.replace('.', '', 1).isdigit():
+        if not is_number(value):
             return True
         if not 20.0 < float(value) < 200.0:
             return True
@@ -1298,16 +1303,16 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
                 )
 
     def get_error_message(self, stones, pounds):
-        if self.is_na(stones) or self.is_na(pounds):
+        if is_na(stones) or is_na(pounds):
             return
         if stones is None and pounds is None:
             return
 
         if stones is not None and pounds is None:
             return 'Weight in pounds not entered'
-        if not (stones or '0').replace('.', '', 1).isdigit():
+        if not is_number(stones or '0'):
             return 'Weight in stones is not numeric'
-        if not pounds.replace('.', '', 1).isdigit():
+        if not is_number(pounds):
             return 'Weight in pounds is not numeric'
 
         calculated_kg = ((float(stones or 0) * 14) + float(pounds)) * 0.453592
@@ -1316,9 +1321,6 @@ class RedcapInvalidWeightInStonesAndPounds(SqlReport):
             return 'Invalid weight'
 
         return
-
-    def is_na(self, value):
-        return (value or '').strip().replace('/', '').lower() == 'na'
 
 
 class RedcapInvalidBmi(SqlReport):
@@ -1377,7 +1379,7 @@ WHERE e.project_id = %s
     def is_invalid(self, value):
         if (value or '').strip().replace('/', '').lower() in ('na', ''):
             return False
-        if not value.replace('.', '', 1).isdigit():
+        if not is_number(value):
             return True
         if not 17.0 <= float(value) <= 80.0:
             return True
