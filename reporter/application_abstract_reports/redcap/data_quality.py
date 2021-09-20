@@ -490,9 +490,11 @@ class RedcapFieldMatchesRegularExpression(SqlReport):
         fields,
         regular_expression,
         recipients,
-        schedule=None
+        schedule=None,
+        ignore_case=False,
     ):
 
+        self._ignore_case = ignore_case
         self._redcap_instance = redcap_instance
         self._regular_expression = regular_expression
         super().__init__(
@@ -530,8 +532,13 @@ ORDER BY e.record
         )
 
     def get_report_line(self, row):
+        flags = 0
+
+        if self._ignore_case:
+            flags = re.IGNORECASE
+
         if not is_validated(self._redcap_instance, row['project_id'], row['record'], row['field_name']):
-            if not re.search(self._regular_expression, row['value']):
+            if not re.search(self._regular_expression, row['value'], flags):
                 return '- {}: {}\r\n'.format(
                     self._redcap_instance()['link_generator'](
                         row['record'], row['project_id'], row['record']),

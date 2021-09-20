@@ -150,6 +150,7 @@ class BriccsLeicesterRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -169,6 +170,7 @@ class BriccsLeicesterRedcapInvalidSampleNumber(
             ],
             regular_expression='^(|BSa\d{8}|BSa00\d{8})$',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -371,6 +373,7 @@ class BriccsDoncasterRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -389,6 +392,7 @@ class BriccsDoncasterRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -591,6 +595,7 @@ class BriccsSheffieldRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -609,6 +614,7 @@ class BriccsSheffieldRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -811,6 +817,7 @@ class BriccsKetteringRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -829,6 +836,7 @@ class BriccsKetteringRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1031,6 +1039,7 @@ class BriccsChesterfieldRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1049,6 +1058,7 @@ class BriccsChesterfieldRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1251,7 +1261,8 @@ class BriccsGranthamRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
-        )
+            ignore_case=True,
+)
 
 
 class BriccsGranthamRedcapInvalidSampleNumber(
@@ -1269,6 +1280,7 @@ class BriccsGranthamRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1471,6 +1483,7 @@ class BriccsLincolnRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1489,6 +1502,7 @@ class BriccsLincolnRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1691,6 +1705,7 @@ class BriccsNorthamptonRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1709,6 +1724,7 @@ class BriccsNorthamptonRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1911,6 +1927,7 @@ class BriccsDerbyRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -1929,6 +1946,7 @@ class BriccsDerbyRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -2131,6 +2149,7 @@ class BriccsBostonRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -2149,6 +2168,7 @@ class BriccsBostonRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -2351,6 +2371,7 @@ class BriccsNottinghamRedcapInvalidStudyNumber(
             fields=['record_id'],
             regular_expression='BPt\d{8}',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
@@ -2369,6 +2390,7 @@ class BriccsNottinghamRedcapInvalidSampleNumber(
             ],
             regular_expression='(|BSa\d{8})',
             recipients=[RECIPIENT_ADMIN, RECIPIENT_MANAGER],
+            ignore_case=True,
         )
 
 
