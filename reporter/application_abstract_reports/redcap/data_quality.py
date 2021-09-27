@@ -885,7 +885,7 @@ WHERE e.project_id = %s
             return False
         if not is_number(value):
             return True
-        if not 20 < float(value) < 200:
+        if not 20 <= float(value) <= 200:
             return True
 
 
